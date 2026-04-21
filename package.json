@@ -1,0 +1,41 @@
+{
+  "name": "shock-selector-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test:calculators": "tsx --test lib/calculators/calculator-regression.test.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.check.json",
+    "prisma:generate": "prisma generate --config ./prisma.config.ts",
+    "prisma:migrate": "prisma migrate dev --config ./prisma.config.ts",
+    "import:excel": "tsx scripts/import-excel.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "6.6.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.8.0",
+    "next": "15",
+    "react": "19",
+    "react-dom": "19",
+    "tailwind-merge": "^3.5.0",
+    "xlsx": "^0.18.5",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.27",
+    "eslint": "^9.38.0",
+    "eslint-config-next": "^15.5.6",
+    "postcss": "^8.5.9",
+    "prisma": "6.6.0",
+    "tailwindcss": "3.4.17",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  }
+}

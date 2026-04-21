@@ -1,0 +1,22 @@
+cluster,priority,page_type,primary_keyword,secondary_keywords,recommended_url,search_intent,notes
+core,A,homepage,industrial shock absorber selector,industrial shock absorbers; hydraulic shock absorbers; shock absorber sizing tool; shock absorber calculator,/,commercial+technical,Best homepage target
+core,A,selector,shock absorber selector,shock absorber sizing tool; hydraulic shock absorber selector; industrial shock absorber sizing,/shock-absorber-selector/,tool intent,Main conversion page
+product-family,A,category,self-compensating shock absorber,self compensating industrial shock absorber; self compensating hydraulic shock absorber,/products/self-compensating-shock-absorbers/,commercial,High-intent family term
+product-family,A,category,adjustable shock absorber,adjustable industrial shock absorber; adjustable hydraulic shock absorber,/products/adjustable-shock-absorbers/,commercial,High-intent family term
+product-family,B,category,heavy-duty industrial shock absorber,heavy duty shock absorber; heavy load shock absorber,/products/heavy-duty-shock-absorbers/,commercial,Useful for large-machine searches
+product-family,B,category,compact shock absorber,miniature shock absorber; compact hydraulic shock absorber,/products/compact-shock-absorbers/,commercial,Useful for small-size queries
+scenario,A,selector,free fall shock absorber calculation,vertical motion shock absorber sizing; horizontal motion shock absorber sizing,/selector/linear-free-motion/,tool intent,Maps to free/falling scenarios
+scenario,A,selector,motor driven load shock absorber sizing,electric actuator shock absorber selection,/selector/linear-motor-driven/,tool intent,Maps to motor-driven scenarios
+scenario,A,selector,pneumatic cylinder shock absorber sizing,cylinder driven load shock absorber sizing,/selector/linear-cylinder-driven/,tool intent,Maps to cylinder-driven scenarios
+scenario,B,selector,rotary application shock absorber sizing,rotary table shock absorber; indexing table shock absorber,/selector/rotary-motion/,tool intent,Maps to rotary scenarios
+application,B,application,shock absorber for conveyor stop,conveyor stopper shock absorber; conveyor shock absorber,/applications/conveyor-stop-shock-absorber/,application,Good OEM use-case page
+application,B,application,shock absorber for linear module,linear motion shock absorber; linear actuator shock absorber,/applications/linear-module-shock-absorber/,application,Good automation use-case page
+application,B,application,shock absorber for pneumatic cylinder,cylinder end stop shock absorber; rodless cylinder shock absorber,/applications/pneumatic-cylinder-shock-absorber/,application,Good actuator use-case page
+application,B,application,shock absorber for electric actuator,electric cylinder shock absorber; motor driven shock absorber,/applications/electric-actuator-shock-absorber/,application,Good actuator use-case page
+application,B,application,shock absorber for rotary table,indexing table shock absorber; rotary motion shock absorber,/applications/rotary-table-shock-absorber/,application,Good motion use-case page
+guide,A,guide,how to size a shock absorber,how to select an industrial shock absorber,/guides/how-to-size-a-shock-absorber/,informational,Important support page
+guide,B,guide,shock absorber energy per cycle,shock absorber energy calculation,/guides/shock-absorber-energy-per-cycle/,informational,Supports sizing pages
+guide,B,guide,shock absorber energy per hour,cycles per hour shock absorber sizing,/guides/shock-absorber-energy-per-hour/,informational,Supports sizing pages
+guide,B,guide,shock absorber effective weight,effective weight shock absorber sizing,/guides/effective-weight/,informational,Supports technical credibility
+guide,B,guide,self compensating vs adjustable shock absorber,difference between self compensating and adjustable shock absorbers,/guides/self-compensating-vs-adjustable/,comparison,Useful for product-family understanding
+comparison,C,guide,shock absorber replacement guide,shock absorber equivalent model; industrial shock absorber alternative,/guides/shock-absorber-replacement-guide/,commercial,Use only when technically verified
