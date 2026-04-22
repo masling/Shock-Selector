@@ -99,6 +99,34 @@ Prisma 迁移：
 pnpm prisma:migrate
 ```
 
+## Vercel 部署
+
+推荐使用 `Vercel + Neon`：
+
+1. 将仓库推送到 GitHub
+2. 在 Vercel 中导入该仓库
+3. 保持 Framework Preset 为 `Next.js`
+4. 在 Vercel 环境变量中配置：
+
+```env
+DATABASE_URL="Neon pooled connection string"
+DIRECT_URL="Neon direct connection string"
+```
+
+说明：
+
+- `DATABASE_URL` 用于线上应用运行时访问数据库
+- `DIRECT_URL` 主要用于 Prisma migrate / introspect 等直连操作
+- 当前仓库的 `build` 脚本已包含 `pnpm prisma:generate`，Vercel 默认执行 `pnpm build` 即可
+
+首次部署后建议验证：
+
+- `/products`
+- `/selector/buyer`
+- `/selector/engineer`
+- `/api/products/search`
+- `/api/calculate`
+
 ## 本地开发建议顺序
 
 ```bash
