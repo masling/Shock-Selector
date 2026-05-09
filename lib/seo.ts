@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { defaultLocale, locales, type Locale } from "@/lib/i18n/config";
 
-const fallbackSiteUrl = "https://www.ekdchina.com";
+const fallbackSiteUrl = "https://www.vibroabsorber.com";
 
 export const staticSeoPaths = [
   "",
