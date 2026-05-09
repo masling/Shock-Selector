@@ -4,6 +4,7 @@ import { SectionHeading } from "@/components/marketing/section-heading";
 import { Container } from "@/components/ui/container";
 import { isLocale } from "@/lib/i18n/config";
 import { getSiteCopy } from "@/lib/i18n/site-copy";
+import { getLocalizedAlternates } from "@/lib/seo";
 
 type AboutPageProps = {
   params: Promise<{ locale: string }>;
@@ -17,7 +18,10 @@ export async function generateMetadata({ params }: AboutPageProps): Promise<Meta
   }
 
   const copy = getSiteCopy(localeParam);
-  return { title: copy.metadata.aboutTitle };
+  return {
+    title: copy.metadata.aboutTitle,
+    alternates: getLocalizedAlternates(localeParam, "/about"),
+  };
 }
 
 export default async function AboutPage({ params }: AboutPageProps) {

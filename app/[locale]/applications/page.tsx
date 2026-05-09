@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/container";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getLocalizedHref } from "@/lib/i18n/routing";
 import { getSiteCopy } from "@/lib/i18n/site-copy";
+import { getLocalizedAlternates } from "@/lib/seo";
 
 type ApplicationsPageProps = {
   params: Promise<{ locale: string }>;
@@ -30,7 +31,10 @@ export async function generateMetadata({
   }
 
   const copy = getSiteCopy(localeParam);
-  return { title: copy.metadata.applicationsTitle };
+  return {
+    title: copy.metadata.applicationsTitle,
+    alternates: getLocalizedAlternates(localeParam, "/applications"),
+  };
 }
 
 export default async function ApplicationsPage({

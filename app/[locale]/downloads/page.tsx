@@ -5,6 +5,7 @@ import { SectionHeading } from "@/components/marketing/section-heading";
 import { Container } from "@/components/ui/container";
 import { isLocale } from "@/lib/i18n/config";
 import { getSiteCopy } from "@/lib/i18n/site-copy";
+import { getLocalizedAlternates } from "@/lib/seo";
 
 type DownloadsPageProps = {
   params: Promise<{ locale: string }>;
@@ -18,7 +19,10 @@ export async function generateMetadata({ params }: DownloadsPageProps): Promise<
   }
 
   const copy = getSiteCopy(localeParam);
-  return { title: copy.metadata.downloadsTitle };
+  return {
+    title: copy.metadata.downloadsTitle,
+    alternates: getLocalizedAlternates(localeParam, "/downloads"),
+  };
 }
 
 export default async function DownloadsPage({ params }: DownloadsPageProps) {

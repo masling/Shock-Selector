@@ -8,6 +8,7 @@ import { isLocale, type Locale } from "@/lib/i18n/config";
 import { localizeScenarioCatalog } from "@/lib/i18n/scenario-copy";
 import { getSiteCopy } from "@/lib/i18n/site-copy";
 import { getScenarioCatalog } from "@/lib/scenarios/registry";
+import { getLocalizedAlternates } from "@/lib/seo";
 
 type EngineerSizingPageProps = {
   params: Promise<{ locale: string }>;
@@ -23,7 +24,10 @@ export async function generateMetadata({
   }
 
   const copy = getSiteCopy(localeParam);
-  return { title: copy.metadata.engineerTitle };
+  return {
+    title: copy.metadata.engineerTitle,
+    alternates: getLocalizedAlternates(localeParam, "/selector/engineer"),
+  };
 }
 
 export default async function EngineerSizingPage({

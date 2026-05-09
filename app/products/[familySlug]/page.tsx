@@ -12,6 +12,11 @@ import {
   productFamilies,
 } from "@/lib/content/site";
 import {
+  defaultLocale,
+  isLocale,
+  type Locale,
+} from "@/lib/i18n/config";
+import {
   getLocalizedProductFamilyName,
   localizeFeaturedProductFamily,
   localizeFeaturedModel,
@@ -19,19 +24,24 @@ import {
 } from "@/lib/i18n/product-copy";
 import { getRequestLocale } from "@/lib/i18n/request";
 import { getLocalizedHref } from "@/lib/i18n/routing";
+import { getLocalizedAlternates } from "@/lib/seo";
 
 type FamilyPageProps = {
-  params: Promise<{ familySlug: string }>;
+  params: Promise<{ familySlug: string; locale?: string }>;
 };
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: FamilyPageProps): Promise<Metadata> {
-  const { familySlug } = await params;
+  const { familySlug, locale: localeParam } = await params;
   const family = getFamilyBySlug(familySlug);
+  const locale: Locale = isLocale(localeParam) ? localeParam : defaultLocale;
 
   return {
-    title: family ? family.name : "Product family",
+    title: family
+      ? getLocalizedProductFamilyName(locale, family.slug, family.name)
+      : "Product family",
+    alternates: getLocalizedAlternates(locale, `/products/${familySlug}`),
   };
 }
 

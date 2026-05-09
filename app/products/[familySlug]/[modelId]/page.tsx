@@ -3,14 +3,16 @@ import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Container } from "@/components/ui/container";
 import { featuredModels, getFamilyBySlug, getModelById } from "@/lib/content/site";
+import { defaultLocale, isLocale, type Locale } from "@/lib/i18n/config";
 import {
   getLocalizedProductFamilyName,
   localizeFeaturedModel,
 } from "@/lib/i18n/product-copy";
 import { getRequestLocale } from "@/lib/i18n/request";
+import { getLocalizedAlternates } from "@/lib/seo";
 
 type ProductDetailPageProps = {
-  params: Promise<{ familySlug: string; modelId: string }>;
+  params: Promise<{ familySlug: string; modelId: string; locale?: string }>;
 };
 
 export async function generateStaticParams() {
@@ -21,11 +23,13 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: ProductDetailPageProps): Promise<Metadata> {
-  const { modelId } = await params;
+  const { familySlug, modelId, locale: localeParam } = await params;
   const product = getModelById(modelId);
+  const locale: Locale = isLocale(localeParam) ? localeParam : defaultLocale;
 
   return {
     title: product ? product.model : "Product",
+    alternates: getLocalizedAlternates(locale, `/products/${familySlug}/${modelId}`),
   };
 }
 

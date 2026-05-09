@@ -7,6 +7,7 @@ import { Container } from "@/components/ui/container";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getLocalizedHref } from "@/lib/i18n/routing";
 import { getSiteCopy } from "@/lib/i18n/site-copy";
+import { getLocalizedAlternates } from "@/lib/seo";
 
 type SolutionsPageProps = {
   params: Promise<{ locale: string }>;
@@ -35,7 +36,10 @@ export async function generateMetadata({ params }: SolutionsPageProps): Promise<
   }
 
   const copy = getSiteCopy(localeParam);
-  return { title: copy.metadata.solutionsTitle };
+  return {
+    title: copy.metadata.solutionsTitle,
+    alternates: getLocalizedAlternates(localeParam, "/solutions"),
+  };
 }
 
 export default async function SolutionsPage({ params }: SolutionsPageProps) {

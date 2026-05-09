@@ -3,21 +3,25 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Container } from "@/components/ui/container";
+import { defaultLocale, isLocale, type Locale } from "@/lib/i18n/config";
 import { getRequestLocale } from "@/lib/i18n/request";
 import { getProductDetailById } from "@/lib/products/product-queries";
+import { getLocalizedAlternates } from "@/lib/seo";
 
 type CatalogProductPageProps = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale?: string }>;
 };
 
 export async function generateMetadata({
   params,
 }: CatalogProductPageProps): Promise<Metadata> {
-  const { id } = await params;
+  const { id, locale: localeParam } = await params;
   const product = await getProductDetailById(id, "en");
+  const locale: Locale = isLocale(localeParam) ? localeParam : defaultLocale;
 
   return {
     title: product ? product.model : "Product Details",
+    alternates: getLocalizedAlternates(locale, `/products/catalog/${id}`),
   };
 }
 

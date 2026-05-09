@@ -18,6 +18,7 @@ import { getProductFamilyCatalogSummaries } from "@/lib/products/product-family-
 import { getProductCount } from "@/lib/products/product-queries";
 import { getScenarioCatalog } from "@/lib/scenarios/registry";
 import { cn } from "@/lib/utils/cn";
+import { getLocalizedAlternates } from "@/lib/seo";
 
 type HomePageProps = {
   params: Promise<{ locale: string }>;
@@ -51,6 +52,7 @@ export async function generateMetadata({
   return {
     title: copy.metadata.homeTitle,
     description: copy.metadata.defaultDescription,
+    alternates: getLocalizedAlternates(localeParam, ""),
   };
 }
 

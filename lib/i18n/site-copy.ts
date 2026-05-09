@@ -14,6 +14,12 @@ type DownloadItem = {
   path: string;
 };
 
+type ContactChannel = {
+  label: string;
+  value: string;
+  href?: string;
+};
+
 type SolutionItem = {
   title: string;
   description: string;
@@ -211,6 +217,10 @@ export type SiteCopy = {
     title: string;
     description: string;
     contactLabels: string[];
+    channels: ContactChannel[];
+    socialTitle: string;
+    socialDescription: string;
+    socialChannels: ContactChannel[];
     form: {
       name: string;
       namePlaceholder: string;
@@ -321,6 +331,7 @@ const englishCopy: SiteCopy = {
           { label: "Contact us", href: "/contact" },
           { label: "Sales support", href: "/contact" },
           { label: "Technical support", href: "/contact" },
+          { label: "WhatsApp / X / LinkedIn", href: "/contact" },
         ],
       },
     ],
@@ -569,6 +580,22 @@ const englishCopy: SiteCopy = {
     description:
       "Share the application and required performance range, and we will help confirm the suitable family or model range.",
     contactLabels: ["General email", "Technical support", "Sales", "Service"],
+    channels: [
+      { label: "General email", value: "office@ekdchina.com", href: "mailto:office@ekdchina.com" },
+      { label: "Technical support", value: "tech@ekdchina.com", href: "mailto:tech@ekdchina.com" },
+      { label: "Sales", value: "sales1@ekdchina.com", href: "mailto:sales1@ekdchina.com" },
+      { label: "Service", value: "service@ekdchina.com", href: "mailto:service@ekdchina.com" },
+      { label: "Phone", value: "+86 510 82801575", href: "tel:+8651082801575" },
+    ],
+    socialTitle: "Overseas contact channels",
+    socialDescription:
+      "International buyers often expect quick access through social and messaging channels. Official account links can be added here once confirmed.",
+    socialChannels: [
+      { label: "WhatsApp", value: "Official number to be confirmed" },
+      { label: "LinkedIn", value: "Official page to be confirmed" },
+      { label: "X", value: "Official account to be confirmed" },
+      { label: "YouTube", value: "Official channel to be confirmed" },
+    ],
     form: {
       name: "Name",
       namePlaceholder: "Your name",
@@ -733,6 +760,7 @@ const chineseCopy: SiteCopy = {
           { label: "联系我们", href: "/contact" },
           { label: "销售支持", href: "/contact" },
           { label: "技术支持", href: "/contact" },
+          { label: "WhatsApp / X / LinkedIn", href: "/contact" },
         ],
       },
     ],
@@ -973,6 +1001,22 @@ const chineseCopy: SiteCopy = {
     description:
       "告诉我们应用背景和大致性能要求，我们会协助确认合适的产品系列或型号范围。",
     contactLabels: ["总邮箱", "技术支持", "销售", "服务"],
+    channels: [
+      { label: "总邮箱", value: "office@ekdchina.com", href: "mailto:office@ekdchina.com" },
+      { label: "技术支持", value: "tech@ekdchina.com", href: "mailto:tech@ekdchina.com" },
+      { label: "销售", value: "sales1@ekdchina.com", href: "mailto:sales1@ekdchina.com" },
+      { label: "服务", value: "service@ekdchina.com", href: "mailto:service@ekdchina.com" },
+      { label: "电话", value: "+86 510 82801575", href: "tel:+8651082801575" },
+    ],
+    socialTitle: "海外常用联系渠道",
+    socialDescription:
+      "欧美客户通常也会通过即时通讯和自媒体账号确认供应商信息。正式上线前可在这里补充已确认的官方账号链接。",
+    socialChannels: [
+      { label: "WhatsApp", value: "官方号码待确认" },
+      { label: "LinkedIn", value: "官方主页待确认" },
+      { label: "X", value: "官方账号待确认" },
+      { label: "YouTube", value: "官方频道待确认" },
+    ],
     form: {
       name: "姓名",
       namePlaceholder: "请输入姓名",
@@ -1122,6 +1166,7 @@ const germanCopy: SiteCopy = {
           { label: "Kontaktieren Sie uns", href: "/contact" },
           { label: "Vertrieb", href: "/contact" },
           { label: "Technischer Support", href: "/contact" },
+          { label: "WhatsApp / X / LinkedIn", href: "/contact" },
         ],
       },
     ],
@@ -1374,6 +1419,22 @@ const germanCopy: SiteCopy = {
     description:
       "Teilen Sie uns Anwendung und Leistungsbereich mit, und wir helfen bei der passenden Produktfamilie oder Modellreihe.",
     contactLabels: ["Allgemeine E-Mail", "Technischer Support", "Vertrieb", "Service"],
+    channels: [
+      { label: "Allgemeine E-Mail", value: "office@ekdchina.com", href: "mailto:office@ekdchina.com" },
+      { label: "Technischer Support", value: "tech@ekdchina.com", href: "mailto:tech@ekdchina.com" },
+      { label: "Vertrieb", value: "sales1@ekdchina.com", href: "mailto:sales1@ekdchina.com" },
+      { label: "Service", value: "service@ekdchina.com", href: "mailto:service@ekdchina.com" },
+      { label: "Telefon", value: "+86 510 82801575", href: "tel:+8651082801575" },
+    ],
+    socialTitle: "Kontaktkanäle für internationale Anfragen",
+    socialDescription:
+      "Internationale Kunden erwarten häufig auch Social- und Messaging-Kanäle. Offizielle Links können ergänzt werden, sobald sie bestätigt sind.",
+    socialChannels: [
+      { label: "WhatsApp", value: "Offizielle Nummer noch zu bestätigen" },
+      { label: "LinkedIn", value: "Offizielle Seite noch zu bestätigen" },
+      { label: "X", value: "Offizieller Account noch zu bestätigen" },
+      { label: "YouTube", value: "Offizieller Kanal noch zu bestätigen" },
+    ],
     form: {
       ...englishCopy.contact.form,
       name: "Name",
@@ -1540,6 +1601,7 @@ const frenchCopy: SiteCopy = {
           { label: "Nous contacter", href: "/contact" },
           { label: "Support commercial", href: "/contact" },
           { label: "Support technique", href: "/contact" },
+          { label: "WhatsApp / X / LinkedIn", href: "/contact" },
         ],
       },
     ],
@@ -1723,6 +1785,22 @@ const frenchCopy: SiteCopy = {
     title: "Échangez avec EKD au sujet de votre machine, de votre scénario de mouvement ou de votre présélection.",
     description:
       "Partagez votre application et votre plage de performances, et nous vous aiderons à confirmer la bonne famille ou le bon modèle.",
+    channels: [
+      { label: "E-mail général", value: "office@ekdchina.com", href: "mailto:office@ekdchina.com" },
+      { label: "Support technique", value: "tech@ekdchina.com", href: "mailto:tech@ekdchina.com" },
+      { label: "Ventes", value: "sales1@ekdchina.com", href: "mailto:sales1@ekdchina.com" },
+      { label: "Service", value: "service@ekdchina.com", href: "mailto:service@ekdchina.com" },
+      { label: "Téléphone", value: "+86 510 82801575", href: "tel:+8651082801575" },
+    ],
+    socialTitle: "Canaux de contact internationaux",
+    socialDescription:
+      "Les acheteurs internationaux utilisent souvent aussi les réseaux sociaux et la messagerie. Les liens officiels pourront être ajoutés après confirmation.",
+    socialChannels: [
+      { label: "WhatsApp", value: "Numéro officiel à confirmer" },
+      { label: "LinkedIn", value: "Page officielle à confirmer" },
+      { label: "X", value: "Compte officiel à confirmer" },
+      { label: "YouTube", value: "Chaîne officielle à confirmer" },
+    ],
   },
   downloads: {
     ...englishCopy.downloads,
@@ -1809,6 +1887,7 @@ const italianCopy: SiteCopy = {
           { label: "Contattaci", href: "/contact" },
           { label: "Supporto commerciale", href: "/contact" },
           { label: "Supporto tecnico", href: "/contact" },
+          { label: "WhatsApp / X / LinkedIn", href: "/contact" },
         ],
       },
     ],
@@ -1850,6 +1929,22 @@ const italianCopy: SiteCopy = {
     title: "Parla con EKD della tua macchina, del tuo scenario di moto o della tua shortlist.",
     description:
       "Condividi applicazione e prestazioni richieste e ti aiuteremo a confermare la famiglia o il modello più adatto.",
+    channels: [
+      { label: "Email generale", value: "office@ekdchina.com", href: "mailto:office@ekdchina.com" },
+      { label: "Supporto tecnico", value: "tech@ekdchina.com", href: "mailto:tech@ekdchina.com" },
+      { label: "Vendite", value: "sales1@ekdchina.com", href: "mailto:sales1@ekdchina.com" },
+      { label: "Service", value: "service@ekdchina.com", href: "mailto:service@ekdchina.com" },
+      { label: "Telefono", value: "+86 510 82801575", href: "tel:+8651082801575" },
+    ],
+    socialTitle: "Canali di contatto internazionali",
+    socialDescription:
+      "I clienti internazionali spesso si aspettano anche canali social e di messaggistica. I link ufficiali possono essere aggiunti dopo la conferma.",
+    socialChannels: [
+      { label: "WhatsApp", value: "Numero ufficiale da confermare" },
+      { label: "LinkedIn", value: "Pagina ufficiale da confermare" },
+      { label: "X", value: "Account ufficiale da confermare" },
+      { label: "YouTube", value: "Canale ufficiale da confermare" },
+    ],
   },
   downloads: {
     ...englishCopy.downloads,

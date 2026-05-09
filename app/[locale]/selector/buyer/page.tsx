@@ -8,6 +8,7 @@ import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getSiteCopy } from "@/lib/i18n/site-copy";
 import { getLocalizedTypeCodeLabel } from "@/lib/products/catalog-master-data";
 import { getProductThreadSizes, getProductTypes } from "@/lib/products/product-queries";
+import { getLocalizedAlternates } from "@/lib/seo";
 
 type BuyerQuickFilterPageProps = {
   params: Promise<{ locale: string }>;
@@ -25,7 +26,10 @@ export async function generateMetadata({
   }
 
   const copy = getSiteCopy(localeParam);
-  return { title: copy.metadata.buyerTitle };
+  return {
+    title: copy.metadata.buyerTitle,
+    alternates: getLocalizedAlternates(localeParam, "/selector/buyer"),
+  };
 }
 
 export default async function BuyerQuickFilterPage({

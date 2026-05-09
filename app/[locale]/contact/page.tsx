@@ -5,6 +5,7 @@ import { ContactFormClient } from "@/components/contact/contact-form-client";
 import { Container } from "@/components/ui/container";
 import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getSiteCopy } from "@/lib/i18n/site-copy";
+import { getLocalizedAlternates } from "@/lib/seo";
 
 type ContactPageProps = {
   params: Promise<{ locale: string }>;
@@ -18,7 +19,10 @@ export async function generateMetadata({ params }: ContactPageProps): Promise<Me
   }
 
   const copy = getSiteCopy(localeParam);
-  return { title: copy.metadata.contactTitle };
+  return {
+    title: copy.metadata.contactTitle,
+    alternates: getLocalizedAlternates(localeParam, "/contact"),
+  };
 }
 
 export default async function ContactPage({ params }: ContactPageProps) {
@@ -30,12 +34,6 @@ export default async function ContactPage({ params }: ContactPageProps) {
 
   const locale = localeParam as Locale;
   const copy = getSiteCopy(locale);
-  const contactValues = [
-    "office@ekdchina.com",
-    "tech@ekdchina.com",
-    "sales1@ekdchina.com",
-    "service@ekdchina.com",
-  ];
 
   return (
     <Container className="py-16">
@@ -47,12 +45,21 @@ export default async function ContactPage({ params }: ContactPageProps) {
 
       <div className="mt-12 grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
         <div className="space-y-4">
-          {copy.contact.contactLabels.map((label, index) => (
-            <div key={label} className="rounded-[1.75rem] border border-line bg-white/75 p-6">
-              <div className="text-xs uppercase tracking-[0.16em] text-steel">{label}</div>
-              <div className="mt-2 text-lg font-medium">{contactValues[index]}</div>
-            </div>
+          {copy.contact.channels.map((channel) => (
+            <ContactChannelCard key={channel.label} channel={channel} />
           ))}
+
+          <div className="rounded-[1.75rem] border border-line bg-white/75 p-6">
+            <div className="text-xs uppercase tracking-[0.16em] text-steel">
+              {copy.contact.socialTitle}
+            </div>
+            <p className="mt-3 text-sm leading-7 text-steel">{copy.contact.socialDescription}</p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {copy.contact.socialChannels.map((channel) => (
+                <ContactChannelCard key={channel.label} channel={channel} compact />
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="rounded-[2rem] border border-line bg-[#e9ede4] p-8">
@@ -61,4 +68,35 @@ export default async function ContactPage({ params }: ContactPageProps) {
       </div>
     </Container>
   );
+}
+
+function ContactChannelCard({
+  channel,
+  compact = false,
+}: {
+  channel: { label: string; value: string; href?: string };
+  compact?: boolean;
+}) {
+  const content = (
+    <>
+      <div className="text-xs uppercase tracking-[0.16em] text-steel">{channel.label}</div>
+      <div className={compact ? "mt-2 text-sm font-medium leading-6" : "mt-2 text-lg font-medium"}>
+        {channel.value}
+      </div>
+    </>
+  );
+
+  const className = compact
+    ? "block rounded-2xl border border-line bg-white p-4 transition hover:border-accent/40"
+    : "block rounded-[1.75rem] border border-line bg-white/75 p-6 transition hover:border-accent/40";
+
+  if (channel.href) {
+    return (
+      <a className={className} href={channel.href}>
+        {content}
+      </a>
+    );
+  }
+
+  return <div className={className}>{content}</div>;
 }

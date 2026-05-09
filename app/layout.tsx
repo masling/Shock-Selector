@@ -3,8 +3,10 @@ import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { htmlLangByLocale, resolveLocale } from "@/lib/i18n/config";
+import { getMetadataBase } from "@/lib/seo";
 
 export const metadata: Metadata = {
+  metadataBase: getMetadataBase(),
   title: {
     default: "EKD | Industrial Shock Absorber Selection Platform",
     template: "%s | EKD",
