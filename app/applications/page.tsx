@@ -5,7 +5,7 @@ import { Container } from "@/components/ui/container";
 import { applicationSectors } from "@/lib/content/site";
 
 export const metadata: Metadata = {
-  title: "Applications",
+  title: "Industrial Shock Absorber Applications and Use Cases",
 };
 
 type ApplicationsPageProps = {

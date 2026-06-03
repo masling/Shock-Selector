@@ -17,11 +17,8 @@ export async function generateMetadata({ params }: ProductsPageProps): Promise<M
   }
 
   const copy = getSiteCopy(localeParam);
-  const title =
-    copy.navigation.items.find((item) => item.href === "/products")?.label ?? "Products";
-
   return {
-    title,
+    title: copy.metadata.productsTitle,
     alternates: getLocalizedAlternates(localeParam, "/products"),
   };
 }

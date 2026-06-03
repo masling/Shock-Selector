@@ -32,15 +32,39 @@ type FamilyPageProps = {
 
 export const dynamic = "force-dynamic";
 
+const familySeoCopy: Record<Locale, { suffix: string; fallbackTitle: string }> = {
+  en: {
+    suffix: "Shock Absorber Product Family",
+    fallbackTitle: "Shock Absorber Product Family and Model Range",
+  },
+  "zh-cn": {
+    suffix: "工业缓冲器产品系列",
+    fallbackTitle: "工业缓冲器产品系列与型号范围",
+  },
+  de: {
+    suffix: "Produktfamilie für industrielle Stoßdämpfer",
+    fallbackTitle: "Stoßdämpfer-Produktfamilie und Modellbereich",
+  },
+  fr: {
+    suffix: "Famille d'amortisseurs industriels",
+    fallbackTitle: "Famille de produits et modèles d'amortisseurs",
+  },
+  it: {
+    suffix: "Famiglia di ammortizzatori industriali",
+    fallbackTitle: "Famiglia prodotto e gamma modelli ammortizzatori",
+  },
+};
+
 export async function generateMetadata({ params }: FamilyPageProps): Promise<Metadata> {
   const { familySlug, locale: localeParam } = await params;
   const family = getFamilyBySlug(familySlug);
   const locale: Locale = isLocale(localeParam) ? localeParam : defaultLocale;
+  const seoCopy = familySeoCopy[locale];
 
   return {
     title: family
-      ? getLocalizedProductFamilyName(locale, family.slug, family.name)
-      : "Product family",
+      ? `${getLocalizedProductFamilyName(locale, family.slug, family.name)} ${seoCopy.suffix}`
+      : seoCopy.fallbackTitle,
     alternates: getLocalizedAlternates(locale, `/products/${familySlug}`),
   };
 }

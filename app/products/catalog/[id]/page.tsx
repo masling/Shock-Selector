@@ -12,15 +12,41 @@ type CatalogProductPageProps = {
   params: Promise<{ id: string; locale?: string }>;
 };
 
+const catalogSeoCopy: Record<Locale, { modelSuffix: string; fallbackTitle: string }> = {
+  en: {
+    modelSuffix: "Shock Absorber Technical Data",
+    fallbackTitle: "Shock Absorber Product Technical Details",
+  },
+  "zh-cn": {
+    modelSuffix: "工业缓冲器技术数据",
+    fallbackTitle: "工业缓冲器产品技术详情",
+  },
+  de: {
+    modelSuffix: "Technische Daten für Stoßdämpfer",
+    fallbackTitle: "Technische Details für Stoßdämpfer-Produkte",
+  },
+  fr: {
+    modelSuffix: "Données techniques d'amortisseur industriel",
+    fallbackTitle: "Détails techniques produit pour amortisseur industriel",
+  },
+  it: {
+    modelSuffix: "Dati tecnici ammortizzatore industriale",
+    fallbackTitle: "Dettagli tecnici prodotto per ammortizzatori industriali",
+  },
+};
+
 export async function generateMetadata({
   params,
 }: CatalogProductPageProps): Promise<Metadata> {
   const { id, locale: localeParam } = await params;
   const product = await getProductDetailById(id, "en");
   const locale: Locale = isLocale(localeParam) ? localeParam : defaultLocale;
+  const seoCopy = catalogSeoCopy[locale];
 
   return {
-    title: product ? product.model : "Product Details",
+    title: product
+      ? `${product.model} ${seoCopy.modelSuffix}`
+      : seoCopy.fallbackTitle,
     alternates: getLocalizedAlternates(locale, `/products/catalog/${id}`),
   };
 }

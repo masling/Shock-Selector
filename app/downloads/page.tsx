@@ -5,7 +5,7 @@ import { Container } from "@/components/ui/container";
 import { downloads } from "@/lib/content/site";
 
 export const metadata: Metadata = {
-  title: "Downloads",
+  title: "Shock Absorber Catalogs and Technical Downloads",
 };
 
 export default function DownloadsPage() {

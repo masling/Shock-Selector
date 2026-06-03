@@ -23,7 +23,7 @@ import { getProductFamilyCatalogSummaries } from "@/lib/products/product-family-
 import { getLocalizedTypeCodeLabel } from "@/lib/products/catalog-master-data";
 
 export const metadata: Metadata = {
-  title: "Products",
+  title: "Industrial Shock Absorbers, Buffers and Isolation Products",
 };
 
 export const dynamic = "force-dynamic";

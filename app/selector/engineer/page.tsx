@@ -6,7 +6,7 @@ import { getSiteCopy } from "@/lib/i18n/site-copy";
 import { getScenarioCatalog } from "@/lib/scenarios/registry";
 
 export const metadata: Metadata = {
-  title: "Engineer Sizing",
+  title: "Engineer Sizing Tool for Shock Absorber Selection",
 };
 
 export default function EngineerSizingPage() {

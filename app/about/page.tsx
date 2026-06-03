@@ -4,7 +4,7 @@ import { Container } from "@/components/ui/container";
 import { companyHighlights } from "@/lib/content/site";
 
 export const metadata: Metadata = {
-  title: "About",
+  title: "About EKD Industrial Motion Protection and Support",
 };
 
 export default function AboutPage() {

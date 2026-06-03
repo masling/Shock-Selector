@@ -4,7 +4,7 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: "Contact EKD for Shock Absorber Selection Support",
 };
 
 const directChannels = [

@@ -6,7 +6,7 @@ import { Container } from "@/components/ui/container";
 import { solutions } from "@/lib/content/site";
 
 export const metadata: Metadata = {
-  title: "Solutions",
+  title: "Shock Absorber Solutions by Motion and Drive Type",
 };
 
 const solutionItemRoutes = [

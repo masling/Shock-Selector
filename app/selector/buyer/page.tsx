@@ -7,7 +7,7 @@ import { getLocalizedTypeCodeLabel } from "@/lib/products/catalog-master-data";
 import { getProductThreadSizes, getProductTypes } from "@/lib/products/product-queries";
 
 export const metadata: Metadata = {
-  title: "Buyer Quick Filter",
+  title: "Buyer Quick Filter for Shock Absorber Shortlists",
 };
 
 export const dynamic = "force-dynamic";

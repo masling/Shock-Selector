@@ -15,6 +15,34 @@ type ProductDetailPageProps = {
   params: Promise<{ familySlug: string; modelId: string; locale?: string }>;
 };
 
+const modelSeoCopy: Record<Locale, { fallbackFamily: string; suffix: string; fallbackTitle: string }> = {
+  en: {
+    fallbackFamily: "Shock Absorber",
+    suffix: "Technical Data",
+    fallbackTitle: "Shock Absorber Model Technical Data",
+  },
+  "zh-cn": {
+    fallbackFamily: "工业缓冲器",
+    suffix: "技术数据",
+    fallbackTitle: "工业缓冲器型号技术数据",
+  },
+  de: {
+    fallbackFamily: "Industrieller Stoßdämpfer",
+    suffix: "Technische Daten",
+    fallbackTitle: "Technische Daten für Stoßdämpfer-Modelle",
+  },
+  fr: {
+    fallbackFamily: "Amortisseur industriel",
+    suffix: "Données techniques",
+    fallbackTitle: "Données techniques du modèle d'amortisseur",
+  },
+  it: {
+    fallbackFamily: "Ammortizzatore industriale",
+    suffix: "Dati tecnici",
+    fallbackTitle: "Dati tecnici del modello ammortizzatore",
+  },
+};
+
 export async function generateStaticParams() {
   return featuredModels.map((model) => ({
     familySlug: model.familySlug,
@@ -25,10 +53,17 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: ProductDetailPageProps): Promise<Metadata> {
   const { familySlug, modelId, locale: localeParam } = await params;
   const product = getModelById(modelId);
+  const family = getFamilyBySlug(familySlug);
   const locale: Locale = isLocale(localeParam) ? localeParam : defaultLocale;
+  const seoCopy = modelSeoCopy[locale];
+  const familyName = family
+    ? getLocalizedProductFamilyName(locale, family.slug, family.name)
+    : seoCopy.fallbackFamily;
 
   return {
-    title: product ? product.model : "Product",
+    title: product
+      ? `${product.model} ${familyName} ${seoCopy.suffix}`
+      : seoCopy.fallbackTitle,
     alternates: getLocalizedAlternates(locale, `/products/${familySlug}/${modelId}`),
   };
 }
