@@ -101,7 +101,7 @@ function createRotaryVerticalLoadCalculator(
       minEnergyPerCycleNm: roundTo(result.requiredEnergyPerCycleNm, 2),
       minEnergyPerHourNm: roundTo(result.requiredEnergyPerHourNm, 2),
       minThrustForceN: roundTo(Math.max(result.averageImpactForceN, 0), 2),
-      sortBy: "energyPerCycleNm",
+      sortBy: "model",
       sortDirection: "asc",
       page: 1,
       pageSize: 8,

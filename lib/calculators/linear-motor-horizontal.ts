@@ -65,7 +65,7 @@ export const linearMotorHorizontalCalculator: ScenarioCalculator<Input> = {
     minEnergyPerCycleNm: roundTo(result.requiredEnergyPerCycleNm, 2),
     minEnergyPerHourNm: roundTo(result.requiredEnergyPerHourNm, 2),
     minThrustForceN: roundTo(result.averageImpactForceN, 2),
-    sortBy: "energyPerCycleNm",
+    sortBy: "model",
     sortDirection: "asc",
     page: 1,
     pageSize: 8,

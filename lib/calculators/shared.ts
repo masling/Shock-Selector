@@ -75,7 +75,7 @@ export function buildStandardFilter(result: CalculatorResult) {
     minEnergyPerCycleNm: roundTo(result.requiredEnergyPerCycleNm, 2),
     minEnergyPerHourNm: roundTo(result.requiredEnergyPerHourNm, 2),
     minImpactForceN: roundTo(result.averageImpactForceN, 2),
-    sortBy: "energyPerCycleNm" as const,
+    sortBy: "model" as const,
     sortDirection: "asc" as const,
     page: 1,
     pageSize: 8,

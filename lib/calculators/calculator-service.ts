@@ -2,7 +2,7 @@ import { z } from "zod";
 import { getCalculator } from "@/lib/calculators/calculator-registry";
 import type { CalculateResponse } from "@/lib/calculators/types";
 import { locales } from "@/lib/i18n/config";
-import { productSearchService } from "@/lib/products/product-search-service";
+import { catalogModelSearchService } from "@/lib/catalog/catalog-service";
 import { createEngineerSelectionLog } from "@/lib/selection-logs/selection-log-repository";
 import { getScenarioVariant } from "@/lib/scenarios/registry";
 
@@ -27,9 +27,12 @@ export async function calculatorService(rawRequest: unknown): Promise<CalculateR
   const normalizedInput = calculator.validateInput(request.input) as Record<string, unknown>;
   const calculation = calculator.calculate(normalizedInput);
   const filter = calculator.buildFilter(calculation);
-  const matches = await productSearchService({
+  const matches = await catalogModelSearchService({
     ...filter,
     locale: request.locale,
+    selectorOnly: true,
+    includeIncomplete: false,
+    sortBy: "model",
   });
   const explanations = calculator.explain?.(normalizedInput, calculation) ?? [];
 

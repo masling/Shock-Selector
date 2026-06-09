@@ -1,11 +1,10 @@
-import type { ProductSearchInput, ProductSearchResult } from "@/lib/products/schemas";
+import type { CatalogModelSearchInput, CatalogModelSearchResult } from "@/lib/catalog/catalog-schemas";
 import type { ProductFamilySlug } from "@/lib/products/product-family-taxonomy";
 import type { ScenarioFamilyKey } from "@/lib/scenarios/schemas";
 
 export type ProductSearchFilter = Partial<
   Pick<
-    ProductSearchInput,
-    | "type"
+    CatalogModelSearchInput,
     | "minStrokeMm"
     | "minEnergyPerCycleNm"
     | "minEnergyPerHourNm"
@@ -58,5 +57,5 @@ export type CalculateResponse = {
   calculation: CalculatorResult;
   filter: ProductSearchFilter;
   explanations: string[];
-  matches: ProductSearchResult;
+  matches: CatalogModelSearchResult;
 };

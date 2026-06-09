@@ -62,7 +62,7 @@ export const linearFreeHorizontalCalculator: ScenarioCalculator<Input> = {
     minStrokeMm: roundTo(result.requiredStrokeMm, 2),
     minEnergyPerCycleNm: roundTo(result.requiredEnergyPerCycleNm, 2),
     minEnergyPerHourNm: roundTo(result.requiredEnergyPerHourNm, 2),
-    sortBy: "energyPerCycleNm",
+    sortBy: "model",
     sortDirection: "asc",
     page: 1,
     pageSize: 8,
