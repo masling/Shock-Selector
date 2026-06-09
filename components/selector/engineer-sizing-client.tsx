@@ -12,7 +12,7 @@ import type { Locale } from "@/lib/i18n/config";
 import { getLocalizedProductFamilyName } from "@/lib/i18n/product-copy";
 import { getLocalizedHref } from "@/lib/i18n/routing";
 import type { SiteCopy } from "@/lib/i18n/site-copy";
-import type { ProductListItem } from "@/lib/products/schemas";
+import type { CatalogModelListItem, CatalogSpecListItem } from "@/lib/catalog/catalog-schemas";
 
 type ScenarioField = {
   key: string;
@@ -612,6 +612,10 @@ function EngineerCalculationResult({
   const usesThrustMetric =
     Boolean((result.filter as Record<string, unknown>).minThrustForceN) ||
     Boolean(result.calculation.detailMetrics?.some((metric) => metric.key === "thrustForceN"));
+  function getSpecValue(specs: CatalogSpecListItem[], key: string): number | string | null {
+    return specs.find((spec) => spec.key === key)?.value ?? null;
+  }
+
   const forceColumnLabel = usesThrustMetric
     ? (locale === "zh-cn"
       ? "推进力"
@@ -623,8 +627,8 @@ function EngineerCalculationResult({
             ? "Forza di spinta"
             : "Thrust force")
     : copy.result.table.impactForce;
-  const getForceCellValue = (item: ProductListItem) =>
-    usesThrustMetric ? formatValue(item.maxThrustForceN) : formatValue(item.maxImpactForceN);
+  const getForceCellValue = (item: CatalogModelListItem) =>
+    usesThrustMetric ? formatValue(getSpecValue(item.specs, "maxThrustForceN")) : formatValue(getSpecValue(item.specs, "maxImpactForceN"));
 
   return (
     <div className="space-y-8">
@@ -764,7 +768,7 @@ function EngineerCalculationResult({
                 </tr>
               </thead>
               <tbody>
-                {result.matches.items.map((item: ProductListItem) => (
+                {result.matches.items.map((item: CatalogModelListItem) => (
                   <tr key={item.id} className="rounded-2xl bg-[#eef1ea] text-ink">
                     <td className="rounded-l-2xl px-4 py-4 font-medium">
                       <Link
@@ -774,12 +778,12 @@ function EngineerCalculationResult({
                         {item.model}
                       </Link>
                     </td>
-                    <td className="px-4 py-4">{item.localizedTypeLabel}</td>
-                    <td className="px-4 py-4">{formatValue(item.strokeMm)}</td>
-                    <td className="px-4 py-4">{formatValue(item.energyPerCycleNm)}</td>
-                    <td className="px-4 py-4">{formatValue(item.energyPerHourNm)}</td>
+                    <td className="px-4 py-4">{item.seriesName}</td>
+                    <td className="px-4 py-4">{formatValue(getSpecValue(item.specs, "strokeMm"))}</td>
+                    <td className="px-4 py-4">{formatValue(getSpecValue(item.specs, "energyPerCycleNm"))}</td>
+                    <td className="px-4 py-4">{formatValue(getSpecValue(item.specs, "energyPerHourNm"))}</td>
                     <td className="px-4 py-4">{getForceCellValue(item)}</td>
-                    <td className="rounded-r-2xl px-4 py-4">{formatValue(item.threadSize)}</td>
+                    <td className="rounded-r-2xl px-4 py-4">{formatValue(getSpecValue(item.specs, "threadSize"))}</td>
                   </tr>
                 ))}
               </tbody>

@@ -28,6 +28,8 @@ This is a working sourcebook, not a final brand guideline.
 6. `data/选型程序算法.xlsx`
 7. `data/EKD产品知识培训V1.pptx`
 8. `data/EKD产品知识培训V2.pptx`
+9. Local English website product-category content in `lib/products/catalog-master-data.ts`
+10. Rendered local product pages under `/en/products` and `/en/products/[familySlug]`
 
 ### Medium-confidence local sources
 
@@ -72,6 +74,37 @@ Reuse rule:
 
 - Keep old-site family naming, contact facts, and resource structure as trustworthy inputs.
 - Treat old-site promotional performance claims as provisional unless validated against official catalogs.
+
+### Local English website product category source
+
+For product category image/text introductions, use the local English website as the first practical reference before drafting new copy.
+
+Primary local source:
+
+- `lib/products/catalog-master-data.ts`
+
+Use it for:
+
+- product category names
+- tags
+- summaries
+- descriptions
+- intended-use wording
+- category-to-series hints where present
+
+Rendered page reference:
+
+- `/en/products`
+- `/en/products/[familySlug]`
+
+Use rendered pages to check how the copy appears in context, especially section length, hierarchy, and CTA placement.
+
+Image rule:
+
+- Reuse local website image assets when available.
+- If a category has no local image asset, use catalog/PDF/manual product material as the next source.
+- Do not invent or use generic stock-like images for technical product categories without explicit approval.
+- If an image is still missing, mark the category image as pending instead of weakening the page with unrelated visuals.
 
 ---
 

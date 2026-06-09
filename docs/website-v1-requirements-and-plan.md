@@ -298,16 +298,28 @@
 - 核心参数范围或选型提示
 - 进入家族详情页
 
-第一版优先展示以下家族：
+第一版产品目录应覆盖以下已确认类别：
 
 - Adjustable Shock Absorber
-- Non-adjustable Shock Absorber
 - Heavy Duty Shock Absorber
-- Super Long Life Shock Absorber
-- Heavy Industry Buffer
 - Wire Rope Vibration Isolator
-- Special Vibration Isolator
+- Heavy Industry Buffer
+- Anti Impact Compound Vibration Isolator
+- Non-Adjustable Shock Absorber
+- Super Long Life Shock Absorber
 - Vibration Isolation Solution
+- Special Vibration Isolator
+- Friction Spring Damper
+- Locking Assemblies & Coupling
+
+关键边界：
+
+- 当前 xls 里的产品库并不完整，不能代表完整产品目录。
+- 当前计算公式只针对 Absorber 的选型。
+- 产品数据必须区分“目录产品类别”和“是否可被 calculator 推荐”。
+- Wire Rope Vibration Isolator、Vibration Isolation Solution、Special Vibration Isolator、Friction Spring Damper、Locking Assemblies & Coupling 等类别应可在目录和询盘中展示，但不应默认进入 Absorber calculator 推荐结果。
+- 产品类别图文介绍优先参考本地英文网站内容，主要来源为 `lib/products/catalog-master-data.ts` 和 `/en/products`、`/en/products/[familySlug]` 渲染页面。
+- 本地英文站没有图片素材的类别，需要从 catalog/PDF/人工确认资料补图，不使用无关图库图替代。
 
 ### 6.4 产品家族详情页 `/products/[familySlug]`
 
@@ -324,6 +336,13 @@
 - 典型应用
 - 代表型号或型号列表
 - 下载资料 / 联系销售
+
+内容来源要求：
+
+- 家族页图文介绍优先参考本地英文网站。
+- 文字来源优先为 `lib/products/catalog-master-data.ts` 的英文 `name`、`tag`、`summary`、`description`。
+- 页面呈现参考 `/en/products/[familySlug]`。
+- 图片优先使用本地英文站已有产品/类别素材；缺失时标记为待补，不用无关工业图库图替代。
 
 ### 6.5 产品详情页 `/products/[id]`
 
@@ -375,11 +394,11 @@
 5. 执行计算
 6. 返回计算值、筛选条件、推荐型号、推荐原因
 
-第一版只实现 3 个示例工况：
+当前代码状态：
 
-- `linear-free-horizontal`
-- `linear-motor-horizontal`
-- `linear-free-vertical-drop`
+- 19 个底层工况已在 registry 中映射并标记为已实现。
+- 19 个对应 calculator 已注册到统一 calculator registry。
+- 后续重点从“补 calculator 实现”转为“补 Excel 对照样例、自动化回归测试、结果展示一致性和推荐解释完整度”。
 
 ### 6.8 采购筛选页 `/selector/buyer`
 
@@ -405,6 +424,7 @@
 - 支持排序
 - 支持清空
 - 支持进入产品详情页
+- 支持将产品加入询盘清单
 
 ### 6.9 下载页 `/downloads`
 
@@ -418,6 +438,8 @@
 - 隔振器样本
 - 后续补更多产品 PDF
 
+下载资料前需要用户快速登录，优先支持 Google 等欧美常用第三方登录。
+
 ### 6.10 联系页 `/contact`
 
 目标：
@@ -426,13 +448,35 @@
 
 内容模块：
 
-- 公司邮箱
-- 销售邮箱
-- 技术支持邮箱
 - 联系表单
+- Social Links: X / Facebook / Instagram / LinkedIn
+- 暂无账号的社交链接位先预留，后续补充
 - 地区支持说明
 
-### 6.11 Solutions 页 `/solutions`
+联系表单提交规则：
+
+- 发送邮件到 `sales@vibroabsorber.com`
+- 同步入库
+- 如果来自询盘清单，邮件必须包含本次所选产品列表
+- 入库记录必须保留联系表单与询盘产品的关联关系，便于未来后台管理展示
+
+### 6.11 询盘产品功能
+
+目标：
+
+- 在工程师选型、采购筛选和产品详情中提供类似购物车的询盘产品清单
+- 让用户可以先收集多个型号，再通过联系表单一次性提交询盘
+
+关键规则：
+
+- 加入询盘、查看询盘清单、提交询盘前需要快速登录
+- 同一登录会话有效期内不重复打断用户
+- 询盘清单下方展示联系表单
+- 提交后邮件包含联系人信息、留言和所选产品列表
+- 数据库保存 inquiry、inquiry items、contact submission 的关联关系
+- 该功能不包含价格、下单、支付或库存承诺
+
+### 6.12 Solutions 页 `/solutions`
 
 目标：
 
@@ -471,7 +515,8 @@
 ### 7.3 第一版已实现目标
 
 - 完整 registry 架构支持 19 个底层工况映射
-- 只落地 3 个 calculator 样例
+- 19 个底层工况 calculator 已注册实现
+- 仍需补齐 19 个 variant 的 Excel 对照 fixture 和回归测试覆盖
 
 ## 8. 数据与内容模型建议
 
@@ -500,6 +545,30 @@
 - threadSize
 - photoUrl
 - rawDataJson
+
+新增或需要补充的分类字段：
+
+- catalogCategoryCode
+- catalogCategorySlug
+- catalogCategoryName
+- calculatorEligibility
+- selectionProductType
+- catalogCoverageStatus
+- dataSource
+
+字段目的：
+
+- `catalogCategoryCode` / `catalogCategorySlug` 用于完整产品目录分类。
+- `calculatorEligibility` 用于区分产品是否可被当前 Absorber calculator 推荐。
+- `selectionProductType` 用于区分 absorber 选型产品、catalog-only 产品和 solution-only 内容。
+- `catalogCoverageStatus` 用于标记 xls 数据是否完整。
+- `dataSource` 用于标记数据来自 xls、catalog PDF、手动内容或其他来源。
+
+默认规则：
+
+- 当前 calculator 只推荐 `calculatorEligibility = ABSORBER_CALCULATOR` 的产品。
+- Excel 导入产品可先标记为 `EXCEL_IMPORTED_PARTIAL`。
+- 不在 Excel 产品库里的类别可以先通过静态内容或手动 catalog 数据展示，并支持询盘。
 
 ### 8.3 内容管理策略
 
@@ -751,22 +820,25 @@
 
 - 工程师可通过向导进入指定 variant
 
-### Phase 6：3 个示例 calculator
+### Phase 6：全量 calculator 验证与加固
 
 目标：
 
-- 打通最小计算闭环
+- 确认 19 个底层工况 calculator 与 Excel 标准答案一致，并加固回归测试
 
 任务：
 
 - 实现统一 calculator 接口
-- 实现 3 个样例 calculator
+- 确认 19 个底层工况 calculator 均已注册并可调用
 - 实现 `POST /api/calculate`
 - 返回计算值、筛选条件、推荐产品、解释说明
+- 为 19 个 variant 补充 Excel 对照 fixture
+- 为高频和高风险工况补充边界样例
+- 扩展自动化回归测试覆盖
 
 交付：
 
-- 选型流程可从输入走到推荐结果
+- 19 个工况选型流程均可从输入走到推荐结果，并具备基础回归测试证据
 
 ### Phase 7：详情页、下载与转化增强
 
@@ -780,10 +852,14 @@
 - 下载页接入文件
 - 联系表单与 CTA 完善
 - 结果页增加联系销售与下载资料入口
+- 工程师和采购结果增加加入询盘产品
+- 询盘清单下方复用联系表单
+- 询盘提交邮件包含所选产品
+- 保存联系表单与产品的数据库关联
 
 交付：
 
-- 第一版具备内容浏览、产品筛选、工程师选型、资料下载、联系转化能力
+- 第一版具备内容浏览、产品筛选、工程师选型、资料下载、询盘产品、联系转化能力
 
 ## 13. 详细开发待办
 
@@ -860,16 +936,32 @@
 - 建立下载资源配置文件
 - 接入现有 PDF 文件
 - 增加下载说明与资料分类
-- 为下载动作预留留资或询盘扩展位
+- 下载资料前接入第三方快速登录
+- 记录下载行为
 
 ### 13.8 Contact 页待办
 
-- 整理公开邮箱与销售支持邮箱
 - 创建联系表单 UI
-- 预留表单提交 API
+- Contact Form 提交后发邮件到 `sales@vibroabsorber.com`
+- Contact Form 同步入库
+- 社交链接位：X / Facebook / Instagram / LinkedIn
+- 询盘产品提交时在邮件中包含所选产品
+- 保存联系表单与询盘产品的关联关系
 - 补充“Response / support”文案
 
-### 13.9 产品数据待办
+### 13.9 询盘产品待办
+
+- 在工程师推荐产品列表增加 `Add to Inquiry`
+- 在采购筛选结果表格增加 `Add to Inquiry`
+- 在产品详情页增加 `Add to Inquiry`
+- 加入询盘、查看询盘、提交询盘前触发快速登录
+- 建立 inquiry / inquiry item 数据模型
+- 询盘清单下方显示联系表单
+- 提交询盘后发送邮件并入库
+- 邮件内容包含所选产品和来源上下文
+- 数据库记录保留联系表单与产品关联
+
+### 13.10 产品数据待办
 
 - 确认 Excel “数据库”sheet 字段名
 - 建立 Excel 字段到 Prisma 字段映射表
@@ -877,7 +969,7 @@
 - 保存 `rawDataJson`
 - 输出导入统计日志
 
-### 13.10 产品搜索待办
+### 13.11 产品搜索待办
 
 - 设计 buyer 搜索请求结构
 - 实现 `product-repository.ts`
@@ -886,7 +978,7 @@
 - 为结果表格加入排序字段
 - 支持清空筛选和跳转详情页
 
-### 13.11 Scenario Registry 待办
+### 13.12 Scenario Registry 待办
 
 - 定义 family 元数据结构
 - 定义 variant 元数据结构
@@ -895,19 +987,19 @@
 - 录入 7 个 calculator family
 - 输出 `GET /api/scenarios`
 
-### 13.12 Calculator 待办
+### 13.13 Calculator 待办
 
 - 定义统一 calculator 接口
 - 建立输入校验 schema
 - 建立单位换算与参数清洗模块
-- 实现：
-  - `linear-free-horizontal`
-  - `linear-motor-horizontal`
-  - `linear-free-vertical-drop`
+- 确认 19 个底层工况 calculator 均已注册并可调用
+- 为 19 个 variant 补充 Excel 对照 fixture
+- 为高频和高风险工况补充边界样例
+- 扩展自动化回归测试覆盖
 - 实现 `buildFilter`
 - 实现 `explain`
 
-### 13.13 Engineer 页待办
+### 13.14 Engineer 页待办
 
 - 设计向导式工况选择 UI
 - 实现 5 个上层入口
@@ -918,15 +1010,20 @@
 - 展示推荐产品
 - 展示推荐原因和筛选依据
 
-### 13.14 API 待办
+### 13.15 API 待办
 
 - `GET /api/scenarios`
 - `POST /api/products/search`
 - `POST /api/calculate`
-- 预留 `POST /api/contact`
+- `POST /api/contact`
+- `GET /api/inquiry`
+- `POST /api/inquiry/items`
+- `PATCH /api/inquiry/items/[id]`
+- `DELETE /api/inquiry/items/[id]`
+- `POST /api/inquiry/submit`
 - 预留开发期导入脚本接口或脚本命令
 
-### 13.15 内容配置待办
+### 13.16 内容配置待办
 
 - 创建公司介绍内容配置
 - 创建产品家族内容配置
@@ -935,7 +1032,7 @@
 - 创建下载资源内容配置
 - 创建首页 Hero 与 CTA 内容配置
 
-### 13.16 首批交付顺序
+### 13.17 首批交付顺序
 
 建议按下面顺序执行：
 
@@ -946,11 +1043,12 @@
 5. Buyer 快速筛选
 6. Scenario registry
 7. Engineer 选型骨架
-8. 3 个示例 calculator
+8. 全量 calculator 验证与 Excel 对照样例
 9. About 页与信任内容补强
 10. 产品详情页与转化补强
+11. 询盘产品、快速登录、邮件入库和产品关联
 
-### 13.17 首页重点强化建议
+### 13.18 首页重点强化建议
 
 如果希望用户一进站就感知“这不是普通样册站”，建议首页做以下强化：
 
@@ -963,14 +1061,15 @@
 - 在产品家族模块上方再插入一条 `Need help choosing a model?` 的横向 CTA
 - 首页任何一屏滚动区都至少保留一个进入选型的路径
 
-### 13.18 需要补充确认但不阻塞开发的事项
+### 13.19 需要补充确认但不阻塞开发的事项
 
-- 第一版是否提供完整中英文切换
 - 首页是否需要保留 `News`
-- 联系页是否需要询盘表单直接发邮件
-- 下载资料是否需要表单门槛
+- 社交账号 URL：X / Facebook / Instagram / LinkedIn
+- 询盘产品重复加入时的默认规则：更新数量还是保持一条记录
+- 询盘产品是否允许每项填写备注
+- 提交询盘后是否清空当前草稿询盘
 
-这些问题不会阻塞第一版开发，可以先按英文单语、无新闻、直接下载、基础联系表单推进。
+这些问题不会阻塞第一版开发。已确认的默认方向是：`en` / `zh-CN` 同步公开，`de` / `fr` / `it` 预留并 fallback 到 `en`；Contact Form 发邮件到 `sales@vibroabsorber.com` 并入库；下载资料前和询盘关键操作前需要快速登录。
 
 ## 14. 推荐里程碑
 
@@ -989,18 +1088,17 @@
 
 - Scenario registry 完成
 - Engineer 页面骨架完成
-- 3 个示例 calculator 跑通
+- 19 个底层工况 calculator 跑通并补齐基础回归样例
 
 ### Milestone 4
 
 - 产品详情、下载、联系转化完善
-- 开始补更多工况和更完整产品内容
+- 继续补充更完整产品内容、calculator 边界样例和结果解释
 
 ## 15. 当前明确不做
 
 第一版暂不优先实现：
 
-- 全量迁移 19 个复杂公式
 - CMS
 - 权限系统
 - 报价系统
@@ -1008,6 +1106,7 @@
 - 经销商系统
 - 多语言完整切换
 - 复杂营销动画
+- 超出当前 Excel 19 个底层工况之外的新复杂公式
 
 ## 16. 当前最适合立即执行的动作
 
@@ -1017,6 +1116,7 @@
 2. 同步落地官网内容页骨架
 3. 再接 Prisma 和产品导入
 4. 先完成 Buyer 快速筛选
-5. 再搭 Engineer 选型骨架和 3 个示例 calculator
+5. 再验证 Engineer 选型骨架与 19 个 calculator 的端到端计算链路
+6. 补齐 Excel 对照 fixture、回归测试和结果展示一致性
 
 这样能最快得到一个“既像官网，又有真实工具能力”的第一版结果。

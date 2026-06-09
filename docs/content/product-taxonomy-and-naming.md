@@ -13,6 +13,82 @@ This document recommends:
 
 ---
 
+## Confirmed Current Product Categories
+
+The website product catalog should use the following confirmed product categories as the current business scope:
+
+1. Adjustable Shock Absorber
+2. Heavy Duty Shock Absorber
+3. Wire Rope Vibration Isolator
+4. Heavy Industry Buffer
+5. Anti Impact Compound Vibration Isolator
+6. Non-Adjustable Shock Absorber
+7. Super Long Life Shock Absorber
+8. Vibration Isolation Solution
+9. Special Vibration Isolator
+10. Friction Spring Damper
+11. Locking Assemblies & Coupling
+
+Important distinction:
+
+- The website product catalog should cover all categories above.
+- The current Excel product database is not a complete catalog source for all categories.
+- The current calculator formulas target Absorber selection only.
+- Product records therefore need explicit fields to distinguish catalog category, source completeness, and calculator eligibility.
+
+Recommended category slugs:
+
+| Display category | Recommended slug | Calculator eligibility |
+| --- | --- | --- |
+| Adjustable Shock Absorber | `adjustable-shock-absorber` | Absorber calculator eligible |
+| Heavy Duty Shock Absorber | `heavy-duty-shock-absorber` | Absorber calculator eligible |
+| Wire Rope Vibration Isolator | `wire-rope-vibration-isolator` | Catalog / inquiry only |
+| Heavy Industry Buffer | `heavy-industry-buffer` | Catalog / inquiry only unless separately confirmed |
+| Anti Impact Compound Vibration Isolator | `anti-impact-compound-vibration-isolator` | Catalog / inquiry only |
+| Non-Adjustable Shock Absorber | `non-adjustable-shock-absorber` | Absorber calculator eligible |
+| Super Long Life Shock Absorber | `super-long-life-shock-absorber` | Absorber calculator eligible |
+| Vibration Isolation Solution | `vibration-isolation-solution` | Solution / inquiry only |
+| Special Vibration Isolator | `special-vibration-isolator` | Catalog / inquiry only |
+| Friction Spring Damper | `friction-spring-damper` | Catalog / inquiry only |
+| Locking Assemblies & Coupling | `locking-assemblies-coupling` | Catalog / inquiry only |
+
+Do not infer calculator support from the word `product`.
+
+---
+
+## Product Category Intro Source Rule
+
+Product-category image/text introductions should reference the local English website first.
+
+Primary source:
+
+- `lib/products/catalog-master-data.ts`
+
+Rendered reference:
+
+- `/en/products`
+- `/en/products/[familySlug]`
+
+Use local English website content for:
+
+- category heading
+- one-line tag
+- summary
+- description
+- intended-use guidance
+- product-family grouping
+
+Image handling:
+
+- Reuse local website category/product images if they exist.
+- If local images are missing, use official catalog/PDF/manual material as the next source.
+- Keep image status explicit: `available`, `needs_source`, or `pending_approval`.
+- Do not use unrelated generic industrial images as a substitute for product category images.
+
+The local English website is a content source, not a calculator scope source. Calculator eligibility still follows the `Calculator eligibility` column above.
+
+---
+
 ## Legacy Product Center Categories
 
 Observed on the old website product center:

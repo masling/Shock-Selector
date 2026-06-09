@@ -14,12 +14,14 @@ Use this folder as the durable project knowledge layer.
 
 1. `AGENTS.md`
 2. `docs/implementation/omx-workspace-guide.md`
-3. `docs/website-v1-requirements-and-plan.md`
-4. Task-specific supporting docs:
+3. `docs/website-project-requirements-summary.md`
+4. `docs/website-v1-requirements-and-plan.md`
+5. Task-specific supporting docs:
    - scenario logic: `docs/source-materials/PRD.md`, `docs/source-materials/SCENARIO_DESIGN.md`
    - content and taxonomy: `docs/content/website-copy-sourcebook.md`, `docs/content/product-taxonomy-and-naming.md`, `docs/content/page-copy-drafts-en.md`
    - SEO: `docs/source-materials/EKD_SEO_keyword_strategy_en_markets.md`, `docs/source-materials/EKD_SEO_keywords_master.csv`
    - localization: `docs/implementation/multilingual-requirements.md`
+   - launch decisions: `docs/implementation/launch-decisions-and-confirmation-guide.md`
 
 ## Folder Structure
 
@@ -29,6 +31,7 @@ Current operating and delivery guidance.
 
 - `omx-workspace-guide.md`: the main Codex / oh-my-codex handoff and workspace rules summary
 - `multilingual-requirements.md`: localization scope, constraints, and implementation phases
+- `launch-decisions-and-confirmation-guide.md`: business decisions, SEO URL direction, contact/download rules, and content confirmation checklist
 
 ### `docs/source-materials`
 
@@ -49,6 +52,7 @@ Customer-facing messaging references and writing assets.
 
 ### Root-Level Planning Doc
 
+- `website-project-requirements-summary.md`: concise Chinese requirements summary synthesized from the active docs
 - `website-v1-requirements-and-plan.md`: the current integrated product, IA, page, and delivery plan
 
 ## Documentation Rules
