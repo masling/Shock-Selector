@@ -1,0 +1,217 @@
+# Catalog Import Report
+
+- Families: 5
+- Series: 11
+- Models: 190
+- Selector eligible: 184
+- Selector ready: 149
+- Selector incomplete: 35
+- Selector conflicts: 0
+- Unresolved issues: 1
+
+## Models by Series
+- EK: 29
+- EN: 33
+- ES: 11
+- EI: 33
+- ED: 78
+- WR: 1
+- CR: 1
+- HGGS: 1
+- HGGN: 1
+- JYXR_P: 1
+- JYXR_H: 1
+
+## PDF-only Absorber Models
+- EK 10x7 (B)
+- EN 8x6
+- EI 50 x 50
+- ED 1.5 x 2
+
+## Excel-only Absorber Models
+- ES18983F-BN
+- ES18983
+- ES18374
+- ES18373
+- ES18363
+- ES18295
+- ES18294
+- ES18213
+- ES18212
+- ES18062
+- EN8x6B
+- EN8x6
+- EN64x50
+- EN64x150
+- EN64x100
+- EN45x75
+- EN45x50
+- EN45x25
+- EN36x50B
+- EN36x50
+- EN36x25B
+- EN36x25
+- EN33x50B
+- EN33x50
+- EN33x25B
+- EN33x25
+- EN27x25B
+- EN27x25
+- EN25x25B
+- EN25x25
+- EN20x22B
+- EN20x22
+- EN20x12B
+- EN20x12
+- EN14x16B
+- EN14x16
+- EN14x12B
+- EN14x12
+- EN12x10B
+- EN12x10
+- EN10x7B
+- EN10x7
+- EK85x90
+- EK85x50
+- EK85x165
+- EK85x125
+- EK64x50
+- EK64x150
+- EK64x100
+- EK42x75
+- EK42x50
+- EK42x25
+- EK36x50
+- EK36x25
+- EK33x50
+- EK33x25
+- EK27x25B
+- EK27x25
+- EK25x25B
+- EK25x25
+- EK20x12B
+- EK20x12
+- EK16x12B
+- EK16x12
+- EK14x10B
+- EK14x10
+- EK12x10B
+- EK12x10
+- EK10x7B
+- EK10x7
+- EI80x50
+- EI80x100
+- EI50x50
+- EI50x100
+- EI150x800
+- EI150X600
+- EI150x500
+- EI150x400
+- EI150x150
+- EI150x115
+- EI150x1000
+- EI130x800
+- EI130x600
+- EI130x400
+- EI130x300
+- EI130x250
+- EI120x800
+- EI120x600
+- EI120x400
+- EI120x300
+- EI120x200
+- EI120x150
+- EI120x1000
+- EI120x100
+- EI100x800
+- EI100x600
+- EI100x500
+- EI100x50
+- EI100x400
+- EI100x200
+- EI100x150
+- EI100x100
+- ED4.0x8
+- ED4.0x6
+- ED4.0x48
+- ED4.0x40
+- ED4.0x4
+- ED4.0x36
+- ED4.0x32
+- ED4.0x28
+- ED4.0x24
+- ED4.0x20
+- ED4.0x2
+- ED4.0x16
+- ED4.0x12
+- ED4.0x10
+- ED3.5x8
+- ED3.5x6
+- ED3.5x56
+- ED3.5x48
+- ED3.5x40
+- ED3.5x4
+- ED3.5x36
+- ED3.5x32
+- ED3.5x28
+- ED3.5x24
+- ED3.5x20
+- ED3.5x2
+- ED3.5x16
+- ED3.5x12
+- ED3.5x10
+- ED3.0x8
+- ED3.0x72
+- ED3.0x64
+- ED3.0x60
+- ED3.0x56
+- ED3.0x5
+- ED3.0x48
+- ED3.0x40
+- ED3.0x36
+- ED3.0x32
+- ED3.0x3
+- ED3.0x28
+- ED3.0x24
+- ED3.0x20
+- ED3.0x2
+- ED3.0x18
+- ED3.0x16
+- ED3.0x14
+- ED3.0x12
+- ED3.0x10
+- ED2.0x8
+- ED2.0x6
+- ED2.0x56
+- ED2.0x48
+- ED2.0x40
+- ED2.0x36
+- ED2.0x32
+- ED2.0x28
+- ED2.0x24
+- ED2.0x20
+- ED2.0x18
+- ED2.0x16
+- ED2.0x14
+- ED2.0x12
+- ED2.0x10
+- ED1.5x8
+- ED1.5x6
+- ED1.5x4
+- ED1.5x32
+- ED1.5x28
+- ED1.5x24
+- ED1.5x20
+- ED1.5x2
+- ED1.5x18
+- ED1.5x16
+- ED1.5x14
+- ED1.5x12
+- ED1.5x10
+
+## Models Without Source References
+- None
+
+## Models Without Specs
+- ED 1.5 x 2
+- CR3-100

@@ -15,7 +15,7 @@ function assertNonProductionDatabase() {
   const databaseUrl = process.env.DATABASE_URL ?? "";
   const label = process.env.DATABASE_BRANCH ?? process.env.NEON_BRANCH ?? process.env.CATALOG_IMPORT_BRANCH ?? "";
   const allowProduction = process.env.ALLOW_PRODUCTION_CATALOG_IMPORT === "true";
-  const looksNonProduction = /branch|dev|staging|preview|test|local/i.test(`${databaseUrl} ${label}`);
+  const looksNonProduction = /branch|dev|staging|preview|test|local|rebuild|catalog/i.test(`${databaseUrl} ${label}`);
 
   console.log(`Catalog import target label: ${label || "not set"}`);
 
