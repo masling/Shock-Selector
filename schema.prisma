@@ -8,6 +8,8 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// ─── Scenario enums ───────────────────────────────────────────────
+
 enum MotionKind {
   LINEAR
   ROTARY
@@ -44,236 +46,267 @@ enum ViewMode {
   BUYER
 }
 
-enum ProductTypeCode {
-  ADJUSTABLE
-  NON_ADJUSTABLE
-  HEAVY_DUTY
-  BUFFER
-  ISOLATOR
-  SPECIALTY
-}
+// ─── Catalog enums ────────────────────────────────────────────────
 
-enum PublishStatus {
-  DRAFT
+enum CatalogStatus {
   PUBLISHED
-  ARCHIVED
+  DRAFT
+  NEEDS_REVIEW
 }
 
-enum AssetKind {
-  IMAGE
-  PDF
-  DRAWING
-  CAD
-  MODEL_3D
-  OTHER
+enum SelectorStatus {
+  NOT_APPLICABLE
+  READY
+  INCOMPLETE
+  CONFLICT
 }
 
-enum AssetRole {
-  PRIMARY_IMAGE
-  GALLERY
-  DATASHEET
-  CATALOG
-  CAD
-  DRAWING
-  OTHER
+enum SpecDataType {
+  NUMBER
+  TEXT
+  RANGE
+  JSON
 }
 
 enum SourceType {
-  EXCEL
-  LEGACY_SITE
-  PDF_CATALOG
-  MANUAL
+  PDF_ENGLISH
+  PDF_CHINESE_FULL_CATALOG
+  EXCEL_SELECTOR
+  MANUAL_SEED
 }
 
-enum SnapshotMatchStatus {
-  MATCHED
-  PARTIAL
-  UNMATCHED
-  REVIEWED
+enum ConfidenceStatus {
+  VERIFIED_BY_PDF_AND_EXCEL
+  PDF_CATALOG_ONLY
+  EXCEL_SELECTOR_ONLY
+  CONFLICT_NEEDS_REVIEW
+  NEEDS_REVIEW
 }
+
+enum ImportIssueSeverity {
+  INFO
+  WARNING
+  ERROR
+}
+
+// ─── Catalog models ───────────────────────────────────────────────
 
 model ProductFamily {
-  id           String                     @id @default(cuid())
-  key          String                     @unique
-  slug         String                     @unique
-  sortOrder    Int                        @default(0)
-  isActive     Boolean                    @default(true)
-  createdAt    DateTime                   @default(now())
-  updatedAt    DateTime                   @updatedAt
-  products     Product[]
-  translations ProductFamilyTranslation[]
-  assets       ProductFamilyAsset[]
+  id            String                      @id @default(cuid())
+  key           String                      @unique
+  slug          String                      @unique
+  sortOrder     Int                         @default(0)
+  isActive      Boolean                     @default(true)
+  catalogStatus CatalogStatus               @default(PUBLISHED)
+  createdAt     DateTime                    @default(now())
+  updatedAt     DateTime                    @updatedAt
+  translations  ProductFamilyTranslation[]
+  series        ProductSeries[]
+  specDefinitions ProductSpecDefinition[]
 
   @@index([isActive, sortOrder])
+  @@index([catalogStatus])
 }
 
 model ProductFamilyTranslation {
-  id               String        @id @default(cuid())
-  familyId         String
-  family           ProductFamily @relation(fields: [familyId], references: [id], onDelete: Cascade)
-  locale           String
-  name             String
-  tag              String?
-  summary          String
-  description      String
-  applicationNotes String?
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  id                String        @id @default(cuid())
+  familyId          String
+  family            ProductFamily @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  locale            String
+  name              String
+  tag               String?
+  summary           String
+  description       String
+  applicationNotes  String?
+  workingPrinciple  String?
+  constructionNotes String?
+  featureNotes      String?
+  seoSummary        String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
   @@unique([familyId, locale])
   @@index([locale])
 }
 
-model Asset {
-  id           String               @id @default(cuid())
-  assetKey     String               @unique
-  kind         AssetKind
-  sourceOrigin String
-  sourcePath   String?
-  publicPath   String?
-  remoteUrl    String?
-  mimeType     String?
-  locale       String?
-  title        String?
-  metadataJson Json?
-  createdAt    DateTime             @default(now())
-  updatedAt    DateTime             @updatedAt
-  productLinks ProductAsset[]
-  familyLinks  ProductFamilyAsset[]
+model ProductSeries {
+  id                    String                      @id @default(cuid())
+  familyId              String
+  family                ProductFamily               @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  code                  String
+  slug                  String                      @unique
+  name                  String
+  sortOrder             Int                         @default(0)
+  selectorEligible      Boolean                     @default(false)
+  selectorDefaultStatus SelectorStatus              @default(NOT_APPLICABLE)
+  catalogStatus         CatalogStatus               @default(PUBLISHED)
+  overview              String?
+  workingPrinciple      String?
+  constructionNotes     String?
+  materialNotes         String?
+  applicationNotes      String?
+  featureNotes          String?
+  sourceSummary         String?
+  createdAt             DateTime                    @default(now())
+  updatedAt             DateTime                    @updatedAt
+  models                ProductModel[]
+  specDefinitions       ProductSpecDefinition[]
+  sourceReferences      ProductSourceReference[]
+  importIssues          ImportIssue[]
 
-  @@index([kind, locale])
+  @@unique([familyId, code])
+  @@index([familyId, sortOrder])
+  @@index([selectorEligible, catalogStatus])
 }
 
-model ProductTranslation {
-  id           String   @id @default(cuid())
-  productId    String
-  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  locale       String
-  displayName  String
-  shortSummary String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+model ProductModel {
+  id               String                      @id @default(cuid())
+  seriesId         String
+  series           ProductSeries               @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  rawModel         String
+  model            String                      @unique
+  sortKey          String
+  catalogStatus    CatalogStatus               @default(PUBLISHED)
+  selectorStatus   SelectorStatus              @default(NOT_APPLICABLE)
+  selectorEligible Boolean                     @default(false)
+  isActive         Boolean                     @default(true)
+  primaryImageUrl  String?
+  rawDataJson      Json?
+  createdAt        DateTime                    @default(now())
+  updatedAt        DateTime                    @updatedAt
+  specValues       ProductSpecValue[]
+  sourceReferences ProductSourceReference[]
+  importIssues     ImportIssue[]
 
-  @@unique([productId, locale])
+  @@index([seriesId, sortKey])
+  @@index([catalogStatus, isActive])
+  @@index([selectorEligible, selectorStatus])
+  @@index([model])
 }
 
-model ProductAsset {
-  id        String    @id @default(cuid())
-  productId String
-  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  assetId   String
-  asset     Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
-  role      AssetRole
-  sortOrder Int       @default(0)
-  createdAt DateTime  @default(now())
+model ProductSpecDefinition {
+  id                  String              @id @default(cuid())
+  key                 String
+  labelEn             String
+  labelZh             String
+  unit                String?
+  dataType            SpecDataType
+  familyId            String?
+  family              ProductFamily?      @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  seriesId            String?
+  series              ProductSeries?      @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  filterable          Boolean             @default(false)
+  comparable          Boolean             @default(false)
+  requiredForSelector Boolean             @default(false)
+  sortOrder           Int                 @default(0)
+  values              ProductSpecValue[]
 
-  @@unique([productId, assetId, role])
+  @@unique([key, familyId, seriesId])
+  @@index([familyId, sortOrder])
+  @@index([seriesId, sortOrder])
+  @@index([filterable])
 }
 
-model ProductFamilyAsset {
-  id        String        @id @default(cuid())
-  familyId  String
-  family    ProductFamily @relation(fields: [familyId], references: [id], onDelete: Cascade)
-  assetId   String
-  asset     Asset         @relation(fields: [assetId], references: [id], onDelete: Cascade)
-  role      AssetRole
-  sortOrder Int           @default(0)
-  createdAt DateTime      @default(now())
+model ProductSpecValue {
+  id               String                  @id @default(cuid())
+  modelId          String
+  model            ProductModel            @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  specDefinitionId String
+  specDefinition   ProductSpecDefinition   @relation(fields: [specDefinitionId], references: [id], onDelete: Cascade)
+  valueNumber      Decimal?                @db.Decimal(18, 6)
+  valueText        String?
+  valueJson        Json?
+  rawValue         String?
+  sourceRefId      String?
+  sourceRef        ProductSourceReference? @relation(fields: [sourceRefId], references: [id], onDelete: SetNull)
+  confidenceStatus ConfidenceStatus        @default(NEEDS_REVIEW)
 
-  @@unique([familyId, assetId, role])
+  @@unique([modelId, specDefinitionId])
+  @@index([specDefinitionId, valueNumber])
+  @@index([confidenceStatus])
 }
 
-model ProductSourceSnapshot {
-  id          String              @id @default(cuid())
-  productId   String?
-  product     Product?            @relation(fields: [productId], references: [id], onDelete: SetNull)
-  sourceType  SourceType
-  sourceRef   String
-  rawJson     Json
-  matchStatus SnapshotMatchStatus @default(MATCHED)
-  parsedAt    DateTime            @default(now())
+model ProductSourceReference {
+  id               String                @id @default(cuid())
+  seriesId         String?
+  series           ProductSeries?        @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  modelId          String?
+  model            ProductModel?         @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  sourceType       SourceType
+  sourcePath       String
+  sourceTitle      String
+  language         String
+  pageNumber       Int?
+  sectionTitle     String?
+  rawText          String?
+  extractionMethod String
+  confidenceStatus ConfidenceStatus      @default(NEEDS_REVIEW)
+  specValues       ProductSpecValue[]
 
-  @@index([productId, sourceType])
+  @@index([seriesId, sourceType])
+  @@index([modelId, sourceType])
+  @@index([sourceType, pageNumber])
 }
 
-model Product {
-  id                   String                @id @default(cuid())
-  familyId             String?
-  family               ProductFamily?        @relation(fields: [familyId], references: [id], onDelete: SetNull)
-  model                String                @unique
-  type                 String?
-  legacyTypeLabel      String?
-  typeCode             ProductTypeCode?
-  seriesCode           String?
-  strokeMm             Decimal?              @db.Decimal(12, 3)
-  energyPerCycleNm     Decimal?              @db.Decimal(14, 3)
-  energyPerHourNm      Decimal?              @db.Decimal(14, 3)
-  maxImpactForceN      Decimal?              @db.Decimal(14, 3)
-  maxThrustForceN      Decimal?              @db.Decimal(14, 3)
-  totalLengthMm        Decimal?              @db.Decimal(12, 3)
-  threadSize           String?
-  photoUrl             String?
-  sourceProductPhotoRef String?
-  rawDataJson          Json?
-  publishStatus        PublishStatus         @default(DRAFT)
-  isActive             Boolean               @default(true)
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
-  translations         ProductTranslation[]
-  assets               ProductAsset[]
-  sourceSnapshots      ProductSourceSnapshot[]
+model ImportIssue {
+  id        String              @id @default(cuid())
+  severity  ImportIssueSeverity
+  issueType String
+  modelId   String?
+  model     ProductModel?       @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  seriesId  String?
+  series    ProductSeries?      @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+  specKey   String?
+  message   String
+  sourceRefs Json?
+  rawJson   Json?
+  createdAt DateTime            @default(now())
 
-  @@index([familyId])
-  @@index([type])
-  @@index([typeCode])
-  @@index([seriesCode])
-  @@index([strokeMm])
-  @@index([energyPerCycleNm])
-  @@index([energyPerHourNm])
-  @@index([maxImpactForceN])
-  @@index([maxThrustForceN])
-  @@index([threadSize])
-  @@index([publishStatus, isActive])
+  @@index([severity, issueType])
+  @@index([modelId])
+  @@index([seriesId])
 }
+
+// ─── Scenario / Selection models ──────────────────────────────────
 
 model ScenarioFamily {
-  id                String     @id @default(cuid())
-  key               String     @unique
-  name              String
-  description       String?
-  motionKind        MotionKind
-  sortOrder         Int        @default(0)
-  guideQuestions    Json?
-  isActive          Boolean    @default(true)
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
-  variants          Scenario[]
+  id             String       @id @default(cuid())
+  key            String       @unique
+  name           String
+  description    String?
+  motionKind     MotionKind
+  sortOrder      Int          @default(0)
+  guideQuestions Json?
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  variants       Scenario[]
 
   @@index([motionKind, isActive])
 }
 
 model Scenario {
-  id                String           @id @default(cuid())
-  familyId          String
-  family            ScenarioFamily   @relation(fields: [familyId], references: [id], onDelete: Cascade)
-  key               String           @unique
-  name              String
-  excelSheetName    String?
-  motionKind        MotionKind
-  orientation       Orientation
-  driveType         DriveType
-  loadType          LoadType?
-  gravityRelation   GravityRelation  @default(NONE)
-  inputSchemaJson   Json
-  outputSchemaJson  Json?
-  formulaMetaJson   Json?
-  uiHintsJson       Json?
-  isImplemented     Boolean          @default(false)
-  isActive          Boolean          @default(true)
-  sortOrder         Int              @default(0)
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-  selectionLogs     SelectionLog[]
+  id               String          @id @default(cuid())
+  familyId         String
+  family           ScenarioFamily  @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  key              String          @unique
+  name             String
+  excelSheetName   String?
+  motionKind       MotionKind
+  orientation      Orientation
+  driveType        DriveType
+  loadType         LoadType?
+  gravityRelation  GravityRelation @default(NONE)
+  inputSchemaJson  Json
+  outputSchemaJson Json?
+  formulaMetaJson  Json?
+  uiHintsJson      Json?
+  isImplemented    Boolean         @default(false)
+  isActive         Boolean         @default(true)
+  sortOrder        Int             @default(0)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  selectionLogs    SelectionLog[]
 
   @@index([familyId, isActive])
   @@index([motionKind, orientation, driveType])
