@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { EngineerSizingPageContent } from "@/app/selector/engineer/page";
+import { EngineerSizingPageContent } from "@/components/selector/engineer-page-content";
 import { isLocale } from "@/lib/i18n/config";
 
 type LocaleEngineerPageProps = {

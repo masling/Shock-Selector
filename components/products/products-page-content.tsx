@@ -6,8 +6,6 @@ import { findCatalogFamilies } from "@/lib/catalog/catalog-repository";
 import { defaultLocale, type Locale } from "@/lib/i18n/config";
 import { getLocalizedHref } from "@/lib/i18n/routing";
 
-export const dynamic = "force-dynamic";
-
 type ProductsPageContentProps = {
   locale?: Locale;
 };
@@ -44,8 +42,4 @@ export async function ProductsPageContent({ locale = defaultLocale }: ProductsPa
       </div>
     </Container>
   );
-}
-
-export default async function ProductsPage() {
-  return <ProductsPageContent />;
 }

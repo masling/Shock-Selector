@@ -7,12 +7,6 @@ import { findCatalogFamilyBySlug } from "@/lib/catalog/catalog-repository";
 import { defaultLocale, type Locale } from "@/lib/i18n/config";
 import { getLocalizedHref } from "@/lib/i18n/routing";
 
-export const dynamic = "force-dynamic";
-
-type PageProps = {
-  params: Promise<{ familySlug: string }>;
-};
-
 type ProductFamilyPageContentProps = {
   familySlug: string;
   locale?: Locale;
@@ -82,9 +76,4 @@ export async function ProductFamilyPageContent({
       </section>
     </Container>
   );
-}
-
-export default async function ProductFamilyPage({ params }: PageProps) {
-  const { familySlug } = await params;
-  return <ProductFamilyPageContent familySlug={familySlug} />;
 }

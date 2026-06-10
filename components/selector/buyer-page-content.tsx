@@ -1,16 +1,9 @@
-import type { Metadata } from "next";
 import { BuyerSearchClient } from "@/components/marketing/buyer-search-client";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { Container } from "@/components/ui/container";
 import { listCatalogThreadSizes } from "@/lib/catalog/catalog-repository";
 import { defaultLocale, type Locale } from "@/lib/i18n/config";
 import { getSiteCopy } from "@/lib/i18n/site-copy";
-
-export const metadata: Metadata = {
-  title: "Buyer Quick Filter for Shock Absorber and Vibration Isolation Models",
-};
-
-export const dynamic = "force-dynamic";
 
 type BuyerQuickFilterPageContentProps = {
   locale?: Locale;
@@ -33,8 +26,4 @@ export async function BuyerQuickFilterPageContent({ locale = defaultLocale }: Bu
       </div>
     </Container>
   );
-}
-
-export default async function BuyerQuickFilterPage() {
-  return <BuyerQuickFilterPageContent />;
 }

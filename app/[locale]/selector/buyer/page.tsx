@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { BuyerQuickFilterPageContent } from "@/app/selector/buyer/page";
+import { BuyerQuickFilterPageContent } from "@/components/selector/buyer-page-content";
 import { isLocale } from "@/lib/i18n/config";
 
 type LocaleBuyerPageProps = {

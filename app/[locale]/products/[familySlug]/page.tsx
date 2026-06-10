@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { ProductFamilyPageContent } from "@/app/products/[familySlug]/page";
+import { ProductFamilyPageContent } from "@/components/products/product-family-page-content";
 import { isLocale } from "@/lib/i18n/config";
 
 type LocaleProductFamilyPageProps = {

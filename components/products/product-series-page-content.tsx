@@ -7,13 +7,6 @@ import { findCatalogSeriesBySlug, searchCatalogModels } from "@/lib/catalog/cata
 import { defaultLocale, type Locale } from "@/lib/i18n/config";
 import { getLocalizedHref } from "@/lib/i18n/routing";
 
-export const dynamic = "force-dynamic";
-
-type PageProps = {
-  params: Promise<{ familySlug: string; seriesSlug: string }>;
-  searchParams?: Promise<{ model?: string }>;
-};
-
 type ProductSeriesPageContentProps = {
   familySlug: string;
   seriesSlug: string;
@@ -109,13 +102,6 @@ export async function ProductSeriesPageContent({
       </section>
     </Container>
   );
-}
-
-export default async function ProductSeriesPage({ params, searchParams }: PageProps) {
-  const { familySlug, seriesSlug } = await params;
-  const query = searchParams ? await searchParams : {};
-
-  return <ProductSeriesPageContent familySlug={familySlug} seriesSlug={seriesSlug} selectedModel={query.model} />;
 }
 
 function InfoCard({ title, body }: { title: string; body: string }) {
