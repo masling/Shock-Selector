@@ -1,28 +1,35 @@
 import Link from "next/link";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { Container } from "@/components/ui/container";
+import { getCatalogTranslation } from "@/lib/catalog/catalog-i18n";
 import { findCatalogFamilies } from "@/lib/catalog/catalog-repository";
+import { defaultLocale, type Locale } from "@/lib/i18n/config";
+import { getLocalizedHref } from "@/lib/i18n/routing";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProductsPage() {
-  const families = await findCatalogFamilies("en");
+type ProductsPageContentProps = {
+  locale?: Locale;
+};
+
+export async function ProductsPageContent({ locale = defaultLocale }: ProductsPageContentProps) {
+  const families = await findCatalogFamilies(locale);
 
   return (
     <Container className="py-16">
       <SectionHeading
         eyebrow="Product catalog"
-        title="PDF-backed shock absorber and vibration isolation catalog"
-        description="Browse product families, technical series and model tables rebuilt from EKD catalog PDFs and selector data."
+        title="Shock absorber and vibration isolation products"
+        description="Browse product families, technical series, model specifications, product features and application notes."
       />
 
       <div className="mt-12 grid gap-6 md:grid-cols-2">
         {families.map((family) => {
-          const translation = family.translations[0];
+          const translation = getCatalogTranslation(family.translations, locale);
           return (
             <Link
               key={family.id}
-              href={`/products/${family.slug}`}
+              href={getLocalizedHref(locale, `/products/${family.slug}`)}
               className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
             >
               <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
@@ -37,4 +44,8 @@ export default async function ProductsPage() {
       </div>
     </Container>
   );
+}
+
+export default async function ProductsPage() {
+  return <ProductsPageContent />;
 }

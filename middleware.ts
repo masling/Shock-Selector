@@ -14,18 +14,19 @@ export function middleware(request: NextRequest) {
   }
 
   const pathnameLocale = getPathLocale(pathname);
-  if (pathnameLocale) {
+
+  if (!pathnameLocale) {
     const url = request.nextUrl.clone();
-    url.pathname = pathname.replace(`/${pathnameLocale}`, "") || "/";
+    url.pathname = `/${defaultLocale}${pathname === "/" ? "" : pathname}`;
     return NextResponse.redirect(url);
   }
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-pathname", pathname);
-  requestHeaders.set("x-locale", defaultLocale);
+  requestHeaders.set("x-locale", pathnameLocale);
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
-  response.cookies.set(localeCookieName, defaultLocale, { path: "/", sameSite: "lax" });
+  response.cookies.set(localeCookieName, pathnameLocale, { path: "/", sameSite: "lax" });
 
   return response;
 }

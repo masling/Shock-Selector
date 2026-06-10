@@ -1,6 +1,8 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { catalogTranslationLocales } from "@/lib/catalog/catalog-i18n";
 import type { CatalogModelSearchInput } from "@/lib/catalog/catalog-schemas";
+import type { Locale } from "@/lib/i18n/config";
 
 const absorberSpecFilterKeys = {
   minStrokeMm: "strokeMm",
@@ -76,7 +78,7 @@ export async function findCatalogFamilies(locale: string) {
     where: { isActive: true, catalogStatus: "PUBLISHED" },
     orderBy: { sortOrder: "asc" },
     include: {
-      translations: { where: { locale } },
+      translations: { where: { locale: { in: catalogTranslationLocales(locale as Locale) } } },
       series: { where: { catalogStatus: "PUBLISHED" }, orderBy: { sortOrder: "asc" } },
     },
   });
@@ -86,7 +88,7 @@ export async function findCatalogFamilyBySlug(slug: string, locale: string) {
   return prisma.productFamily.findUnique({
     where: { slug },
     include: {
-      translations: true,
+      translations: { where: { locale: { in: catalogTranslationLocales(locale as Locale) } } },
       series: { where: { catalogStatus: { in: ["PUBLISHED", "NEEDS_REVIEW"] } }, orderBy: { sortOrder: "asc" } },
     },
   });
@@ -125,6 +127,15 @@ export async function searchCatalogModels(input: CatalogModelSearchInput) {
   ]);
 
   return { items, total };
+}
+
+export async function getCatalogModelCount() {
+  return prisma.productModel.count({
+    where: {
+      isActive: true,
+      catalogStatus: { in: ["PUBLISHED", "NEEDS_REVIEW"] },
+    },
+  });
 }
 
 export async function listCatalogThreadSizes() {

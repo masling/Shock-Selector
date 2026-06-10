@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { EngineerSizingClient } from "@/components/selector/engineer-sizing-client";
 import { Container } from "@/components/ui/container";
+import { defaultLocale, type Locale } from "@/lib/i18n/config";
 import { getSiteCopy } from "@/lib/i18n/site-copy";
 import { getScenarioCatalog } from "@/lib/scenarios/registry";
 
@@ -9,8 +10,12 @@ export const metadata: Metadata = {
   title: "Engineer Sizing Tool for Shock Absorber Selection",
 };
 
-export default function EngineerSizingPage() {
-  const copy = getSiteCopy("en");
+type EngineerSizingPageContentProps = {
+  locale?: Locale;
+};
+
+export function EngineerSizingPageContent({ locale = defaultLocale }: EngineerSizingPageContentProps) {
+  const copy = getSiteCopy(locale);
   const scenarioCatalog = getScenarioCatalog();
 
   return (
@@ -50,8 +55,12 @@ export default function EngineerSizingPage() {
       </div>
 
       <div className="mt-12">
-        <EngineerSizingClient locale="en" copy={copy.engineer} />
+        <EngineerSizingClient locale={locale} copy={copy.engineer} />
       </div>
     </Container>
   );
+}
+
+export default function EngineerSizingPage() {
+  return <EngineerSizingPageContent />;
 }

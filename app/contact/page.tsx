@@ -8,18 +8,15 @@ export const metadata: Metadata = {
 };
 
 const directChannels = [
-  { label: "General email", value: "office@ekdchina.com", href: "mailto:office@ekdchina.com" },
-  { label: "Technical support", value: "tech@ekdchina.com", href: "mailto:tech@ekdchina.com" },
-  { label: "Sales", value: "sales1@ekdchina.com", href: "mailto:sales1@ekdchina.com" },
-  { label: "Service", value: "service@ekdchina.com", href: "mailto:service@ekdchina.com" },
-  { label: "Phone", value: "+86 510 82801575", href: "tel:+8651082801575" },
+  { label: "Sales", value: "sales@vibroabsorber.com", href: "mailto:sales@vibroabsorber.com" },
+  { label: "Service", value: "service@vibroabsorber.com", href: "mailto:service@vibroabsorber.com" },
 ];
 
 const socialChannels = [
-  { label: "WhatsApp", value: "Official number to be confirmed" },
-  { label: "LinkedIn", value: "Official page to be confirmed" },
-  { label: "X", value: "Official account to be confirmed" },
-  { label: "YouTube", value: "Official channel to be confirmed" },
+  { label: "WhatsApp", value: "Contact us by WhatsApp" },
+  { label: "LinkedIn", value: "Contact us on LinkedIn" },
+  { label: "X", value: "Contact us on X" },
+  { label: "YouTube", value: "Contact us on YouTube" },
 ];
 
 export default function ContactPage() {
@@ -39,11 +36,10 @@ export default function ContactPage() {
 
           <div className="rounded-[1.75rem] border border-line bg-white/75 p-6">
             <div className="text-xs uppercase tracking-[0.16em] text-steel">
-              Overseas contact channels
+              Online contact channels
             </div>
             <p className="mt-3 text-sm leading-7 text-steel">
-              International buyers often expect quick access through social and messaging channels.
-              Official account links can be added here once confirmed.
+              You can also contact us through the following messaging and social media channels.
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {socialChannels.map((channel) => (

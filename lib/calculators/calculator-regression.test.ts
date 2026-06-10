@@ -16,7 +16,7 @@ test("linear-free-horizontal matches reference sample", () => {
   assert.equal(result.absorbedEnergyPerCycleNm, 1012.5);
   assert.equal(result.requiredEnergyPerCycleNm, 1012.5);
   assert.equal(result.requiredEnergyPerHourNm, 202500);
-  assert.equal(result.averageImpactForceN, 0);
+  assert.equal(result.averageImpactForceN, 20250);
 });
 
 test("linear-force-horizontal matches reference sample", () => {

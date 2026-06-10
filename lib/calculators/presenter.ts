@@ -15,6 +15,7 @@ function localizeAssumptions(
     "linear-free-horizontal": [
       "Horizontal free motion uses absorber count, cycles per hour, impact object weight and speed as the core conditions.",
       "Kinetic energy uses 0.5 * W * v^2 divided by absorber count.",
+      "External working energy is not used for this path.",
       "This path uses a fixed critical stroke parameter of 0.05 m.",
     ],
     "linear-free-slope": [
@@ -113,6 +114,7 @@ function localizeAssumptions(
     "linear-free-horizontal": [
       "水平自由运动以缓冲器数量、循环次数、冲击物体重量、速度为核心条件。",
       "动能按 0.5 * W * v^2 / n 计算。",
+      "该路径不启用外力做功能量。",
       "该计算路径使用固定关键行程参数 0.05 m。",
     ],
     "linear-free-slope": [
@@ -225,7 +227,7 @@ function localizeExplanations(
         return [
           `冲击物体重量 ${formatNumber(input.impactObjectWeightKg)} kg、速度 ${formatNumber(input.speedMs)} m/s 时，单支缓冲器承担的动能约为 ${formatNumber(calculation.absorbedEnergyPerCycleNm)} Nm。`,
           `当前推荐的单次总能量为 ${formatNumber(calculation.requiredEnergyPerCycleNm)} Nm、每小时总能量为 ${formatNumber(calculation.requiredEnergyPerHourNm)} Nm。`,
-          `该计算路径使用固定关键行程参数 ${formatNumber(calculation.requiredStrokeMm)} mm，推进力结果为 ${formatNumber(calculation.averageImpactForceN)} N。`,
+          `该计算路径使用固定关键行程参数 ${formatNumber(calculation.requiredStrokeMm)} mm，估算平均缓冲力约为 ${formatNumber(calculation.averageImpactForceN)} N；水平自由运动不启用外部推进力。`,
         ];
       case "linear-free-slope":
         return [
@@ -319,7 +321,7 @@ function localizeExplanations(
       return [
         `Impact object weight ${formatNumber(input.impactObjectWeightKg)} kg at ${formatNumber(input.speedMs)} m/s creates ${formatNumber(calculation.absorbedEnergyPerCycleNm)} Nm kinetic energy per absorber.`,
         `The total energy is ${formatNumber(calculation.requiredEnergyPerCycleNm)} Nm per cycle and ${formatNumber(calculation.requiredEnergyPerHourNm)} Nm per hour.`,
-        `This sheet uses a fixed critical stroke of ${formatNumber(calculation.requiredStrokeMm)} mm and reports ${formatNumber(calculation.averageImpactForceN)} N thrust.`,
+        `This sheet uses a fixed critical stroke of ${formatNumber(calculation.requiredStrokeMm)} mm and estimates ${formatNumber(calculation.averageImpactForceN)} N average damping force; external thrust is not used.`,
       ];
     case "linear-free-slope":
       return [

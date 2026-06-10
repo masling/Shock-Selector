@@ -2,7 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Container } from "@/components/ui/container";
+import { getCatalogTranslation } from "@/lib/catalog/catalog-i18n";
 import { findCatalogFamilyBySlug } from "@/lib/catalog/catalog-repository";
+import { defaultLocale, type Locale } from "@/lib/i18n/config";
+import { getLocalizedHref } from "@/lib/i18n/routing";
 
 export const dynamic = "force-dynamic";
 
@@ -10,17 +13,24 @@ type PageProps = {
   params: Promise<{ familySlug: string }>;
 };
 
-export default async function ProductFamilyPage({ params }: PageProps) {
-  const { familySlug } = await params;
-  const family = await findCatalogFamilyBySlug(familySlug, "en");
+type ProductFamilyPageContentProps = {
+  familySlug: string;
+  locale?: Locale;
+};
+
+export async function ProductFamilyPageContent({
+  familySlug,
+  locale = defaultLocale,
+}: ProductFamilyPageContentProps) {
+  const family = await findCatalogFamilyBySlug(familySlug, locale);
 
   if (!family) notFound();
 
-  const translation = family.translations.find((item) => item.locale === "en") ?? family.translations[0];
+  const translation = getCatalogTranslation(family.translations, locale);
 
   return (
     <Container className="py-16">
-      <Breadcrumb items={[{ label: "Products", href: "/products" }, { label: translation?.name ?? family.slug }]} />
+      <Breadcrumb items={[{ label: "Products", href: getLocalizedHref(locale, "/products") }, { label: translation?.name ?? family.slug }]} />
 
       <div className="mt-8 max-w-4xl">
         <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">{translation?.tag}</p>
@@ -55,7 +65,7 @@ export default async function ProductFamilyPage({ params }: PageProps) {
           {family.series.map((series) => (
             <Link
               key={series.id}
-              href={`/products/${family.slug}/${series.slug}`}
+              href={getLocalizedHref(locale, `/products/${family.slug}/${series.slug}`)}
               className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
             >
               <div className="flex items-center justify-between gap-4">
@@ -72,4 +82,9 @@ export default async function ProductFamilyPage({ params }: PageProps) {
       </section>
     </Container>
   );
+}
+
+export default async function ProductFamilyPage({ params }: PageProps) {
+  const { familySlug } = await params;
+  return <ProductFamilyPageContent familySlug={familySlug} />;
 }

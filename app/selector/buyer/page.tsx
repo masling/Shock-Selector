@@ -3,6 +3,7 @@ import { BuyerSearchClient } from "@/components/marketing/buyer-search-client";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { Container } from "@/components/ui/container";
 import { listCatalogThreadSizes } from "@/lib/catalog/catalog-repository";
+import { defaultLocale, type Locale } from "@/lib/i18n/config";
 import { getSiteCopy } from "@/lib/i18n/site-copy";
 
 export const metadata: Metadata = {
@@ -11,8 +12,12 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function BuyerQuickFilterPage() {
-  const copy = getSiteCopy("en");
+type BuyerQuickFilterPageContentProps = {
+  locale?: Locale;
+};
+
+export async function BuyerQuickFilterPageContent({ locale = defaultLocale }: BuyerQuickFilterPageContentProps) {
+  const copy = getSiteCopy(locale);
   const threadSizes = await listCatalogThreadSizes();
 
   return (
@@ -20,12 +25,16 @@ export default async function BuyerQuickFilterPage() {
       <SectionHeading
         eyebrow={copy.buyer.eyebrow}
         title={copy.buyer.title}
-        description="Search the rebuilt PDF-backed catalog by model, series and key technical values."
+        description="Search shock absorber and vibration isolation products by model, series and key technical values."
       />
 
       <div className="mt-12">
-        <BuyerSearchClient locale="en" copy={copy.buyer} threadSizeOptions={threadSizes} />
+        <BuyerSearchClient locale={locale} copy={copy.buyer} threadSizeOptions={threadSizes} />
       </div>
     </Container>
   );
+}
+
+export default async function BuyerQuickFilterPage() {
+  return <BuyerQuickFilterPageContent />;
 }

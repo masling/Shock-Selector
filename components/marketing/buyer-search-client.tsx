@@ -3,10 +3,13 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { Search, SlidersHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import type { Locale } from "@/lib/i18n/config";
+import { getModelAnchorId } from "@/lib/catalog/model-anchor";
+import { getLocalizedHref } from "@/lib/i18n/routing";
 import type { SiteCopy } from "@/lib/i18n/site-copy";
-import type { CatalogModelSearchResult } from "@/lib/catalog/catalog-schemas";
+import type { CatalogModelListItem, CatalogModelSearchResult } from "@/lib/catalog/catalog-schemas";
+import { readInquiryItems, upsertInquiryItem } from "@/lib/inquiry/inquiry-storage";
 
 const defaultFilters = {
   modelQuery: "",
@@ -29,6 +32,7 @@ export function BuyerSearchClient({ locale, copy, threadSizeOptions }: BuyerSear
   const [filters, setFilters] = useState(defaultFilters);
   const [page, setPage] = useState(1);
   const [result, setResult] = useState<CatalogModelSearchResult | null>(null);
+  const [inquiryModels, setInquiryModels] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -67,12 +71,41 @@ export function BuyerSearchClient({ locale, copy, threadSizeOptions }: BuyerSear
     };
   }, [runSearch]);
 
+  useEffect(() => {
+    setInquiryModels(readInquiryItems().map((item) => item.model));
+  }, []);
+
   function updateFilter(key: keyof typeof defaultFilters, value: string) {
     setFilters((current) => ({ ...current, [key]: value }));
     setPage(1);
   }
 
   const totalPages = result ? Math.max(1, Math.ceil(result.total / result.pageSize)) : 1;
+  const inquiryCopy = locale === "zh-cn"
+    ? { action: "操作", add: "加入询盘", added: "已加入", view: "查看询盘" }
+    : { action: "Action", add: "Add to inquiry", added: "Added", view: "View inquiry" };
+  const inquiryHref = getLocalizedHref(locale, "/inquiry");
+
+  function addInquiryModel(item: CatalogModelListItem) {
+    const nextItems = upsertInquiryItem({
+      model: item.model,
+      familySlug: item.familySlug,
+      familyName: item.familyName,
+      seriesSlug: item.seriesSlug,
+      seriesName: item.seriesName,
+      source: "buyer",
+      filterSummary: buildPayload(),
+    });
+
+    setInquiryModels(nextItems.map((nextItem) => nextItem.model));
+  }
+
+  function getModelHref(item: CatalogModelListItem) {
+    return getLocalizedHref(
+      locale,
+      `/products/${item.familySlug}/${item.seriesSlug}?model=${encodeURIComponent(item.model)}#${getModelAnchorId(item.model)}`,
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -162,11 +195,18 @@ export function BuyerSearchClient({ locale, copy, threadSizeOptions }: BuyerSear
           <p className="text-sm leading-7 text-steel">{copy.noResults}</p>
         ) : (
           <>
-            <div className="mb-6">
-              <h2 className="font-display text-2xl font-semibold">{copy.resultsTitle}</h2>
-              <p className="mt-2 text-sm text-steel">
-                {result.total} {copy.resultsSummary}
-              </p>
+            <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div>
+                <h2 className="font-display text-2xl font-semibold">{copy.resultsTitle}</h2>
+                <p className="mt-2 text-sm text-steel">
+                  {result.total} {copy.resultsSummary}
+                </p>
+              </div>
+              {inquiryModels.length ? (
+                <Link href={inquiryHref} className={buttonVariants({ variant: "accent" })}>
+                  {inquiryCopy.view} ({inquiryModels.length})
+                </Link>
+              ) : null}
             </div>
 
             <div className="overflow-x-auto">
@@ -178,29 +218,44 @@ export function BuyerSearchClient({ locale, copy, threadSizeOptions }: BuyerSear
                     <th className="pb-2">Series</th>
                     <th className="pb-2">Selector</th>
                     <th className="pb-2">Key specs</th>
+                    <th className="pb-2">{inquiryCopy.action}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {result.items.map((item) => (
-                    <tr key={item.id} className="rounded-2xl bg-[#eef1ea] text-ink">
-                      <td className="rounded-l-2xl px-4 py-4 font-medium">
-                        <Link
-                          href={`/products/${item.familySlug}/${item.seriesSlug}`}
-                          className="hover:text-accent-dark"
-                        >
-                          {item.model}
-                        </Link>
-                      </td>
-                      <td className="px-4 py-4">{item.familyName}</td>
-                      <td className="px-4 py-4">{item.seriesCode}</td>
-                      <td className="px-4 py-4">{item.selectorStatus}</td>
-                      <td className="rounded-r-2xl px-4 py-4">
-                        {item.specs.slice(0, 4).map((spec) =>
-                          `${spec.label}: ${spec.rawValue ?? spec.value ?? "—"}`
-                        ).join(" · ")}
-                      </td>
-                    </tr>
-                  ))}
+                  {result.items.map((item) => {
+                    const isAdded = inquiryModels.includes(item.model);
+
+                    return (
+                      <tr key={item.id} className="rounded-2xl bg-[#eef1ea] text-ink">
+                        <td className="rounded-l-2xl px-4 py-4 font-medium">
+                          <Link
+                            href={getModelHref(item)}
+                            className="hover:text-accent-dark"
+                          >
+                            {item.model}
+                          </Link>
+                        </td>
+                        <td className="px-4 py-4">{item.familyName}</td>
+                        <td className="px-4 py-4">{item.seriesCode}</td>
+                        <td className="px-4 py-4">{item.selectorStatus}</td>
+                        <td className="px-4 py-4">
+                          {item.specs.slice(0, 4).map((spec) =>
+                            `${spec.label}: ${spec.rawValue ?? spec.value ?? "—"}`
+                          ).join(" · ")}
+                        </td>
+                        <td className="rounded-r-2xl px-4 py-4">
+                          <button
+                            type="button"
+                            onClick={() => addInquiryModel(item)}
+                            className="rounded-full border border-accent/30 px-3 py-1.5 text-xs font-medium text-accent-dark transition hover:border-accent hover:bg-white disabled:cursor-default disabled:border-line disabled:text-steel"
+                            disabled={isAdded}
+                          >
+                            {isAdded ? inquiryCopy.added : inquiryCopy.add}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

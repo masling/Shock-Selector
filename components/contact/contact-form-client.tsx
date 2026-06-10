@@ -1,27 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { Locale } from "@/lib/i18n/config";
 import { ContactFormSchema, type ContactFormData } from "@/lib/contact/schemas";
 import type { SiteCopy } from "@/lib/i18n/site-copy";
+import { readInquiryItems } from "@/lib/inquiry/inquiry-storage";
 
 type ContactFormClientProps = {
   locale: Locale;
   copy: SiteCopy["contact"]["form"];
+  initialMessage?: string;
 };
 
-export function ContactFormClient({ locale, copy }: ContactFormClientProps) {
+export function ContactFormClient({ locale, copy, initialMessage = "" }: ContactFormClientProps) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     company: "",
     phone: "",
-    message: "",
+    message: initialMessage.trim(),
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState<"success" | "error" | "rateLimit" | null>(null);
+
+  useEffect(() => {
+    const inquiryItems = readInquiryItems();
+    if (!inquiryItems.length) {
+      return;
+    }
+
+    const inquiryMessage = [
+      locale === "zh-cn" ? "询盘型号：" : "Inquiry models:",
+      ...inquiryItems.map((item) => {
+        const note = item.note ? `, ${locale === "zh-cn" ? "备注" : "note"}: ${item.note}` : "";
+        return `- ${item.model} (${item.seriesName}), ${locale === "zh-cn" ? "数量" : "qty"}: ${item.quantity}, ${locale === "zh-cn" ? "来源" : "source"}: ${item.source}${note}`;
+      }),
+    ].join("\n");
+
+    setFormData((current) => ({
+      ...current,
+      message: current.message ? `${current.message}\n\n${inquiryMessage}` : inquiryMessage,
+    }));
+  }, [locale]);
 
   function handleChange(field: string, value: string) {
     setFormData((current) => ({ ...current, [field]: value }));

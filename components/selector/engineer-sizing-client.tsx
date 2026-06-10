@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { Calculator, ChevronRight, FlaskConical, Settings2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ReadableFilter } from "@/components/selector/readable-filter";
 import type { CalculateResponse } from "@/lib/calculators/types";
@@ -12,7 +12,9 @@ import type { Locale } from "@/lib/i18n/config";
 import { getLocalizedProductFamilyName } from "@/lib/i18n/product-copy";
 import { getLocalizedHref } from "@/lib/i18n/routing";
 import type { SiteCopy } from "@/lib/i18n/site-copy";
+import { getModelAnchorId } from "@/lib/catalog/model-anchor";
 import type { CatalogModelListItem, CatalogSpecListItem } from "@/lib/catalog/catalog-schemas";
+import { readInquiryItems, upsertInquiryItem } from "@/lib/inquiry/inquiry-storage";
 
 type ScenarioField = {
   key: string;
@@ -578,15 +580,38 @@ function EngineerCalculationResult({
   copy: SiteCopy["engineer"];
   result: CalculateResponse | null;
 }) {
+  const [inquiryModels, setInquiryModels] = useState<string[]>([]);
+
+  useEffect(() => {
+    setInquiryModels(readInquiryItems().map((item) => item.model));
+  }, []);
+
+  const inquiryCopy = locale === "zh-cn"
+    ? {
+        action: "操作",
+        add: "加入询盘",
+        added: "已加入",
+        view: "查看询盘",
+      }
+    : {
+        action: "Action",
+        add: "Add to inquiry",
+        added: "Added",
+        view: "View inquiry",
+      };
+
   if (!result) {
     return null;
   }
+
+  const calculationResult = result;
 
   const detailLabelMap: Record<string, Record<Locale, string>> = {
     kineticEnergyNm: { en: "Kinetic energy", "zh-cn": "动能", de: "Kinetische Energie", fr: "Énergie cinétique", it: "Energia cinetica" },
     workingEnergyNm: { en: "Working energy", "zh-cn": "做功能量", de: "Arbeitsenergie", fr: "Énergie de travail", it: "Energia di lavoro" },
     totalEnergyPerCycleNm: { en: "Total energy / cycle", "zh-cn": "总能量（每次）", de: "Gesamtenergie / Zyklus", fr: "Énergie totale / cycle", it: "Energia totale / ciclo" },
     totalEnergyPerHourNm: { en: "Total energy / hour", "zh-cn": "总能量（每小时）", de: "Gesamtenergie / Stunde", fr: "Énergie totale / heure", it: "Energia totale / ora" },
+    averageDampingForceN: { en: "Average damping force", "zh-cn": "平均缓冲力", de: "Mittlere Dämpfungskraft", fr: "Force d'amortissement moyenne", it: "Forza media di smorzamento" },
     thrustForceN: { en: "Thrust force", "zh-cn": "推进力", de: "Schubkraft", fr: "Force de poussée", it: "Forza di spinta" },
     decelerationG: { en: "Deceleration", "zh-cn": "减速加速度", de: "Verzögerung", fr: "Décélération", it: "Decelerazione" },
     impactVelocityMs: { en: "Impact velocity", "zh-cn": "冲击速度", de: "Aufprallgeschwindigkeit", fr: "Vitesse d'impact", it: "Velocità d'impatto" },
@@ -596,22 +621,31 @@ function EngineerCalculationResult({
     return detailLabelMap[key]?.[locale] ?? key;
   }
 
+  function getAverageForceLabel() {
+    const forceMetric = calculationResult.calculation.detailMetrics?.find((metric) =>
+      metric.key === "averageDampingForceN" || metric.key === "thrustForceN",
+    );
+
+    return forceMetric ? getDetailLabel(forceMetric.key) : copy.result.labels.averageImpactForce;
+  }
+
   const preferredSummaryKeys = [
     "kineticEnergyNm",
     "workingEnergyNm",
     "totalEnergyPerCycleNm",
     "totalEnergyPerHourNm",
+    "averageDampingForceN",
     "thrustForceN",
   ];
 
-  const summaryMetricCards = result.calculation.detailMetrics?.length
+  const summaryMetricCards = calculationResult.calculation.detailMetrics?.length
     ? preferredSummaryKeys
-        .map((key) => result.calculation.detailMetrics?.find((metric) => metric.key === key))
+        .map((key) => calculationResult.calculation.detailMetrics?.find((metric) => metric.key === key))
         .filter((metric): metric is NonNullable<typeof metric> => Boolean(metric))
     : [];
   const usesThrustMetric =
-    Boolean((result.filter as Record<string, unknown>).minThrustForceN) ||
-    Boolean(result.calculation.detailMetrics?.some((metric) => metric.key === "thrustForceN"));
+    Boolean((calculationResult.filter as Record<string, unknown>).minThrustForceN) ||
+    Boolean(calculationResult.calculation.detailMetrics?.some((metric) => metric.key === "thrustForceN"));
   function getSpecValue(specs: CatalogSpecListItem[], key: string): number | string | null {
     return specs.find((spec) => spec.key === key)?.value ?? null;
   }
@@ -629,6 +663,38 @@ function EngineerCalculationResult({
     : copy.result.table.impactForce;
   const getForceCellValue = (item: CatalogModelListItem) =>
     usesThrustMetric ? formatValue(getSpecValue(item.specs, "maxThrustForceN")) : formatValue(getSpecValue(item.specs, "maxImpactForceN"));
+
+  function addInquiryModel(item: CatalogModelListItem) {
+    const nextItems = upsertInquiryItem({
+      model: item.model,
+      familySlug: item.familySlug,
+      familyName: item.familyName,
+      seriesSlug: item.seriesSlug,
+      seriesName: item.seriesName,
+      source: "engineer",
+      variantKey: calculationResult.variantKey,
+      inputSummary: calculationResult.normalizedInput,
+      resultSummary: {
+        requiredStrokeMm: calculationResult.calculation.requiredStrokeMm,
+        requiredEnergyPerCycleNm: calculationResult.calculation.requiredEnergyPerCycleNm,
+        requiredEnergyPerHourNm: calculationResult.calculation.requiredEnergyPerHourNm,
+        averageImpactForceN: calculationResult.calculation.averageImpactForceN,
+        recommendedFamilySlug: calculationResult.calculation.recommendedFamilySlug,
+      },
+      filterSummary: calculationResult.filter,
+    });
+
+    setInquiryModels(nextItems.map((nextItem) => nextItem.model));
+  }
+
+  function getModelHref(item: CatalogModelListItem) {
+    return getLocalizedHref(
+      locale,
+      `/products/${item.familySlug}/${item.seriesSlug}?model=${encodeURIComponent(item.model)}#${getModelAnchorId(item.model)}`,
+    );
+  }
+
+  const inquiryHref = getLocalizedHref(locale, "/inquiry");
 
   return (
     <div className="space-y-8">
@@ -655,7 +721,7 @@ function EngineerCalculationResult({
                   {copy.result.labels.requiredStroke}
                 </div>
                 <div className="mt-3 text-sm font-medium text-ink">
-                  {String(result.calculation.requiredStrokeMm ?? "—")} mm
+                  {String(calculationResult.calculation.requiredStrokeMm ?? "—")} mm
                 </div>
               </div>
               <div className="rounded-[1.5rem] border border-line bg-white p-5">
@@ -665,8 +731,8 @@ function EngineerCalculationResult({
                 <div className="mt-3 text-sm font-medium text-ink">
                   {getLocalizedProductFamilyName(
                     locale,
-                    result.calculation.recommendedFamilySlug,
-                    String(result.calculation.recommendedFamilySlug ?? "—"),
+                    calculationResult.calculation.recommendedFamilySlug,
+                    String(calculationResult.calculation.recommendedFamilySlug ?? "—"),
                   )}
                 </div>
               </div>
@@ -675,16 +741,16 @@ function EngineerCalculationResult({
         ) : (
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
             {[
-              [copy.result.labels.requiredStroke, `${String(result.calculation.requiredStrokeMm ?? "—")} mm`],
-              [copy.result.labels.energyPerCycle, result.calculation.requiredEnergyPerCycleNm],
-              [copy.result.labels.energyPerHour, result.calculation.requiredEnergyPerHourNm],
-              [copy.result.labels.averageImpactForce, result.calculation.averageImpactForceN],
+              [copy.result.labels.requiredStroke, `${String(calculationResult.calculation.requiredStrokeMm ?? "—")} mm`],
+              [copy.result.labels.energyPerCycle, calculationResult.calculation.requiredEnergyPerCycleNm],
+              [copy.result.labels.energyPerHour, calculationResult.calculation.requiredEnergyPerHourNm],
+              [getAverageForceLabel(), calculationResult.calculation.averageImpactForceN],
               [
                 copy.result.labels.suggestedFamily,
                 getLocalizedProductFamilyName(
                   locale,
-                  result.calculation.recommendedFamilySlug,
-                  String(result.calculation.recommendedFamilySlug ?? "—"),
+                  calculationResult.calculation.recommendedFamilySlug,
+                  String(calculationResult.calculation.recommendedFamilySlug ?? "—"),
                 ),
               ],
             ].map(([label, value]) => (
@@ -709,12 +775,12 @@ function EngineerCalculationResult({
           <div>
             <h3 className="font-display text-xl font-semibold">{copy.result.criteriaTitle}</h3>
             <div className="mt-4">
-              <ReadableFilter filter={result.filter as Record<string, number | string>} locale={locale} />
+              <ReadableFilter filter={calculationResult.filter as Record<string, number | string>} locale={locale} />
             </div>
           </div>
         </div>
 
-        {result.calculation.detailMetrics?.length ? (
+        {calculationResult.calculation.detailMetrics?.length ? (
           <div className="mt-8 rounded-[1.5rem] border border-line bg-sand p-5">
             <h3 className="font-display text-xl font-semibold">
               {locale === "zh-cn" ? "公式结果明细" : "Calculation breakdown"}
@@ -729,7 +795,7 @@ function EngineerCalculationResult({
                   </tr>
                 </thead>
                 <tbody>
-                  {result.calculation.detailMetrics.map((metric) => (
+                  {calculationResult.calculation.detailMetrics.map((metric) => (
                     <tr key={metric.key} className="border-t border-line/70">
                       <td className="py-3 font-medium text-ink">{getDetailLabel(metric.key)}</td>
                       <td className="py-3 text-ink">{String(metric.value)}</td>
@@ -751,6 +817,11 @@ function EngineerCalculationResult({
               {result.matches.total} {copy.result.matchesSummary}
             </p>
           </div>
+          {inquiryModels.length ? (
+            <Link href={inquiryHref} className={buttonVariants({ variant: "accent" })}>
+              {inquiryCopy.view} ({inquiryModels.length})
+            </Link>
+          ) : null}
         </div>
 
         {result.matches.items.length > 0 ? (
@@ -765,27 +836,42 @@ function EngineerCalculationResult({
                   <th className="pb-2">{copy.result.table.energyPerHour}</th>
                   <th className="pb-2">{forceColumnLabel}</th>
                   <th className="pb-2">{copy.result.table.thread}</th>
+                  <th className="pb-2">{inquiryCopy.action}</th>
                 </tr>
               </thead>
               <tbody>
-                {result.matches.items.map((item: CatalogModelListItem) => (
-                  <tr key={item.id} className="rounded-2xl bg-[#eef1ea] text-ink">
-                    <td className="rounded-l-2xl px-4 py-4 font-medium">
-                      <Link
-                        href={getLocalizedHref(locale, `/products/catalog/${item.id}`)}
-                        className="hover:text-accent-dark"
-                      >
-                        {item.model}
-                      </Link>
-                    </td>
-                    <td className="px-4 py-4">{item.seriesName}</td>
-                    <td className="px-4 py-4">{formatValue(getSpecValue(item.specs, "strokeMm"))}</td>
-                    <td className="px-4 py-4">{formatValue(getSpecValue(item.specs, "energyPerCycleNm"))}</td>
-                    <td className="px-4 py-4">{formatValue(getSpecValue(item.specs, "energyPerHourNm"))}</td>
-                    <td className="px-4 py-4">{getForceCellValue(item)}</td>
-                    <td className="rounded-r-2xl px-4 py-4">{formatValue(getSpecValue(item.specs, "threadSize"))}</td>
-                  </tr>
-                ))}
+                {result.matches.items.map((item: CatalogModelListItem) => {
+                  const isAdded = inquiryModels.includes(item.model);
+
+                  return (
+                    <tr key={item.id} className="rounded-2xl bg-[#eef1ea] text-ink">
+                      <td className="rounded-l-2xl px-4 py-4 font-medium">
+                        <Link
+                          href={getModelHref(item)}
+                          className="hover:text-accent-dark"
+                        >
+                          {item.model}
+                        </Link>
+                      </td>
+                      <td className="px-4 py-4">{item.seriesName}</td>
+                      <td className="px-4 py-4">{formatValue(getSpecValue(item.specs, "strokeMm"))}</td>
+                      <td className="px-4 py-4">{formatValue(getSpecValue(item.specs, "energyPerCycleNm"))}</td>
+                      <td className="px-4 py-4">{formatValue(getSpecValue(item.specs, "energyPerHourNm"))}</td>
+                      <td className="px-4 py-4">{getForceCellValue(item)}</td>
+                      <td className="px-4 py-4">{formatValue(getSpecValue(item.specs, "threadSize"))}</td>
+                      <td className="rounded-r-2xl px-4 py-4">
+                        <button
+                          type="button"
+                          onClick={() => addInquiryModel(item)}
+                          className="rounded-full border border-accent/30 px-3 py-1.5 text-xs font-medium text-accent-dark transition hover:border-accent hover:bg-white disabled:cursor-default disabled:border-line disabled:text-steel"
+                          disabled={isAdded}
+                        >
+                          {isAdded ? inquiryCopy.added : inquiryCopy.add}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
