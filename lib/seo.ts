@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { defaultLocale, locales, type Locale } from "@/lib/i18n/config";
 
-const fallbackSiteUrl = "https://www.vibroabsorber.com";
+const productionSiteUrl = "https://www.vibroabsorber.com";
 
 export const staticSeoPaths = [
   "",
@@ -18,12 +18,9 @@ export const staticSeoPaths = [
 export type SeoPath = (typeof staticSeoPaths)[number] | `/${string}`;
 
 export function getSiteUrl() {
-  const configuredUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    process.env.SITE_URL ??
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined);
+  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.SITE_URL ?? productionSiteUrl;
 
-  return (configuredUrl ?? fallbackSiteUrl).replace(/\/+$/, "");
+  return configuredUrl.replace(/\/+$/, "");
 }
 
 export function getMetadataBase() {
