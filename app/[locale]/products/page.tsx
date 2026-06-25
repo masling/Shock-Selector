@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProductsPageContent } from "@/components/products/products-page-content";
 import { isLocale } from "@/lib/i18n/config";
+import { getProductCenterCopy } from "@/lib/i18n/page-copy";
 import { getLocalizedAlternates } from "@/lib/seo";
 
 type LocaleProductsPageProps = {
@@ -17,9 +18,11 @@ export async function generateMetadata({ params }: LocaleProductsPageProps): Pro
     return {};
   }
 
+  const copy = getProductCenterCopy(locale);
+
   return {
-    title: "Shock absorber and vibration isolation products",
-    description: "Browse product families, technical series, model specifications, product features and application notes.",
+    title: copy.metadataTitle,
+    description: copy.metadataDescription,
     alternates: getLocalizedAlternates(locale, "/products"),
   };
 }

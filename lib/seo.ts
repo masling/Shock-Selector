@@ -8,6 +8,8 @@ export const staticSeoPaths = [
   "/products",
   "/solutions",
   "/applications",
+  "/knowledge-center",
+  "/knowledge-center/calculations",
   "/downloads",
   "/about",
   "/contact",

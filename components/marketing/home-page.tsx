@@ -1,14 +1,16 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Factory, Gauge, Search, Settings2 } from "lucide-react";
+import { ArrowRight, BookOpen, CheckCircle2, Factory, Gauge, Search, Settings2 } from "lucide-react";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { buttonVariants } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { getCatalogTranslation } from "@/lib/catalog/catalog-i18n";
 import { findCatalogFamilies, getCatalogModelCount } from "@/lib/catalog/catalog-repository";
 import type { Locale } from "@/lib/i18n/config";
+import { getKnowledgeCenterCopy, getProductCenterCopy } from "@/lib/i18n/page-copy";
 import { getLocalizedHref } from "@/lib/i18n/routing";
 import { localizeScenarioCatalog } from "@/lib/i18n/scenario-copy";
 import { getSiteCopy } from "@/lib/i18n/site-copy";
+import { calculationArticles, getKnowledgeArticlePath } from "@/lib/knowledge-center/content";
 import { getScenarioCatalog } from "@/lib/scenarios/registry";
 import { cn } from "@/lib/utils/cn";
 
@@ -25,6 +27,8 @@ const applicationHrefs = [
 
 export async function HomePage({ locale }: HomePageProps) {
   const copy = getSiteCopy(locale);
+  const knowledgeCopy = getKnowledgeCenterCopy(locale);
+  const productCopy = getProductCenterCopy(locale);
   const scenarioCategories = localizeScenarioCatalog(getScenarioCatalog(), locale).entries;
 
   let importedProductCount = 0;
@@ -175,6 +179,49 @@ export async function HomePage({ locale }: HomePageProps) {
         </Container>
       </section>
 
+      <section className="section-border bg-[#eef1ea]">
+        <Container className="py-16">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-3xl">
+              <p className="text-sm uppercase tracking-[0.18em] text-accent-dark">
+                {knowledgeCopy.heroEyebrow}
+              </p>
+              <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight">
+                {knowledgeCopy.featuredTitle}
+              </h2>
+              <p className="mt-4 text-sm leading-7 text-steel">
+                {knowledgeCopy.calculationsHeroDescription}
+              </p>
+            </div>
+            <Link
+              href={getLocalizedHref(locale, "/knowledge-center/calculations")}
+              className={cn(buttonVariants({ variant: "secondary" }), "w-fit")}
+            >
+              {knowledgeCopy.browseCalculations}
+            </Link>
+          </div>
+          <div className="mt-8 grid gap-5 lg:grid-cols-3">
+            {calculationArticles.slice(0, 3).map((article) => (
+              <Link
+                key={article.slug}
+                href={getLocalizedHref(locale, getKnowledgeArticlePath(article))}
+                className="group rounded-[1.75rem] border border-line bg-white/80 p-6 transition hover:-translate-y-1 hover:shadow-panel"
+              >
+                <BookOpen className="h-5 w-5 text-accent-dark" />
+                <h3 className="mt-4 font-display text-2xl font-semibold text-ink">
+                  {article.shortTitle}
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-steel">{article.description}</p>
+                <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-accent-dark">
+                  {knowledgeCopy.readAnswer}
+                  <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </Container>
+      </section>
+
       <section className="section-border">
         <Container className="py-20">
           <SectionHeading
@@ -197,17 +244,17 @@ export async function HomePage({ locale }: HomePageProps) {
                   className="group rounded-[2rem] border border-line bg-white/80 p-7 shadow-sm transition hover:-translate-y-1 hover:shadow-panel"
                 >
                   <div className="text-xs uppercase tracking-[0.18em] text-accent-dark">
-                    {translation?.tag ?? "Product family"}
+                    {translation?.tag ?? productCopy.familyFallbackTag}
                   </div>
                   <h3 className="mt-4 font-display text-2xl font-semibold text-ink">
                     {translation?.name ?? family.slug}
                   </h3>
                   <p className="mt-4 text-sm leading-7 text-steel">
-                    {translation?.summary ?? "Browse technical series and catalog models."}
+                    {translation?.summary ?? productCopy.familyFallbackSummary}
                   </p>
                   <div className="mt-5 flex flex-wrap gap-2 text-xs text-steel">
                     <span className="rounded-full border border-line bg-sand px-3 py-1">
-                      {family.series.length} technical series
+                      {family.series.length} {productCopy.technicalSeriesLabel}
                     </span>
                   </div>
                 </Link>

@@ -11,8 +11,8 @@ const googleAnalyticsId = "G-YVJYV2FPW3";
 export const metadata: Metadata = {
   metadataBase: getMetadataBase(),
   title: {
-    default: "EKD | Industrial Shock Absorber Selection Platform",
-    template: "%s | EKD",
+    default: "Industrial Shock Absorber Selection Platform",
+    template: "%s",
   },
   description:
     "Find suitable industrial shock absorbers, heavy duty buffers and vibration isolation products with product discovery and sizing-first navigation.",

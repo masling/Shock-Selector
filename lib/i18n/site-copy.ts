@@ -275,15 +275,15 @@ const englishCopy: SiteCopy = {
     it: "Italiano",
   },
   metadata: {
-    defaultTitle: "EKD | Industrial Shock Absorber Selection Platform",
+    defaultTitle: "Industrial Shock Absorber Selection Platform",
     defaultDescription:
       "Find suitable industrial shock absorbers, heavy duty buffers and vibration isolation products with product discovery and sizing-first navigation.",
     homeTitle: "Industrial Shock Absorber Selection and Product Finder",
     productsTitle: "Industrial Shock Absorbers, Buffers and Isolation Products",
     buyerTitle: "Buyer Quick Filter for Shock Absorber Shortlists",
     engineerTitle: "Engineer Sizing Tool for Shock Absorber Selection",
-    aboutTitle: "About EKD Industrial Motion Protection and Support",
-    contactTitle: "Contact EKD for Shock Absorber Selection Support",
+    aboutTitle: "Industrial Motion Protection and Engineering Support",
+    contactTitle: "Contact Shock Absorber Selection Support",
     downloadsTitle: "Shock Absorber Catalogs and Technical Downloads",
     solutionsTitle: "Shock Absorber Solutions by Motion and Drive Type",
     applicationsTitle: "Industrial Shock Absorber Applications and Use Cases",
@@ -297,6 +297,7 @@ const englishCopy: SiteCopy = {
     items: [
       { label: "Products", href: "/products" },
       { label: "Sizing", href: "/selector/engineer", highlight: true },
+      { label: "Knowledge Center", href: "/knowledge-center" },
       { label: "Applications", href: "/applications" },
       { label: "Downloads", href: "/downloads" },
       { label: "About", href: "/about" },
@@ -308,7 +309,7 @@ const englishCopy: SiteCopy = {
   },
   footer: {
     summary:
-      "Find product families, compare models and start sizing from real application conditions. EKD supports both quick shortlisting and deeper engineering review.",
+      "Find product families, compare models and start sizing from real application conditions. The site supports both quick shortlisting and deeper engineering review.",
     groups: [
       {
         title: "Find Products",
@@ -316,6 +317,7 @@ const englishCopy: SiteCopy = {
           { label: "All product families", href: "/products" },
           { label: "Find by application", href: "/applications" },
           { label: "Engineer sizing", href: "/selector/engineer" },
+          { label: "Knowledge Center", href: "/knowledge-center" },
           { label: "Buyer quick filter", href: "/selector/buyer" },
         ],
       },
@@ -323,6 +325,7 @@ const englishCopy: SiteCopy = {
         title: "Resources",
         links: [
           { label: "Applications", href: "/applications" },
+          { label: "Calculations", href: "/knowledge-center/calculations" },
           { label: "Downloads", href: "/downloads" },
           { label: "About EKD", href: "/about" },
         ],
@@ -342,7 +345,7 @@ const englishCopy: SiteCopy = {
     badge: "Find the right starting point",
     title: "Find the right industrial shock absorber before you read the brochure.",
     description:
-      "EKD combines product families, application guidance and motion sizing so engineers and buyers can reach a suitable shortlist faster.",
+      "Product families, application guidance and motion sizing work together so engineers and buyers can reach a suitable shortlist faster.",
     primaryCta: "Browse Product Families",
     secondaryCta: "Open Sizing Tool",
     audienceCards: [
@@ -444,7 +447,7 @@ const englishCopy: SiteCopy = {
       eyebrow: "Engineering support",
       title: "Industrial experience behind the selection path.",
       description:
-        "EKD combines product coverage, application support and selection guidance for standard automation and severe-duty impact control.",
+        "Product coverage, application support and selection guidance are available for standard automation and severe-duty impact control.",
       items: [
         "30+ employees with a core team carrying 15+ years of industry experience",
         "Application experience across standard industrial and demanding heavy-duty environments",
@@ -623,7 +626,7 @@ const englishCopy: SiteCopy = {
     action: "Download",
     items: [
       {
-        title: "EKD Full Product Catalog",
+        title: "Full Product Catalog",
         description:
           "Broad product overview for hydraulic shock absorbers and related motion control lines.",
         path: "/catalogs/ekd-full-catalog.pdf",
@@ -702,15 +705,15 @@ const chineseCopy: SiteCopy = {
   ...englishCopy,
   metadata: {
     ...englishCopy.metadata,
-    defaultTitle: "EKD | 工业缓冲器在线选型平台",
+    defaultTitle: "工业缓冲器在线选型平台",
     defaultDescription:
       "面向工业设备应用的缓冲器、重载液压缓冲器与隔振产品选型平台，支持产品检索与工况选型。",
     homeTitle: "工业缓冲器在线选型与产品检索平台",
     productsTitle: "工业缓冲器、液压缓冲器与隔振产品中心",
     buyerTitle: "采购快速筛选工业缓冲器与候选型号",
     engineerTitle: "工程师工业缓冲器工况选型与计算工具",
-    aboutTitle: "关于 EKD 工业运动防护与工程支持",
-    contactTitle: "联系 EKD 获取缓冲器选型与技术支持",
+    aboutTitle: "工业运动防护与工程支持",
+    contactTitle: "缓冲器选型与技术支持联系",
     downloadsTitle: "工业缓冲器产品样本与技术资料下载",
     solutionsTitle: "按运动与驱动方式选择工业缓冲器方案",
     applicationsTitle: "工业缓冲器典型应用场景与行业案例",
@@ -724,6 +727,7 @@ const chineseCopy: SiteCopy = {
     items: [
       { label: "产品中心", href: "/products" },
       { label: "在线选型", href: "/selector/engineer", highlight: true },
+      { label: "知识中心", href: "/knowledge-center" },
       { label: "应用场景", href: "/applications" },
       { label: "资料下载", href: "/downloads" },
       { label: "关于我们", href: "/about" },
@@ -743,6 +747,7 @@ const chineseCopy: SiteCopy = {
           { label: "全部产品系列", href: "/products" },
           { label: "按应用查找", href: "/applications" },
           { label: "工程师选型", href: "/selector/engineer" },
+          { label: "知识中心", href: "/knowledge-center" },
           { label: "采购快速筛选", href: "/selector/buyer" },
         ],
       },
@@ -750,6 +755,7 @@ const chineseCopy: SiteCopy = {
         title: "资料与信息",
         links: [
           { label: "应用场景", href: "/applications" },
+          { label: "计算选型知识", href: "/knowledge-center/calculations" },
           { label: "资料下载", href: "/downloads" },
           { label: "关于 EKD", href: "/about" },
         ],
@@ -1106,15 +1112,15 @@ const germanCopy: SiteCopy = {
   ...englishCopy,
   metadata: {
     ...englishCopy.metadata,
-    defaultTitle: "EKD | Plattform zur Auswahl industrieller Stoßdämpfer",
+    defaultTitle: "Plattform zur Auswahl industrieller Stoßdämpfer",
     defaultDescription:
       "Finden Sie geeignete industrielle Stoßdämpfer, Schwerlastpuffer und Schwingungsisolatoren mit produktspezifischer Suche und auslegungsorientierter Navigation.",
     homeTitle: "Auswahlplattform für industrielle Stoßdämpfer",
     productsTitle: "Industrielle Stoßdämpfer, Puffer und Isolatoren",
     buyerTitle: "Schnellfilter für Einkäufer von Stoßdämpfern",
     engineerTitle: "Auslegungstool für industrielle Stoßdämpfer",
-    aboutTitle: "Über EKD Bewegungsschutz und Engineering-Support",
-    contactTitle: "EKD Kontakt für Stoßdämpfer-Auswahl und Support",
+    aboutTitle: "Bewegungsschutz und Engineering-Support",
+    contactTitle: "Kontakt für Stoßdämpfer-Auswahl und Support",
     downloadsTitle: "Stoßdämpfer-Kataloge und technische Downloads",
     solutionsTitle: "Stoßdämpfer-Lösungen nach Bewegung und Antrieb",
     applicationsTitle: "Anwendungen für industrielle Stoßdämpfer und Puffer",
@@ -1128,6 +1134,7 @@ const germanCopy: SiteCopy = {
     items: [
       { label: "Produkte", href: "/products" },
       { label: "Auslegung", href: "/selector/engineer", highlight: true },
+      { label: "Wissenszentrum", href: "/knowledge-center" },
       { label: "Anwendungen", href: "/applications" },
       { label: "Downloads", href: "/downloads" },
       { label: "Über uns", href: "/about" },
@@ -1147,6 +1154,7 @@ const germanCopy: SiteCopy = {
           { label: "Alle Produktfamilien", href: "/products" },
           { label: "Nach Anwendung suchen", href: "/applications" },
           { label: "Ingenieur-Auslegung", href: "/selector/engineer" },
+          { label: "Wissenszentrum", href: "/knowledge-center" },
           { label: "Schnellfilter", href: "/selector/buyer" },
         ],
       },
@@ -1541,15 +1549,15 @@ const frenchCopy: SiteCopy = {
   ...englishCopy,
   metadata: {
     ...englishCopy.metadata,
-    defaultTitle: "EKD | Plateforme de sélection d'amortisseurs industriels",
+    defaultTitle: "Plateforme de sélection d'amortisseurs industriels",
     defaultDescription:
       "Trouvez des amortisseurs industriels, buffers lourds et isolateurs vibratoires adaptés grâce à une recherche produit et une navigation orientée dimensionnement.",
     homeTitle: "Plateforme de sélection d'amortisseurs industriels",
     productsTitle: "Amortisseurs industriels, buffers et isolateurs",
     buyerTitle: "Filtre rapide acheteur pour amortisseurs industriels",
     engineerTitle: "Outil de dimensionnement pour amortisseurs industriels",
-    aboutTitle: "À propos d'EKD et du support en protection du mouvement",
-    contactTitle: "Contacter EKD pour sélectionner un amortisseur industriel",
+    aboutTitle: "Support en protection du mouvement",
+    contactTitle: "Contact pour sélectionner un amortisseur industriel",
     downloadsTitle: "Catalogues d'amortisseurs et téléchargements techniques",
     solutionsTitle: "Solutions d'amortisseurs par mouvement et entraînement",
     applicationsTitle: "Applications des amortisseurs industriels et buffers",
@@ -1563,6 +1571,7 @@ const frenchCopy: SiteCopy = {
     items: [
       { label: "Produits", href: "/products" },
       { label: "Dimensionnement", href: "/selector/engineer", highlight: true },
+      { label: "Centre de connaissances", href: "/knowledge-center" },
       { label: "Applications", href: "/applications" },
       { label: "Téléchargements", href: "/downloads" },
       { label: "À propos", href: "/about" },
@@ -1580,6 +1589,7 @@ const frenchCopy: SiteCopy = {
           { label: "Toutes les familles", href: "/products" },
           { label: "Par application", href: "/applications" },
           { label: "Dimensionnement ingénieur", href: "/selector/engineer" },
+          { label: "Centre de connaissances", href: "/knowledge-center" },
           { label: "Filtre rapide", href: "/selector/buyer" },
         ],
       },
@@ -1825,15 +1835,15 @@ const italianCopy: SiteCopy = {
   ...englishCopy,
   metadata: {
     ...englishCopy.metadata,
-    defaultTitle: "EKD | Piattaforma di selezione per ammortizzatori industriali",
+    defaultTitle: "Piattaforma di selezione per ammortizzatori industriali",
     defaultDescription:
       "Trova ammortizzatori industriali, buffer heavy-duty e isolatori antivibranti con ricerca prodotto e navigazione orientata al dimensionamento.",
     homeTitle: "Piattaforma per selezionare ammortizzatori industriali",
     productsTitle: "Ammortizzatori industriali, buffer e isolatori",
     buyerTitle: "Filtro rapido acquisti per ammortizzatori industriali",
     engineerTitle: "Strumento tecnico per selezionare ammortizzatori",
-    aboutTitle: "EKD protezione del movimento e supporto tecnico",
-    contactTitle: "Contatta EKD per selezione e supporto tecnico",
+    aboutTitle: "Protezione del movimento e supporto tecnico",
+    contactTitle: "Contatto per selezione e supporto tecnico",
     downloadsTitle: "Cataloghi ammortizzatori e download tecnici",
     solutionsTitle: "Soluzioni ammortizzatori per movimento e azionamento",
     applicationsTitle: "Applicazioni per ammortizzatori industriali e buffer",
@@ -1847,6 +1857,7 @@ const italianCopy: SiteCopy = {
     items: [
       { label: "Prodotti", href: "/products" },
       { label: "Dimensionamento", href: "/selector/engineer", highlight: true },
+      { label: "Centro conoscenze", href: "/knowledge-center" },
       { label: "Applicazioni", href: "/applications" },
       { label: "Download", href: "/downloads" },
       { label: "Chi siamo", href: "/about" },
@@ -1864,6 +1875,7 @@ const italianCopy: SiteCopy = {
           { label: "Tutte le famiglie", href: "/products" },
           { label: "Per applicazione", href: "/applications" },
           { label: "Dimensionamento tecnico", href: "/selector/engineer" },
+          { label: "Centro conoscenze", href: "/knowledge-center" },
           { label: "Filtro rapido", href: "/selector/buyer" },
         ],
       },

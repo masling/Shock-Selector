@@ -34,7 +34,7 @@ export async function generateMetadata({
   return {
     title: {
       default: copy.metadata.defaultTitle,
-      template: "%s | EKD",
+      template: "%s",
     },
     description: copy.metadata.defaultDescription,
   };
