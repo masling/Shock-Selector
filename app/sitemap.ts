@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { findCatalogFamilies } from "@/lib/catalog/catalog-repository";
 import { defaultLocale, locales, type Locale } from "@/lib/i18n/config";
-import { knowledgeArticles, getKnowledgeArticlePath } from "@/lib/knowledge-center/content";
+import { knowledgeArticles, getKnowledgeArticlePath, knowledgeCategories } from "@/lib/knowledge-center/content";
 import { getAbsoluteUrl, getLocalizedPath, staticSeoPaths, type SeoPath } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -44,8 +44,11 @@ async function getProductPaths() {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
+  const knowledgeCategoryPaths = knowledgeCategories
+    .filter((category) => category.slug !== "calculations")
+    .map((category) => `/knowledge-center/${category.slug}` as SeoPath);
   const knowledgePaths = knowledgeArticles.map((article) => getKnowledgeArticlePath(article) as SeoPath);
-  const paths = [...staticSeoPaths, ...knowledgePaths, ...(await getProductPaths())];
+  const paths = [...staticSeoPaths, ...knowledgeCategoryPaths, ...knowledgePaths, ...(await getProductPaths())];
 
   return locales.flatMap((locale) => paths.map((path) => sitemapEntry(locale, path, lastModified)));
 }

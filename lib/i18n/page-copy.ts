@@ -69,8 +69,10 @@ type KnowledgeCenterCopy = {
   formulaLogic: string;
   unit: string;
   calculationSteps: string;
+  reviewSteps: string;
   commonMistakes: string;
   catalogSourceNotes: string;
+  technicalNotes: string;
   moveToShortlistTitle: string;
   moveToShortlistDescription: string;
   categories: Record<string, { title: string; description: string }>;
@@ -312,8 +314,10 @@ const knowledgeCenterCopyByLocale: Record<Locale, KnowledgeCenterCopy> = {
     formulaLogic: "Formula logic",
     unit: "Unit",
     calculationSteps: "Calculation steps",
+    reviewSteps: "Review steps",
     commonMistakes: "Common mistakes",
     catalogSourceNotes: "Catalog source notes",
+    technicalNotes: "Technical notes",
     moveToShortlistTitle: "Move from answer to model shortlist.",
     moveToShortlistDescription:
       "Use the sizing tool when you have the inputs, or send the application data for engineering review.",
@@ -369,8 +373,10 @@ const knowledgeCenterCopyByLocale: Record<Locale, KnowledgeCenterCopy> = {
     formulaLogic: "公式逻辑",
     unit: "单位",
     calculationSteps: "计算步骤",
+    reviewSteps: "判断步骤",
     commonMistakes: "常见错误",
     catalogSourceNotes: "目录来源说明",
+    technicalNotes: "技术说明",
     moveToShortlistTitle: "从答案进入型号 shortlist。",
     moveToShortlistDescription: "已有输入参数时可使用选型工具，也可以发送应用数据做工程复核。",
     categories: {
@@ -469,8 +475,10 @@ const knowledgeCenterCopyByLocale: Record<Locale, KnowledgeCenterCopy> = {
     formulaLogic: "Formellogik",
     unit: "Einheit",
     calculationSteps: "Berechnungsschritte",
+    reviewSteps: "Prüfschritte",
     commonMistakes: "Typische Fehler",
     catalogSourceNotes: "Kataloghinweise",
+    technicalNotes: "Technische Hinweise",
     moveToShortlistTitle: "Von der Antwort zur Modell-Shortlist.",
     moveToShortlistDescription:
       "Nutzen Sie das Auslegungstool, wenn die Eingaben vorliegen, oder senden Sie die Anwendungsdaten zur technischen Prüfung.",
@@ -565,8 +573,10 @@ const knowledgeCenterCopyByLocale: Record<Locale, KnowledgeCenterCopy> = {
     formulaLogic: "Logique de formule",
     unit: "Unité",
     calculationSteps: "Étapes de calcul",
+    reviewSteps: "Étapes de revue",
     commonMistakes: "Erreurs fréquentes",
     catalogSourceNotes: "Notes source catalogue",
+    technicalNotes: "Notes techniques",
     moveToShortlistTitle: "Passer de la réponse à la shortlist modèle.",
     moveToShortlistDescription:
       "Utilisez l'outil de dimensionnement si vous avez les données, ou envoyez-les pour une revue technique.",
@@ -659,8 +669,10 @@ const knowledgeCenterCopyByLocale: Record<Locale, KnowledgeCenterCopy> = {
     formulaLogic: "Logica della formula",
     unit: "Unità",
     calculationSteps: "Passaggi di calcolo",
+    reviewSteps: "Passaggi di verifica",
     commonMistakes: "Errori comuni",
     catalogSourceNotes: "Note fonte catalogo",
+    technicalNotes: "Note tecniche",
     moveToShortlistTitle: "Dalla risposta alla shortlist dei modelli.",
     moveToShortlistDescription:
       "Usa lo strumento di dimensionamento quando hai i dati, oppure inviali per una revisione tecnica.",

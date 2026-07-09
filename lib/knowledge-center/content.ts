@@ -562,7 +562,372 @@ export const calculationArticles: KnowledgeArticle[] = [
   },
 ];
 
-export const knowledgeArticles = calculationArticles;
+export const selectionGuideArticles: KnowledgeArticle[] = [
+  {
+    slug: "choose-adjustable-or-non-adjustable-shock-absorber",
+    categorySlug: "selection-guides",
+    title: "How to Choose Between Adjustable and Non-Adjustable Shock Absorbers",
+    shortTitle: "Adjustable vs Non-Adjustable",
+    description:
+      "A practical selection note for deciding whether an adjustable or self-compensating absorber is the better starting point.",
+    intent: "selection_guidance",
+    audience: ["engineer", "buyer"],
+    questions: [
+      "When should I use an adjustable shock absorber?",
+      "When is a non-adjustable shock absorber better?",
+      "How do I compare adjustable and self-compensating shock absorbers?",
+    ],
+    directAnswer:
+      "Use an adjustable shock absorber when the load, speed or drive force changes enough that damping needs to be tuned on the machine. Use a non-adjustable or self-compensating absorber when the stop condition is repeatable and the goal is tamper-resistant operation with less commissioning effort.",
+    requiredInputs: [
+      "loadVariation",
+      "impactVelocityRange",
+      "cycleRate",
+      "operatorAccess",
+      "commissioningTime",
+      "maintenancePolicy",
+    ],
+    formulas: [],
+    steps: [
+      {
+        name: "Check how stable the application is",
+        text: "A repeated end stop with narrow mass and velocity variation usually favors a non-adjustable absorber; frequent product or speed changes may justify adjustment.",
+      },
+      {
+        name: "Decide whether tuning is useful or risky",
+        text: "Adjustment helps during commissioning, but it also creates a setting that can be changed later. Use it where controlled tuning is expected.",
+      },
+      {
+        name: "Confirm energy, stroke and duty rating",
+        text: "The adjustable/non-adjustable decision does not replace sizing. The selected model still needs enough energy per cycle, energy per hour, stroke and force capacity.",
+      },
+    ],
+    commonMistakes: [
+      "Choosing an adjustable model only because it feels more flexible, even when the application is fixed and repeatable.",
+      "Ignoring who will control the adjustment setting after installation.",
+      "Comparing only thread size and stroke without checking energy and hourly duty.",
+    ],
+    relatedLinks: [
+      { label: "Open sizing tool", href: "/selector/engineer" },
+      { label: "Browse shock absorber products", href: "/products/shock-absorbers" },
+      { label: "Read energy calculation", href: "/knowledge-center/calculations/how-to-calculate-impact-energy-for-shock-absorber" },
+    ],
+    sourceNotes: [
+      "Adjustable families are useful where damping force needs to be tuned. Non-adjustable/self-compensating families are better suited to stable repeated stop conditions.",
+    ],
+  },
+  {
+    slug: "stroke-energy-force-which-rating-to-check-first",
+    categorySlug: "selection-guides",
+    title: "Stroke, Energy and Force: Which Rating Should Be Checked First?",
+    shortTitle: "Rating Check Order",
+    description:
+      "A short engineering sequence for checking absorber ratings without reducing selection to a single catalog number.",
+    intent: "selection_guidance",
+    audience: ["engineer"],
+    questions: [
+      "Which shock absorber rating should be checked first?",
+      "Is stroke or energy more important for shock absorber selection?",
+      "Why can a shock absorber pass one rating and fail another?",
+    ],
+    directAnswer:
+      "Start with available stroke and required stopping energy, then check energy per hour and impact force. A model is only suitable when all of these ratings make sense together; passing a single rating is not enough for a reliable selection.",
+    requiredInputs: [
+      "availableStrokeMm",
+      "energyPerCycleNm",
+      "cyclesPerHour",
+      "impactForceLimitN",
+      "mountingEnvelope",
+      "threadOrMountingType",
+    ],
+    formulas: [
+      {
+        name: "Average stopping force",
+        formula: "Favg = E / s",
+        unit: "N",
+        explanation:
+          "A shorter stopping stroke increases average force for the same absorbed energy, so stroke and force should be reviewed together.",
+      },
+    ],
+    steps: [
+      {
+        name: "Confirm usable stroke",
+        text: "Check the machine can physically use the absorber stroke without bottoming out or hitting a mechanical stop first.",
+      },
+      {
+        name: "Check energy per cycle",
+        text: "Calculate the energy of one impact, including drive force or gravity where relevant.",
+      },
+      {
+        name: "Check duty and force",
+        text: "Multiply by cycle rate for hourly energy, then compare estimated stopping force with absorber and machine limits.",
+      },
+    ],
+    commonMistakes: [
+      "Selecting by stroke alone because the product fits the space.",
+      "Checking energy per cycle but ignoring repeated high-frequency operation.",
+      "Choosing a very short stroke and then discovering the frame sees excessive stopping force.",
+    ],
+    relatedLinks: [
+      { label: "Calculate average impact force", href: "/knowledge-center/calculations/how-to-calculate-average-impact-force" },
+      { label: "Check energy per hour", href: "/knowledge-center/calculations/how-to-check-energy-per-hour-for-shock-absorber" },
+      { label: "Open buyer quick filter", href: "/selector/buyer" },
+    ],
+    sourceNotes: [
+      "Product rating tables commonly list stroke, energy per cycle, energy per hour and maximum impact force because these limits must be checked together.",
+    ],
+  },
+];
+
+export const applicationArticles: KnowledgeArticle[] = [
+  {
+    slug: "shock-absorber-selection-for-pneumatic-cylinder-end-stops",
+    categorySlug: "applications",
+    title: "Shock Absorber Selection for Pneumatic Cylinder End Stops",
+    shortTitle: "Pneumatic Cylinder End Stops",
+    description:
+      "How to review cylinder-driven stops where thrust force continues during absorber compression.",
+    intent: "application_research",
+    audience: ["engineer", "buyer"],
+    questions: [
+      "How do I select a shock absorber for a pneumatic cylinder?",
+      "Should cylinder thrust force be included in shock absorber sizing?",
+      "Why does a cylinder end stop need more than mass and velocity?",
+    ],
+    directAnswer:
+      "For pneumatic cylinder end stops, calculate the moving mass energy and add the work done by cylinder thrust over the absorber stroke. The absorber must handle both the impact energy and the continuing drive force while staying within hourly duty and force limits.",
+    requiredInputs: [
+      "movingMassKg",
+      "impactVelocityMps",
+      "cylinderBoreMm",
+      "airPressureBar",
+      "availableStrokeMm",
+      "cyclesPerHour",
+      "mountingAlignment",
+    ],
+    formulas: [
+      {
+        name: "Cylinder thrust work",
+        formula: "W = F x s",
+        unit: "N m",
+        explanation:
+          "F is cylinder thrust and s is absorber stroke in meters. Add this when pressure continues pushing during the stop.",
+      },
+    ],
+    steps: [
+      {
+        name: "Identify the actual impact speed",
+        text: "Use the speed at the end of travel, not only the nominal cylinder speed from the catalog or valve setting.",
+      },
+      {
+        name: "Add cylinder thrust contribution",
+        text: "If air pressure remains applied during deceleration, include the force acting across the absorber stroke.",
+      },
+      {
+        name: "Review alignment and return behavior",
+        text: "Cylinder stops often fail from side load, poor alignment or insufficient reset time rather than energy alone.",
+      },
+    ],
+    commonMistakes: [
+      "Sizing the absorber as if the moving load were free motion while the cylinder is still pushing.",
+      "Ignoring pressure variation between commissioning and production settings.",
+      "Mounting the absorber off-axis and creating side load on the piston rod.",
+    ],
+    relatedLinks: [
+      { label: "Open cylinder-driven sizing", href: "/selector/engineer?entryKey=linear_cylinder_driven" },
+      { label: "Read impact energy calculation", href: "/knowledge-center/calculations/how-to-calculate-impact-energy-for-shock-absorber" },
+      { label: "Send application data", href: "/contact" },
+    ],
+    sourceNotes: [
+      "Cylinder-driven applications should be treated as powered motion when thrust continues during deceleration.",
+    ],
+  },
+];
+
+export const replacementArticles: KnowledgeArticle[] = [
+  {
+    slug: "what-to-check-before-replacing-an-industrial-shock-absorber",
+    categorySlug: "replacement-cross-reference",
+    title: "What to Check Before Replacing an Existing Industrial Shock Absorber",
+    shortTitle: "Replacement Checks",
+    description:
+      "A replacement checklist for confirming that a similar-looking absorber will also work in the application.",
+    intent: "replacement_inquiry",
+    audience: ["engineer", "buyer"],
+    questions: [
+      "What should I check before replacing a shock absorber?",
+      "Can I replace a shock absorber by matching stroke and thread?",
+      "What information is needed for a shock absorber cross reference?",
+    ],
+    directAnswer:
+      "Before replacing an absorber, confirm the original model, stroke, thread or mounting type, body envelope, energy per cycle, cycle rate, impact speed, load, drive force and installation condition. Stroke and thread size help with fit, but they do not confirm damping capacity or service life.",
+    requiredInputs: [
+      "existingModel",
+      "strokeMm",
+      "threadOrMounting",
+      "bodyEnvelope",
+      "movingMassKg",
+      "impactVelocityMps",
+      "cyclesPerHour",
+      "failureSymptoms",
+    ],
+    formulas: [],
+    steps: [
+      {
+        name: "Separate fit from function",
+        text: "First confirm the mechanical envelope, then separately check energy, duty and force requirements.",
+      },
+      {
+        name: "Record why the old unit is being replaced",
+        text: "A leaking, overheated or bottomed-out absorber may indicate a sizing or installation issue, not only normal wear.",
+      },
+      {
+        name: "Compare the operating limits",
+        text: "Use catalog ratings and application data to confirm that the replacement has sufficient capacity with margin.",
+      },
+    ],
+    commonMistakes: [
+      "Treating the replacement as a dimensional match only.",
+      "Ignoring a change in machine speed, payload or cycle rate since the original unit was installed.",
+      "Replacing a failed absorber without checking alignment, side load or bottoming-out marks.",
+    ],
+    relatedLinks: [
+      { label: "Send replacement data", href: "/contact" },
+      { label: "Browse products", href: "/products" },
+      { label: "Read required data checklist", href: "/knowledge-center/calculations/what-data-is-needed-for-shock-absorber-calculation" },
+    ],
+    sourceNotes: [
+      "Replacement review should include both catalog dimensions and application operating values, especially when failure symptoms are present.",
+    ],
+  },
+];
+
+export const troubleshootingArticles: KnowledgeArticle[] = [
+  {
+    slug: "common-causes-of-shock-absorber-bottoming-out",
+    categorySlug: "installation-troubleshooting",
+    title: "Common Causes of Shock Absorber Bottoming Out",
+    shortTitle: "Bottoming Out Causes",
+    description:
+      "How to diagnose a hard stop at the end of stroke before simply moving to a larger absorber.",
+    intent: "technical_support",
+    audience: ["engineer"],
+    questions: [
+      "Why is my shock absorber bottoming out?",
+      "What causes a hard stop at the end of absorber stroke?",
+      "Should I choose a larger absorber if bottoming out happens?",
+    ],
+    directAnswer:
+      "Bottoming out usually means the absorber is reaching the end of its stroke before the energy has been controlled. The cause can be insufficient stroke, underestimated impact energy, excessive drive force, high cycle heating, wrong adjustment setting, side load or a mechanical stop interfering with absorber travel.",
+    requiredInputs: [
+      "visibleStrokeUse",
+      "impactMarks",
+      "movingMassKg",
+      "impactVelocityMps",
+      "driveForceN",
+      "cyclesPerHour",
+      "mountingAlignment",
+      "adjustmentSetting",
+    ],
+    formulas: [],
+    steps: [
+      {
+        name: "Confirm full stroke is available",
+        text: "Check whether the machine allows the absorber to use its rated stroke or whether another stop is contacted first.",
+      },
+      {
+        name: "Recalculate the energy case",
+        text: "Review mass, speed, gravity and drive force. A small velocity increase can create a large energy increase.",
+      },
+      {
+        name: "Inspect installation and heat conditions",
+        text: "Side load, high cycle rate and incorrect adjustment can produce bottoming symptoms even when the nominal model looks close.",
+      },
+    ],
+    commonMistakes: [
+      "Replacing the absorber with the same model without checking whether the application changed.",
+      "Assuming bottoming out always means the product is defective.",
+      "Increasing damping adjustment without checking whether the machine frame can accept the higher force.",
+    ],
+    relatedLinks: [
+      { label: "Calculate impact energy", href: "/knowledge-center/calculations/how-to-calculate-impact-energy-for-shock-absorber" },
+      { label: "Calculate average impact force", href: "/knowledge-center/calculations/how-to-calculate-average-impact-force" },
+      { label: "Contact engineering support", href: "/contact" },
+    ],
+    sourceNotes: [
+      "Bottoming-out diagnosis should review sizing, duty and installation together because the same symptom can come from several different causes.",
+    ],
+  },
+];
+
+export const buyerFaqArticles: KnowledgeArticle[] = [
+  {
+    slug: "what-information-should-be-included-in-a-shock-absorber-rfq",
+    categorySlug: "buyer-faq",
+    title: "What Information Should Be Included in a Shock Absorber RFQ?",
+    shortTitle: "RFQ Data Checklist",
+    description:
+      "A concise RFQ checklist that helps purchasing teams receive a technically useful quotation.",
+    intent: "buyer_procurement",
+    audience: ["buyer", "engineer"],
+    questions: [
+      "What information should I include in a shock absorber RFQ?",
+      "How can I get a faster shock absorber quotation?",
+      "What data helps suppliers recommend the right shock absorber?",
+    ],
+    directAnswer:
+      "A useful RFQ should include the target model if known, application description, moving mass, impact velocity, stroke or space limit, drive force, cycles per hour, mounting style, environment, quantity, delivery expectation and any drawing or photo. If some values are unknown, state that clearly so the quotation can separate assumptions from confirmed data.",
+    requiredInputs: [
+      "targetModel",
+      "applicationDescription",
+      "movingMassKg",
+      "impactVelocityMps",
+      "availableStrokeMm",
+      "driveForceN",
+      "cyclesPerHour",
+      "environment",
+      "quantity",
+      "drawingsOrPhotos",
+    ],
+    formulas: [],
+    steps: [
+      {
+        name: "Start with the application, not only the part number",
+        text: "Part numbers help with replacement, but application context helps avoid quoting a part that fits physically but fails technically.",
+      },
+      {
+        name: "Mark confirmed and estimated values",
+        text: "Separate measured values from assumptions, especially speed, mass and cycle rate.",
+      },
+      {
+        name: "Attach drawings or photos when possible",
+        text: "Mounting space, rod alignment and surrounding structure often affect the recommendation.",
+      },
+    ],
+    commonMistakes: [
+      "Sending only thread size and stroke while omitting speed, mass and cycle rate.",
+      "Requesting a direct replacement without explaining why the existing unit is being changed.",
+      "Not mentioning environment, corrosion exposure, temperature or safety requirements.",
+    ],
+    relatedLinks: [
+      { label: "Send application data", href: "/contact" },
+      { label: "Open buyer quick filter", href: "/selector/buyer" },
+      { label: "Read required calculation data", href: "/knowledge-center/calculations/what-data-is-needed-for-shock-absorber-calculation" },
+    ],
+    sourceNotes: [
+      "RFQ quality improves when purchasing and engineering data are combined: model target, application conditions, mounting constraints and commercial quantity.",
+    ],
+  },
+];
+
+export const knowledgeArticles = [
+  ...calculationArticles,
+  ...selectionGuideArticles,
+  ...applicationArticles,
+  ...replacementArticles,
+  ...troubleshootingArticles,
+  ...buyerFaqArticles,
+];
 
 export function getKnowledgeCategory(slug: string) {
   return knowledgeCategories.find((category) => category.slug === slug) ?? null;

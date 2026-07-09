@@ -135,10 +135,7 @@ export default async function KnowledgeCenterPage({
             {knowledgeCategories.map((category, index) => {
               const Icon = categoryIcons[index] ?? BookOpen;
               const categoryCopy = copy.categories[category.slug] ?? category;
-              const href =
-                category.slug === "calculations"
-                  ? "/knowledge-center/calculations"
-                  : "/knowledge-center";
+              const href = `/knowledge-center/${category.slug}`;
 
               return (
                 <Link
