@@ -9,7 +9,6 @@ import {
   calculationArticles,
   getKnowledgeArticle,
   getKnowledgeArticlePath,
-  type KnowledgeArticle,
 } from "@/lib/knowledge-center/content";
 import { isLocale, locales, type Locale } from "@/lib/i18n/config";
 import {
@@ -18,7 +17,8 @@ import {
   getKnowledgeRelatedLinkLabel,
 } from "@/lib/i18n/page-copy";
 import { getLocalizedHref } from "@/lib/i18n/routing";
-import { getAbsoluteUrl, getLocalizedAlternates } from "@/lib/seo";
+import { buildKnowledgeArticleJsonLd } from "@/lib/knowledge-center/structured-data";
+import { getLocalizedAlternates } from "@/lib/seo";
 import { cn } from "@/lib/utils/cn";
 
 type CalculationArticlePageProps = {
@@ -59,85 +59,6 @@ export async function generateMetadata({
   };
 }
 
-function articleJsonLd(article: KnowledgeArticle, locale: Locale) {
-  const articlePath = getKnowledgeArticlePath(article);
-  const articleUrl = getAbsoluteUrl(`/${locale}${articlePath}`);
-  const categoryUrl = getAbsoluteUrl(`/${locale}/knowledge-center/calculations`);
-  const copy = getKnowledgeCenterCopy(locale);
-
-  return {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            name: copy.navLabel,
-            item: getAbsoluteUrl(`/${locale}/knowledge-center`),
-          },
-          {
-            "@type": "ListItem",
-            position: 2,
-            name: copy.calculationsLabel,
-            item: categoryUrl,
-          },
-          {
-            "@type": "ListItem",
-            position: 3,
-            name: article.title,
-            item: articleUrl,
-          },
-        ],
-      },
-      {
-        "@type": "Article",
-        headline: article.title,
-        description: article.description,
-        inLanguage: locale,
-        url: articleUrl,
-        articleSection: copy.articleSectionName,
-        audience: article.audience.map((audience) => ({
-          "@type": "Audience",
-          audienceType: audience,
-        })),
-        about: [
-          getIntentLabel(locale, article.intent),
-          ...article.requiredInputs,
-          ...article.formulas.map((formula) => formula.name),
-        ],
-        isPartOf: {
-          "@type": "CollectionPage",
-          name: copy.jsonName,
-          url: getAbsoluteUrl(`/${locale}/knowledge-center`),
-        },
-      },
-      {
-        "@type": "FAQPage",
-        mainEntity: article.questions.map((question) => ({
-          "@type": "Question",
-          name: question,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: article.directAnswer,
-          },
-        })),
-      },
-      {
-        "@type": "HowTo",
-        name: article.title,
-        description: article.description,
-        step: article.steps.map((step) => ({
-          "@type": "HowToStep",
-          name: step.name,
-          text: step.text,
-        })),
-      },
-    ],
-  };
-}
-
 export default async function CalculationArticlePage({
   params,
 }: CalculationArticlePageProps) {
@@ -161,7 +82,7 @@ export default async function CalculationArticlePage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(articleJsonLd(article, locale)),
+          __html: JSON.stringify(buildKnowledgeArticleJsonLd(article, locale)),
         }}
       />
       <Container className="py-16">

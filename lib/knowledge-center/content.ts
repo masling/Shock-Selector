@@ -681,6 +681,131 @@ export const selectionGuideArticles: KnowledgeArticle[] = [
 
 export const applicationArticles: KnowledgeArticle[] = [
   {
+    slug: "shock-absorbers-for-conveyor-stops-and-transfer-systems",
+    categorySlug: "applications",
+    title: "Shock Absorbers for Conveyor Stops and Transfer Systems",
+    shortTitle: "Conveyor and Transfer Stops",
+    description:
+      "How to review stopping duty in pallet transfer, roller conveyor and material-handling stations before selecting an absorber.",
+    intent: "application_research",
+    audience: ["engineer", "buyer"],
+    questions: [
+      "How do I choose a shock absorber for a conveyor stop?",
+      "What data is needed for a pallet transfer stop?",
+      "Why do conveyor stops wear out faster than expected?",
+    ],
+    directAnswer:
+      "For a conveyor or transfer stop, use the highest arriving mass, actual impact velocity and maximum transfer frequency as the starting case. Then check whether accumulation, a powered drive or poor alignment adds force or side load during the absorber stroke. The model must satisfy single-impact energy, hourly duty and the available mechanical stroke together.",
+    requiredInputs: [
+      "maximumPalletMassKg",
+      "impactVelocityMps",
+      "transferCyclesPerHour",
+      "availableStrokeMm",
+      "driveForceN",
+      "accumulationCondition",
+      "stopperAlignment",
+    ],
+    formulas: [
+      {
+        name: "Base moving energy",
+        formula: "E = 1/2 x m x v^2",
+        unit: "N m",
+        explanation:
+          "Use the heaviest transfer load and its impact velocity at the stopping position. Powered drive work must be reviewed separately when it remains active during deceleration.",
+      },
+    ],
+    steps: [
+      {
+        name: "Use the worst arriving load",
+        text: "Base the selection on the heaviest pallet, fixture or workpiece that can reach the stop, including carriers and attachments.",
+      },
+      {
+        name: "Measure the speed at the stop",
+        text: "Transfer speed set upstream is not always the speed at impact. Check the motion at the actual stopping point, especially on declining or powered sections.",
+      },
+      {
+        name: "Review duty and alignment",
+        text: "A conveyor stop is a repeated impact point. Confirm hourly cycles, stopper geometry and guidance so the absorber is loaded axially rather than used as a locating element.",
+      },
+    ],
+    commonMistakes: [
+      "Using the nominal payload while omitting the pallet, carrier and fixture mass.",
+      "Ignoring product accumulation that changes the effective mass or creates a second push into the stop.",
+      "Using the absorber as the only positional stop without a suitable mechanical reference.",
+    ],
+    relatedLinks: [
+      { label: "Calculate impact energy", href: "/knowledge-center/calculations/how-to-calculate-impact-energy-for-shock-absorber" },
+      { label: "Check energy per hour", href: "/knowledge-center/calculations/how-to-check-energy-per-hour-for-shock-absorber" },
+      { label: "Open the engineer sizing tool", href: "/selector/engineer" },
+    ],
+    sourceNotes: [
+      "Transfer-system selection should be based on the moving assembly, impact velocity, duty cycle and available stopping stroke, rather than conveyor payload alone.",
+    ],
+  },
+  {
+    slug: "heavy-duty-buffers-for-cranes-rails-and-large-moving-structures",
+    categorySlug: "applications",
+    title: "Heavy Duty Buffers for Cranes, Rails and Large Moving Structures",
+    shortTitle: "Heavy Duty Buffer Applications",
+    description:
+      "A selection framework for large moving masses where buffer travel, mounting structure and safety conditions are as important as energy.",
+    intent: "application_research",
+    audience: ["engineer", "buyer"],
+    questions: [
+      "How do I select a buffer for a crane or rail stop?",
+      "What information is needed for heavy duty buffer sizing?",
+      "Why is buffer stroke important for large moving structures?",
+    ],
+    directAnswer:
+      "For crane, rail and large moving-structure stops, calculate the maximum credible moving mass and impact speed, then confirm that the available buffer stroke keeps stopping force within the equipment and foundation limits. Include grade, wind, powered travel force, end-stop arrangement, mounting method and safety requirements before choosing a heavy-duty buffer.",
+    requiredInputs: [
+      "movingMassKg",
+      "maximumImpactVelocityMps",
+      "availableBufferStrokeMm",
+      "trackGrade",
+      "driveForceN",
+      "windOrExternalForceN",
+      "mountingMethod",
+      "safetyRequirement",
+    ],
+    formulas: [
+      {
+        name: "Average stopping force",
+        formula: "Favg = E / s",
+        unit: "N",
+        explanation:
+          "For the same kinetic energy, longer usable buffer stroke reduces average stopping force. Actual force distribution depends on the buffer characteristic and application geometry.",
+      },
+    ],
+    steps: [
+      {
+        name: "Define the credible impact case",
+        text: "Use the maximum expected travel speed and moving mass, not only a normal operating case. State whether the buffer is for routine stopping, an emergency end stop or both.",
+      },
+      {
+        name: "Account for external work",
+        text: "Review grade, wind, towing or powered drive force that can add energy while the buffer is compressing.",
+      },
+      {
+        name: "Verify the complete end-stop system",
+        text: "Check buffer travel, foundation, mounting brackets, mechanical stops and the protected structure as one system before approving the model.",
+      },
+    ],
+    commonMistakes: [
+      "Using normal operating speed for an emergency or runaway end-stop case.",
+      "Selecting a high-energy buffer without confirming the structure can use its full stroke.",
+      "Ignoring rail grade, wind or continued drive force during compression.",
+    ],
+    relatedLinks: [
+      { label: "Read required calculation data", href: "/knowledge-center/calculations/what-data-is-needed-for-shock-absorber-calculation" },
+      { label: "Calculate average impact force", href: "/knowledge-center/calculations/how-to-calculate-average-impact-force" },
+      { label: "Send an application for review", href: "/contact" },
+    ],
+    sourceNotes: [
+      "Heavy-duty buffer selection requires motion direction, weight, impact velocity, thrust or external force, cycles, environment and safety conditions in addition to mounting information.",
+    ],
+  },
+  {
     slug: "shock-absorber-selection-for-pneumatic-cylinder-end-stops",
     categorySlug: "applications",
     title: "Shock Absorber Selection for Pneumatic Cylinder End Stops",
@@ -746,6 +871,61 @@ export const applicationArticles: KnowledgeArticle[] = [
 
 export const replacementArticles: KnowledgeArticle[] = [
   {
+    slug: "why-similar-stroke-and-thread-size-are-not-enough-for-replacement",
+    categorySlug: "replacement-cross-reference",
+    title: "Why Similar Stroke and Thread Size Are Not Enough for Shock Absorber Replacement",
+    shortTitle: "Beyond Stroke and Thread",
+    description:
+      "Why a physically compatible absorber can still create a poor replacement outcome when damping and duty are not checked.",
+    intent: "replacement_inquiry",
+    audience: ["buyer", "engineer"],
+    questions: [
+      "Can I replace a shock absorber with the same stroke and thread size?",
+      "Why does a replacement shock absorber bottom out even when it fits?",
+      "Which ratings should be compared for shock absorber cross reference?",
+    ],
+    directAnswer:
+      "Matching stroke and thread size only confirms part of the mechanical fit. A replacement also needs compatible energy per cycle, energy per hour, damping behavior, impact force, return time, body envelope and mounting condition. A unit can fit the bracket but still bottom out, overheat or transmit excessive force if these operating limits differ.",
+    requiredInputs: [
+      "existingModel",
+      "strokeMm",
+      "threadSize",
+      "energyPerCycleNm",
+      "energyPerHourNm",
+      "impactForceLimitN",
+      "returnTime",
+      "mountingEnvelope",
+    ],
+    formulas: [],
+    steps: [
+      {
+        name: "Confirm the mechanical interface",
+        text: "Compare thread, stroke, body diameter, extended length, cap or flange arrangement and available adjustment access.",
+      },
+      {
+        name: "Compare the operating ratings",
+        text: "Check energy per cycle, hourly duty, force limit and speed range against the real machine condition, not only against the old nameplate.",
+      },
+      {
+        name: "Review the reason for replacement",
+        text: "If the old unit leaked, bottomed out or loosened repeatedly, correct the application or installation cause before specifying an equivalent.",
+      },
+    ],
+    commonMistakes: [
+      "Assuming every M20 or M25 body with the same stroke has the same damping capacity.",
+      "Ignoring return time in high-cycle applications where the absorber may not reset before the next impact.",
+      "Treating a failed original part as proof that the previous selection was correct.",
+    ],
+    relatedLinks: [
+      { label: "Read the replacement checklist", href: "/knowledge-center/replacement-cross-reference/what-to-check-before-replacing-an-industrial-shock-absorber" },
+      { label: "Check rating order", href: "/knowledge-center/selection-guides/stroke-energy-force-which-rating-to-check-first" },
+      { label: "Send replacement details", href: "/contact" },
+    ],
+    sourceNotes: [
+      "Replacement comparison should combine dimensional compatibility with catalog energy, duty, force and adjustment limits.",
+    ],
+  },
+  {
     slug: "what-to-check-before-replacing-an-industrial-shock-absorber",
     categorySlug: "replacement-cross-reference",
     title: "What to Check Before Replacing an Existing Industrial Shock Absorber",
@@ -804,6 +984,59 @@ export const replacementArticles: KnowledgeArticle[] = [
 
 export const troubleshootingArticles: KnowledgeArticle[] = [
   {
+    slug: "side-load-alignment-and-mounting-errors-in-shock-absorber-applications",
+    categorySlug: "installation-troubleshooting",
+    title: "Side Load, Alignment and Mounting Errors in Shock Absorber Applications",
+    shortTitle: "Side Load and Alignment",
+    description:
+      "How off-axis contact, inadequate guidance and incorrect mounting shorten absorber life even when the energy rating appears adequate.",
+    intent: "technical_support",
+    audience: ["engineer"],
+    questions: [
+      "What is side load on an industrial shock absorber?",
+      "Why does a shock absorber piston rod wear or bend?",
+      "How should a shock absorber be aligned with the moving load?",
+    ],
+    directAnswer:
+      "An industrial shock absorber is designed to receive force substantially along its axis. Side load occurs when the moving member contacts the rod off-center or when the machine guides allow the load to sweep sideways during compression. Correct the guide, striker geometry and mounting alignment so the absorber controls axial deceleration instead of carrying lateral motion or locating the mechanism.",
+    requiredInputs: [
+      "contactPointGeometry",
+      "guideClearance",
+      "mountingSurfaceFlatness",
+      "absorberAxisAlignment",
+      "movingMemberDeflection",
+      "impactSpeedMps",
+    ],
+    formulas: [],
+    steps: [
+      {
+        name: "Inspect the contact pattern",
+        text: "Look for asymmetric marks on the striker, rod or stop face. A centered contact should remain centered through the usable absorber stroke.",
+      },
+      {
+        name: "Check guidance independently",
+        text: "The machine guides should control the moving mass. Do not rely on the shock absorber rod to correct lateral travel or misalignment.",
+      },
+      {
+        name: "Verify mounting under load",
+        text: "Confirm brackets, lock nuts and mounting surfaces stay rigid at impact. Alignment can change when a thin bracket or long arm deflects.",
+      },
+    ],
+    commonMistakes: [
+      "Checking alignment only while the machine is stationary and unloaded.",
+      "Using a narrow striker face that contacts the rod at an angle.",
+      "Trying to solve lateral motion with a larger absorber instead of improving machine guidance.",
+    ],
+    relatedLinks: [
+      { label: "Diagnose bottoming out", href: "/knowledge-center/installation-troubleshooting/common-causes-of-shock-absorber-bottoming-out" },
+      { label: "Read pneumatic cylinder end-stop guidance", href: "/knowledge-center/applications/shock-absorber-selection-for-pneumatic-cylinder-end-stops" },
+      { label: "Contact technical support", href: "/contact" },
+    ],
+    sourceNotes: [
+      "Mounting and alignment review is necessary because an otherwise suitable energy rating does not protect a shock absorber from lateral load or guide-system deflection.",
+    ],
+  },
+  {
     slug: "common-causes-of-shock-absorber-bottoming-out",
     categorySlug: "installation-troubleshooting",
     title: "Common Causes of Shock Absorber Bottoming Out",
@@ -861,6 +1094,62 @@ export const troubleshootingArticles: KnowledgeArticle[] = [
 ];
 
 export const buyerFaqArticles: KnowledgeArticle[] = [
+  {
+    slug: "how-to-compare-shock-absorber-quotations-beyond-unit-price",
+    categorySlug: "buyer-faq",
+    title: "How to Compare Shock Absorber Quotations Beyond Unit Price",
+    shortTitle: "Comparing Quotations",
+    description:
+      "A procurement check for comparing quotations by technical fit, traceability and delivery scope rather than unit price alone.",
+    intent: "buyer_procurement",
+    audience: ["buyer", "engineer"],
+    questions: [
+      "How should I compare industrial shock absorber quotations?",
+      "What should be checked besides shock absorber unit price?",
+      "How do I compare replacement shock absorber offers?",
+    ],
+    directAnswer:
+      "Compare quotations against the confirmed application first: model or proposed family, stroke, mounting interface, energy and duty ratings, adjustment type, material or environmental requirement, documentation, quantity, lead time and warranty or support scope. A lower unit price is not a like-for-like comparison if the offered absorber has a different duty rating, service life expectation or technical assumption.",
+    requiredInputs: [
+      "proposedModel",
+      "strokeMm",
+      "energyPerCycleNm",
+      "energyPerHourNm",
+      "mountingInterface",
+      "environmentRequirement",
+      "quantity",
+      "leadTime",
+      "documentationScope",
+    ],
+    formulas: [],
+    steps: [
+      {
+        name: "Make the technical basis explicit",
+        text: "Ask each supplier to state the assumed mass, speed, duty cycle and mounting condition behind the proposed model.",
+      },
+      {
+        name: "Normalize the scope",
+        text: "Compare the same quantity, shipping basis, documentation, accessories and commercial terms before evaluating price differences.",
+      },
+      {
+        name: "Check lifecycle risk",
+        text: "For critical stops, include availability, replacement traceability and technical support in the decision rather than treating the absorber as a generic dimensional part.",
+      },
+    ],
+    commonMistakes: [
+      "Comparing unit price before confirming that the proposals meet the same operating ratings.",
+      "Accepting an equivalent claim without a stated model, datasheet or application assumption.",
+      "Omitting the delivery, documentation and after-sales scope from the comparison sheet.",
+    ],
+    relatedLinks: [
+      { label: "Prepare a complete RFQ", href: "/knowledge-center/buyer-faq/what-information-should-be-included-in-a-shock-absorber-rfq" },
+      { label: "Read replacement checks", href: "/knowledge-center/replacement-cross-reference/what-to-check-before-replacing-an-industrial-shock-absorber" },
+      { label: "Request an application review", href: "/contact" },
+    ],
+    sourceNotes: [
+      "A technically comparable quotation identifies the proposed product, relevant operating ratings, commercial scope and any assumptions requiring confirmation.",
+    ],
+  },
   {
     slug: "what-information-should-be-included-in-a-shock-absorber-rfq",
     categorySlug: "buyer-faq",

@@ -17,9 +17,9 @@ import {
   getKnowledgeArticlePath,
   getKnowledgeCategory,
   knowledgeArticles,
-  type KnowledgeArticle,
 } from "@/lib/knowledge-center/content";
-import { getAbsoluteUrl, getLocalizedAlternates } from "@/lib/seo";
+import { buildKnowledgeArticleJsonLd } from "@/lib/knowledge-center/structured-data";
+import { getLocalizedAlternates } from "@/lib/seo";
 import { cn } from "@/lib/utils/cn";
 
 type KnowledgeArticlePageProps = {
@@ -60,76 +60,6 @@ export async function generateMetadata({
   };
 }
 
-function articleJsonLd(article: KnowledgeArticle, locale: Locale) {
-  const copy = getKnowledgeCenterCopy(locale);
-  const category = getKnowledgeCategory(article.categorySlug);
-  const categoryCopy = category ? copy.categories[category.slug] ?? category : null;
-  const articlePath = getKnowledgeArticlePath(article);
-  const articleUrl = getAbsoluteUrl(`/${locale}${articlePath}`);
-  const categoryUrl = getAbsoluteUrl(`/${locale}/knowledge-center/${article.categorySlug}`);
-
-  return {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            name: copy.navLabel,
-            item: getAbsoluteUrl(`/${locale}/knowledge-center`),
-          },
-          {
-            "@type": "ListItem",
-            position: 2,
-            name: categoryCopy?.title ?? article.categorySlug,
-            item: categoryUrl,
-          },
-          {
-            "@type": "ListItem",
-            position: 3,
-            name: article.title,
-            item: articleUrl,
-          },
-        ],
-      },
-      {
-        "@type": "Article",
-        headline: article.title,
-        description: article.description,
-        inLanguage: locale,
-        url: articleUrl,
-        articleSection: categoryCopy?.title ?? article.categorySlug,
-        audience: article.audience.map((audience) => ({
-          "@type": "Audience",
-          audienceType: audience,
-        })),
-        about: [
-          getIntentLabel(locale, article.intent),
-          ...article.requiredInputs,
-        ],
-        isPartOf: {
-          "@type": "CollectionPage",
-          name: copy.jsonName,
-          url: getAbsoluteUrl(`/${locale}/knowledge-center`),
-        },
-      },
-      {
-        "@type": "FAQPage",
-        mainEntity: article.questions.map((question) => ({
-          "@type": "Question",
-          name: question,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: article.directAnswer,
-          },
-        })),
-      },
-    ],
-  };
-}
-
 export default async function KnowledgeArticlePage({
   params,
 }: KnowledgeArticlePageProps) {
@@ -155,7 +85,7 @@ export default async function KnowledgeArticlePage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(articleJsonLd(article, locale)),
+          __html: JSON.stringify(buildKnowledgeArticleJsonLd(article, locale)),
         }}
       />
       <Container className="py-16">
