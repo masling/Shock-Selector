@@ -564,6 +564,68 @@ export const calculationArticles: KnowledgeArticle[] = [
 
 export const selectionGuideArticles: KnowledgeArticle[] = [
   {
+    slug: "mechanical-end-stops-and-energy-absorbers-for-machine-builders",
+    categorySlug: "selection-guides",
+    title: "Mechanical End Stops and Energy Absorbers: A Design Review for Machine Builders",
+    shortTitle: "End Stop Design Review",
+    description:
+      "A practical design review for machine end stops where residual motion, structural force and repeatable stopping must be considered together.",
+    intent: "selection_guidance",
+    audience: ["engineer", "buyer"],
+    questions: [
+      "When should a machine end stop use an energy absorber?",
+      "What should be checked when designing a mechanical end stop?",
+      "Can a shock absorber be used as a safety end stop?",
+    ],
+    directAnswer:
+      "An energy absorber can reduce the force transmitted when a moving member reaches an end position, but it must be selected as part of the complete end-stop system. Define the credible approach speed, moving mass, available stopping travel, continued drive force, structural load path and reset condition. A shock absorber does not replace a machine risk assessment, a positive stop or any required guarding and control measures.",
+    requiredInputs: [
+      "movingMassKg",
+      "credibleApproachSpeedMps",
+      "availableStoppingTravelMm",
+      "continuedDriveForceN",
+      "structureForceLimitN",
+      "endStopFunction",
+      "resetCondition",
+    ],
+    formulas: [
+      {
+        name: "Average stopping force",
+        formula: "Favg = E / s",
+        unit: "N",
+        explanation:
+          "A longer usable energy-absorbing stroke reduces average force for the same impact energy. Check the protected structure against actual peak-force behavior, not only this average value.",
+      },
+    ],
+    steps: [
+      {
+        name: "Define the end-stop function",
+        text: "State whether the stop is part of normal cycle control, a commissioning limit, a maintenance limit or a credible abnormal-motion case. These cases can have different speeds and duties.",
+      },
+      {
+        name: "Map the energy and load path",
+        text: "Calculate motion and continued-drive energy, then confirm how the striker, absorber, bracket, fasteners and machine frame transmit the resulting force.",
+      },
+      {
+        name: "Separate energy absorption from safety control",
+        text: "Use the machine risk assessment to decide the required guarding, interlocks, controls and positive stops. The absorber should be specified for its mechanical duty rather than assumed to solve every safety function.",
+      },
+    ],
+    commonMistakes: [
+      "Using the normal operating speed for a credible end-of-travel or control-fault case.",
+      "Selecting the absorber before checking the stiffness and force limit of the mounting structure.",
+      "Describing a product as a safety solution without defining the wider machine safety function.",
+    ],
+    relatedLinks: [
+      { label: "Calculate impact energy", href: "/knowledge-center/calculations/how-to-calculate-impact-energy-for-shock-absorber" },
+      { label: "Calculate average impact force", href: "/knowledge-center/calculations/how-to-calculate-average-impact-force" },
+      { label: "Send an end-stop application for review", href: "/contact" },
+    ],
+    sourceNotes: [
+      "For machinery placed on the EU market from 20 January 2027, Regulation (EU) 2023/1230 replaces the Machinery Directive. This engineering note is not legal or conformity-assessment advice.",
+    ],
+  },
+  {
     slug: "choose-adjustable-or-non-adjustable-shock-absorber",
     categorySlug: "selection-guides",
     title: "How to Choose Between Adjustable and Non-Adjustable Shock Absorbers",
@@ -680,6 +742,195 @@ export const selectionGuideArticles: KnowledgeArticle[] = [
 ];
 
 export const applicationArticles: KnowledgeArticle[] = [
+  {
+    slug: "shock-absorbers-for-servo-driven-axes-and-robot-transfer-units",
+    categorySlug: "applications",
+    title: "Shock Absorbers for Servo-Driven Axes and Robot Transfer Units",
+    shortTitle: "Servo Axes and Robot Transfers",
+    description:
+      "How to specify mechanical energy absorption for servo-driven slides, robot transfer units and automated handling axes.",
+    intent: "application_research",
+    audience: ["engineer", "buyer"],
+    questions: [
+      "How do I select a shock absorber for a servo-driven axis?",
+      "Should a robot transfer unit have a mechanical energy absorber?",
+      "What happens if a servo axis reaches its mechanical end stop?",
+    ],
+    directAnswer:
+      "For a servo-driven axis or robot transfer unit, treat the mechanical absorber as a defined stopping-duty component, not as a substitute for motion control. Establish the maximum credible moving mass and approach speed, whether motor torque can continue during compression, available stroke, axis stiffness and the number of normal or abnormal stop events. Then verify energy, force and mounting capacity against the selected absorber.",
+    requiredInputs: [
+      "movingMassKg",
+      "maximumApproachSpeedMps",
+      "axisStrokeMm",
+      "availableAbsorberStrokeMm",
+      "motorForceOrTorque",
+      "controlStopBehavior",
+      "axisStiffness",
+      "cyclesPerHour",
+    ],
+    formulas: [
+      {
+        name: "Motor-force work",
+        formula: "W = F x s",
+        unit: "N m",
+        explanation:
+          "If the drive can keep applying force while the absorber compresses, add that work to the kinetic energy before comparing the model rating.",
+      },
+    ],
+    steps: [
+      {
+        name: "Separate controlled stops from credible contact cases",
+        text: "Servo deceleration normally occurs in the motion profile. Document separately any commissioning, overshoot or fault case in which a mechanical absorber may be contacted.",
+      },
+      {
+        name: "Confirm the load seen by the absorber",
+        text: "Include the moving carriage, tooling, gripper, cable carrier and payload. Check reflected load and compliance in belt, rack or ballscrew systems where it changes impact behavior.",
+      },
+      {
+        name: "Review the installation as an axis assembly",
+        text: "Ensure the striker is guided, the absorber is loaded axially and the mounting bracket can transfer the stopping force without deflecting into the machine envelope.",
+      },
+    ],
+    commonMistakes: [
+      "Using the programmed velocity limit without verifying maximum approach speed during setup or fault recovery.",
+      "Omitting drive force because the servo is normally controlled, even though torque can remain present during contact.",
+      "Mounting the absorber where a flexible bracket or belt compliance creates off-axis contact.",
+    ],
+    relatedLinks: [
+      { label: "Review end-stop design", href: "/knowledge-center/selection-guides/mechanical-end-stops-and-energy-absorbers-for-machine-builders" },
+      { label: "Calculate impact energy", href: "/knowledge-center/calculations/how-to-calculate-impact-energy-for-shock-absorber" },
+      { label: "Open the engineer sizing tool", href: "/selector/engineer" },
+    ],
+    sourceNotes: [
+      "Industrial robot installations have remained above 500,000 units annually for four consecutive years, increasing the number of automated axes where mechanical end-stop duty needs clear definition.",
+    ],
+  },
+  {
+    slug: "high-cycle-shock-absorbers-for-warehouse-sortation-systems",
+    categorySlug: "applications",
+    title: "High-Cycle Shock Absorbers for Warehouse Sortation Systems",
+    shortTitle: "Warehouse Sortation Duty",
+    description:
+      "How to assess repeated deceleration in sorter diverts, pop-up transfers and automated distribution-center stops.",
+    intent: "application_research",
+    audience: ["engineer", "buyer"],
+    questions: [
+      "How do I choose a shock absorber for a sorter divert?",
+      "What causes shock absorbers to overheat in warehouse automation?",
+      "How should cycle rate be checked for transfer and sortation stops?",
+    ],
+    directAnswer:
+      "Warehouse sortation equipment needs more than a single-impact check. Use the heaviest carrier or tote condition, the highest contact speed and the peak events per hour for the specific divert or transfer. Confirm that the absorber can dissipate the resulting hourly energy, reset before the next event and remain aligned as guides, belts and actuators cycle repeatedly.",
+    requiredInputs: [
+      "maximumCarrierMassKg",
+      "contactSpeedMps",
+      "peakEventsPerHour",
+      "availableStrokeMm",
+      "resetTimeMs",
+      "ambientTemperature",
+      "actuatorForceN",
+      "guideAlignment",
+    ],
+    formulas: [
+      {
+        name: "Hourly energy load",
+        formula: "ETC = E x eventsPerHour",
+        unit: "N m/h",
+        explanation:
+          "The per-event energy is only the starting point. Peak sortation duty determines the thermal load that must remain within the absorber's energy-per-hour rating.",
+      },
+    ],
+    steps: [
+      {
+        name: "Use the peak operating window",
+        text: "Base the duty calculation on the busiest expected period rather than an all-day average. A short peak can govern thermal performance and reset time.",
+      },
+      {
+        name: "Check the complete moving assembly",
+        text: "Include tray, tote, carrier, divert arm and attachment mass. For powered diverts, include actuator work during the absorber stroke.",
+      },
+      {
+        name: "Plan inspection around symptoms",
+        text: "Record heat, noise, changing stop position and rod marks during commissioning. These can reveal duty, alignment or adjustment issues before a high-volume period.",
+      },
+    ],
+    commonMistakes: [
+      "Using average throughput instead of peak events per hour.",
+      "Checking only the tote mass and omitting the carrier or moving divert hardware.",
+      "Treating an increase in stop noise as normal wear instead of reviewing heat, alignment and available stroke.",
+    ],
+    relatedLinks: [
+      { label: "Check energy per hour", href: "/knowledge-center/calculations/how-to-check-energy-per-hour-for-shock-absorber" },
+      { label: "Read conveyor and transfer guidance", href: "/knowledge-center/applications/shock-absorbers-for-conveyor-stops-and-transfer-systems" },
+      { label: "Send a sortation application for review", href: "/contact" },
+    ],
+    sourceNotes: [
+      "Conveyor and sortation systems remain a major warehouse-automation investment area, making high-frequency stopping duty a practical selection and maintenance topic.",
+    ],
+  },
+  {
+    slug: "shock-absorbers-for-battery-module-and-pack-transfer-equipment",
+    categorySlug: "applications",
+    title: "Shock Absorbers for Battery Module and Pack Transfer Equipment",
+    shortTitle: "Battery Transfer Equipment",
+    description:
+      "A selection checklist for controlled stops in battery module, pack and fixture transfer equipment where payload and process equipment can change.",
+    intent: "application_research",
+    audience: ["engineer", "buyer"],
+    questions: [
+      "How do I select a shock absorber for battery module transfer equipment?",
+      "What should be checked for battery pack pallet stops?",
+      "Why do fixture changes affect shock absorber sizing?",
+    ],
+    directAnswer:
+      "For battery-module and pack-transfer equipment, calculate the moving assembly rather than the product alone: pallet, fixture, nest, module or pack, tooling and any cable-management hardware. Verify the maximum configuration, end-of-travel speed, powered drive force, available stroke, duty cycle and material or cleanliness constraints before selecting the absorber and its mounting arrangement.",
+    requiredInputs: [
+      "maximumFixtureAndPayloadMassKg",
+      "endOfTravelSpeedMps",
+      "availableStrokeMm",
+      "driveForceN",
+      "cyclesPerHour",
+      "fixtureChangeRange",
+      "cleanlinessRequirement",
+      "environmentRequirement",
+    ],
+    formulas: [
+      {
+        name: "Moving-assembly energy",
+        formula: "E = 1/2 x m x v^2 + F x s",
+        unit: "N m",
+        explanation:
+          "Combine the kinetic energy of the heaviest moving assembly with drive-force work when the actuator continues to push during the stopping stroke.",
+      },
+    ],
+    steps: [
+      {
+        name: "Capture all qualified configurations",
+        text: "List the heaviest and fastest fixture, pallet and product combination that can run on the station, including planned future variants where known.",
+      },
+      {
+        name: "Check process-driven constraints",
+        text: "Confirm whether cleanliness, temperature, corrosion resistance, guarding clearance or access for replacement affects the product family or mounting arrangement.",
+      },
+      {
+        name: "Keep the stop repeatable",
+        text: "Use suitable guiding and a defined mechanical reference so the absorber manages energy axially rather than locating a changing fixture.",
+      },
+    ],
+    commonMistakes: [
+      "Selecting from one pilot fixture while production tooling and payload are still changing.",
+      "Ignoring drive force from a cylinder or servo-driven transfer at the end of travel.",
+      "Treating cleanliness or access requirements as an afterthought once the bracket is designed.",
+    ],
+    relatedLinks: [
+      { label: "Read pneumatic cylinder end-stop guidance", href: "/knowledge-center/applications/shock-absorber-selection-for-pneumatic-cylinder-end-stops" },
+      { label: "Review side-load and alignment", href: "/knowledge-center/installation-troubleshooting/side-load-alignment-and-mounting-errors-in-shock-absorber-applications" },
+      { label: "Request an application review", href: "/contact" },
+    ],
+    sourceNotes: [
+      "Battery transfer equipment often evolves through fixture and payload changes, so selection should document the maximum qualified moving assembly and process constraints rather than relying on an early prototype case.",
+    ],
+  },
   {
     slug: "shock-absorbers-for-conveyor-stops-and-transfer-systems",
     categorySlug: "applications",
