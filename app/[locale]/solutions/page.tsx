@@ -38,6 +38,7 @@ export async function generateMetadata({ params }: SolutionsPageProps): Promise<
   const copy = getSiteCopy(localeParam);
   return {
     title: copy.metadata.solutionsTitle,
+    description: copy.solutions.description,
     alternates: getLocalizedAlternates(localeParam, "/solutions"),
   };
 }

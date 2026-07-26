@@ -33,6 +33,7 @@ export async function generateMetadata({
   const copy = getSiteCopy(localeParam);
   return {
     title: copy.metadata.applicationsTitle,
+    description: copy.applications.description,
     alternates: getLocalizedAlternates(localeParam, "/applications"),
   };
 }

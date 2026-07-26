@@ -21,6 +21,7 @@ export async function generateMetadata({ params }: DownloadsPageProps): Promise<
   const copy = getSiteCopy(localeParam);
   return {
     title: copy.metadata.downloadsTitle,
+    description: copy.downloads.description,
     alternates: getLocalizedAlternates(localeParam, "/downloads"),
   };
 }

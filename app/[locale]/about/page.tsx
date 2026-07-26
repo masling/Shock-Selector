@@ -20,6 +20,7 @@ export async function generateMetadata({ params }: AboutPageProps): Promise<Meta
   const copy = getSiteCopy(localeParam);
   return {
     title: copy.metadata.aboutTitle,
+    description: copy.about.description,
     alternates: getLocalizedAlternates(localeParam, "/about"),
   };
 }

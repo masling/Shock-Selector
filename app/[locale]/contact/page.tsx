@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: ContactPageProps): Promise<Me
   const copy = getSiteCopy(localeParam);
   return {
     title: copy.metadata.contactTitle,
+    description: copy.contact.description,
     alternates: getLocalizedAlternates(localeParam, "/contact"),
   };
 }
