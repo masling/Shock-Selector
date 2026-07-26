@@ -34,7 +34,7 @@ export async function generateMetadata({
   return {
     title: {
       default: copy.metadata.defaultTitle,
-      template: "%s",
+      template: "%s | EKD Vibroabsorber",
     },
     description: copy.metadata.defaultDescription,
   };
