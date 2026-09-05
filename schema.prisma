@@ -162,6 +162,7 @@ model ProductSeries {
 
 model ProductModel {
   id               String                      @id @default(cuid())
+  downloads        CatalogDownload[]
   seriesId         String
   series           ProductSeries               @relation(fields: [seriesId], references: [id], onDelete: Cascade)
   rawModel         String
@@ -388,6 +389,7 @@ model CustomerInquiry {
   createdAt         DateTime         @default(now()) @db.Timestamptz
   updatedAt         DateTime         @default(now()) @db.Timestamptz
   messages          InquiryMessage[]
+  publishedQuote    PublishedInquiryQuote?
 
   @@unique([userId, submissionKey])
   @@index([userId, createdAt(sort: Desc)])
@@ -405,4 +407,53 @@ model InquiryMessage {
 
   @@unique([authorId, submissionKey])
   @@index([inquiryId, createdAt])
+}
+
+// Access uses user-session RLS; the catalog runtime role has no new grants.
+model CatalogDownload {
+  id        String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  modelId   String
+  model     ProductModel        @relation(fields: [modelId], references: [id], onDelete: Restrict)
+  title     String
+  filename  String
+  format    String
+  byteSize  BigInt
+  sha256    String
+  bucketId  String              @default("ekd-model-files")
+  objectKey String              @unique
+  approved  Boolean             @default(false)
+  createdAt DateTime            @default(now()) @db.Timestamptz
+  accesses  DownloadAccessLog[]
+
+  @@index([modelId])
+}
+
+model DownloadAccessLog {
+  id         String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  downloadId String          @db.Uuid
+  download   CatalogDownload @relation(fields: [downloadId], references: [id], onDelete: Restrict)
+  userId     String          @db.Uuid
+  createdAt  DateTime        @default(now()) @db.Timestamptz
+
+  @@index([downloadId])
+  @@index([userId, createdAt])
+}
+
+// QuoteDraft and staff membership stay in the private SQL-managed schema.
+// Only this immutable customer-facing snapshot is represented here.
+model PublishedInquiryQuote {
+  id           String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  inquiryId    String          @unique @db.Uuid
+  inquiry      CustomerInquiry @relation(fields: [inquiryId], references: [id], onDelete: Restrict)
+  quoteDraftId String          @unique @db.Uuid
+  currency     String
+  validity     String          @default("")
+  deliveryTerm String          @default("")
+  paymentTerm  String          @default("")
+  notes        String          @default("")
+  lines        Json
+  publishedBy  String          @db.Uuid
+  publishedAt  DateTime        @default(now()) @db.Timestamptz
+
+  @@index([inquiryId])
 }

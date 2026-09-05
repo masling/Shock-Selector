@@ -1,5 +1,5 @@
 -- Run only against the dedicated Supabase development project after applying
--- 20260905031318_inquiry_staff_workbench.sql. All fixtures roll back.
+-- 20260905041109_inquiry_staff_workbench.sql. All fixtures roll back.
 begin;
 
 do $$
@@ -60,24 +60,39 @@ begin
   set local role authenticated;
   perform public.staff_claim_inquiry(inquiry_id);
   perform public.staff_update_inquiry_status(inquiry_id, 'reviewing');
+  reset role;
   select count(*) into status_job_count from inquiry_private."NotificationJob" where "inquiryId" = inquiry_id and kind = 'status_changed';
+  perform set_config('request.jwt.claims', jsonb_build_object('sub', staff_operator, 'email', 'staff-operator@example.invalid', 'role', 'authenticated')::text, true);
+  set local role authenticated;
   perform public.staff_update_inquiry_status(inquiry_id, 'reviewing');
+  reset role;
   select count(*) into job_count from inquiry_private."NotificationJob" where "inquiryId" = inquiry_id and kind = 'status_changed';
   if job_count <> status_job_count then raise exception 'FAIL: unchanged status retry queued notification'; end if;
+  perform set_config('request.jwt.claims', jsonb_build_object('sub', staff_operator, 'email', 'staff-operator@example.invalid', 'role', 'authenticated')::text, true);
+  set local role authenticated;
   perform public.staff_update_inquiry_status(inquiry_id, 'awaiting_customer');
   perform public.staff_update_inquiry_status(inquiry_id, 'reviewing');
+  reset role;
   select count(*) into job_count from inquiry_private."NotificationJob" where "inquiryId" = inquiry_id and kind = 'status_changed';
   if job_count <> status_job_count + 2 then raise exception 'FAIL: legitimate status re-entry did not queue a new event'; end if;
+  perform set_config('request.jwt.claims', jsonb_build_object('sub', staff_operator, 'email', 'staff-operator@example.invalid', 'role', 'authenticated')::text, true);
+  set local role authenticated;
   perform public.staff_add_internal_note(inquiry_id, 'Private sizing caveat for staff only');
+  reset role;
   select count(*) into note_count from inquiry_private."InternalNote" where "inquiryId" = inquiry_id;
   if note_count <> 1 then raise exception 'FAIL: internal note not saved'; end if;
 
+  perform set_config('request.jwt.claims', jsonb_build_object('sub', staff_operator, 'email', 'staff-operator@example.invalid', 'role', 'authenticated')::text, true);
+  set local role authenticated;
   perform public.staff_add_public_reply(inquiry_id, gen_random_uuid(), 'Public reply visible to customer');
+  reset role;
   select id into staff_message_id from public."InquiryMessage" where "inquiryId" = inquiry_id and "authorRole" = 'staff' limit 1;
   if staff_message_id is null then raise exception 'FAIL: staff public reply not saved'; end if;
   select count(*) into job_count from inquiry_private."NotificationJob" where "inquiryId" = inquiry_id and kind = 'staff_reply';
   if job_count <> 1 then raise exception 'FAIL: staff reply notification job missing'; end if;
 
+  perform set_config('request.jwt.claims', jsonb_build_object('sub', staff_operator, 'email', 'staff-operator@example.invalid', 'role', 'authenticated')::text, true);
+  set local role authenticated;
   perform public.staff_save_quote_draft(inquiry_id, '{"currency":"EUR","lines":[{"model":"EK-STF-A","quantity":2,"unitPrice":"12.34","leadTime":"2 weeks","note":""}]}'::jsonb);
   denied := false;
   begin
@@ -94,14 +109,20 @@ begin
   perform set_config('request.jwt.claims', jsonb_build_object('sub', staff_manager, 'email', 'staff-manager@example.invalid', 'role', 'authenticated')::text, true);
   set local role authenticated;
   perform public.staff_approve_quote(inquiry_id);
+  reset role;
   select count(*) into quote_count from public."PublishedInquiryQuote" where "inquiryId" = inquiry_id;
   if quote_count <> 0 then raise exception 'FAIL: approved quote visible before publish'; end if;
+  perform set_config('request.jwt.claims', jsonb_build_object('sub', staff_manager, 'email', 'staff-manager@example.invalid', 'role', 'authenticated')::text, true);
+  set local role authenticated;
   perform public.staff_publish_quote(inquiry_id);
   perform public.staff_publish_quote(inquiry_id);
+  reset role;
   select count(*) into quote_count from public."PublishedInquiryQuote" where "inquiryId" = inquiry_id;
   if quote_count <> 1 then raise exception 'FAIL: publish retry created duplicate public quote'; end if;
   select count(*) into job_count from inquiry_private."NotificationJob" where "inquiryId" = inquiry_id and kind = 'quote_published';
   if job_count <> 1 then raise exception 'FAIL: quote_published notification job missing'; end if;
+  perform set_config('request.jwt.claims', jsonb_build_object('sub', staff_manager, 'email', 'staff-manager@example.invalid', 'role', 'authenticated')::text, true);
+  set local role authenticated;
   denied := false;
   begin
     perform public.staff_save_quote_draft(inquiry_id, '{"currency":"EUR","lines":[{"model":"MUTATED","quantity":1,"unitPrice":"","leadTime":"","note":""}]}'::jsonb);

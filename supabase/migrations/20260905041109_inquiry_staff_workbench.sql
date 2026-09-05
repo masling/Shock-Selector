@@ -115,18 +115,18 @@ stable
 security definer
 set search_path = ''
 as $$
-declare current_role text;
+declare staff_role_name text;
 begin
   if auth.uid() is null then
     raise exception 'Staff authentication required' using errcode = '42501';
   end if;
 
-  current_role := inquiry_private.staff_role();
-  if current_role is null then
+  staff_role_name := inquiry_private.staff_role();
+  if staff_role_name is null then
     raise exception 'Staff membership required' using errcode = '42501';
   end if;
 
-  if required_role = 'manager' and current_role <> 'manager' then
+  if required_role = 'manager' and staff_role_name <> 'manager' then
     raise exception 'Staff manager role required' using errcode = '42501';
   end if;
 
@@ -134,7 +134,7 @@ begin
     raise exception 'Invalid staff role requirement' using errcode = '22023';
   end if;
 
-  return current_role;
+  return staff_role_name;
 end;
 $$;
 revoke all on function inquiry_private.require_staff(text) from public, anon, authenticated, service_role;
@@ -213,14 +213,14 @@ security definer
 set search_path = ''
 as $$
 declare
-  current_role text;
+  staff_role_name text;
   safe_page integer;
   safe_status text;
   offset_rows integer;
   total_count integer;
   items jsonb;
 begin
-  current_role := inquiry_private.require_staff('operator');
+  staff_role_name := inquiry_private.require_staff('operator');
   safe_page := greatest(1, least(coalesce(p_page, 1), 10000));
   safe_status := nullif(p_status, '');
   if safe_status is not null and safe_status not in ('received', 'reviewing', 'awaiting_customer', 'quoted', 'closed') then
@@ -252,7 +252,7 @@ begin
         'createdAt', i."createdAt",
         'updatedAt', i."updatedAt",
         'assignedTo', a."staffUserId",
-        'staffRole', current_role
+        'staffRole', staff_role_name
       ) as row_payload
     from public."CustomerInquiry" i
     left join inquiry_private."StaffAssignment" a on a."inquiryId" = i.id
@@ -261,7 +261,7 @@ begin
     limit 20 offset offset_rows
   ) page_rows;
 
-  return jsonb_build_object('items', items, 'total', total_count, 'page', safe_page, 'staffRole', current_role);
+  return jsonb_build_object('items', items, 'total', total_count, 'page', safe_page, 'staffRole', staff_role_name);
 end;
 $$;
 revoke all on function inquiry_private.staff_list_inquiries(integer, text) from public, anon, authenticated, service_role;
@@ -274,10 +274,10 @@ security definer
 set search_path = ''
 as $$
 declare
-  current_role text;
+  staff_role_name text;
   payload jsonb;
 begin
-  current_role := inquiry_private.require_staff('operator');
+  staff_role_name := inquiry_private.require_staff('operator');
 
   select jsonb_build_object(
     'inquiry', jsonb_build_object(
@@ -363,7 +363,7 @@ begin
       from public."PublishedInquiryQuote" pq
       where pq."inquiryId" = i.id
     ),
-    'staffRole', current_role
+    'staffRole', staff_role_name
   ) into payload
   from public."CustomerInquiry" i
   left join inquiry_private."StaffAssignment" a on a."inquiryId" = i.id
@@ -702,8 +702,20 @@ language plpgsql
 security definer
 set search_path = ''
 as $$
-declare owner_id uuid; inquiry_id uuid; event_kind text; event_key text;
+declare
+  owner_id uuid;
+  inquiry_id uuid;
+  event_kind text;
+  event_key text;
+  message_author_id uuid;
+  message_author_role text;
 begin
+  if tg_table_name = 'InquiryMessage' then
+    message_author_id := (to_jsonb(new)->>'authorId')::uuid;
+    message_author_role := to_jsonb(new)->>'authorRole';
+    inquiry_id := (to_jsonb(new)->>'inquiryId')::uuid;
+  end if;
+
   if tg_table_name = 'CustomerInquiry' then
     owner_id := new."userId";
     inquiry_id := new.id;
@@ -712,30 +724,30 @@ begin
     if auth.uid() is null or auth.uid() <> owner_id or not inquiry_private.verified_customer() then
       raise exception 'Verified customer required' using errcode = '42501';
     end if;
-  elsif tg_table_name = 'InquiryMessage' and new."authorRole" = 'staff' then
-    owner_id := new."authorId";
-    inquiry_id := new."inquiryId";
+  elsif tg_table_name = 'InquiryMessage' and message_author_role = 'staff' then
+    owner_id := message_author_id;
     event_kind := 'staff_reply';
     event_key := tg_table_name || ':staff:' || new.id::text;
     perform inquiry_private.require_staff('operator');
     if auth.uid() is null or auth.uid() <> owner_id then
       raise exception 'Staff author mismatch' using errcode = '42501';
     end if;
-  else
-    owner_id := new."authorId";
-    inquiry_id := new."inquiryId";
+  elsif tg_table_name = 'InquiryMessage' then
+    owner_id := message_author_id;
     event_kind := 'customer_message';
     event_key := tg_table_name || ':' || new.id::text;
     if auth.uid() is null or auth.uid() <> owner_id or not inquiry_private.verified_customer() then
       raise exception 'Verified customer required' using errcode = '42501';
     end if;
+  else
+    raise exception 'Unsupported notification trigger table' using errcode = 'P0001';
   end if;
 
   perform pg_advisory_xact_lock(hashtextextended(owner_id::text, 0));
   if tg_table_name = 'CustomerInquiry' and
     (select count(*) from public."CustomerInquiry" where "userId" = owner_id and "createdAt" > now() - interval '1 hour') > 20 then
     raise exception 'Submission limit reached' using errcode = 'P0001';
-  elsif tg_table_name = 'InquiryMessage' and new."authorRole" = 'customer' and
+  elsif tg_table_name = 'InquiryMessage' and message_author_role = 'customer' and
     (select count(*) from public."InquiryMessage" where "authorId" = owner_id and "createdAt" > now() - interval '1 hour') > 60 then
     raise exception 'Message limit reached' using errcode = 'P0001';
   end if;
