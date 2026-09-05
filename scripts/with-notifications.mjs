@@ -75,7 +75,7 @@ function main() {
   for (const key of keys) {
     if (values[key] !== undefined) env[key] = values[key];
   }
-  const script = command === "feishu-test" ? "scripts/feishu-notification-smoke.ts" : "scripts/email-notification-smoke.ts";
+  const script = command === "feishu-test" ? "scripts/feishu-notification-smoke.ts" : "scripts/email-notification-smoke.mts";
   const child = spawn(process.execPath, ["--import", "tsx", script], { stdio: "inherit", env });
   child.on("error", () => { console.error("Could not start the notification test"); process.exitCode = 1; });
   child.on("exit", (code, signal) => { process.exitCode = signal ? 1 : code ?? 1; });
