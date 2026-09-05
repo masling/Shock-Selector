@@ -19,6 +19,7 @@
     "catalog:prepare-import": "tsx scripts/prepare-product-import.ts",
     "test:asset-remarks": "node --test scripts/catalog-sources/asset-remarks.test.mjs",
     "test:technical-assets": "node --test scripts/catalog-sources/technical-assets.test.mjs",
+    "test:download-decisions": "node --test scripts/catalog-sources/download-decisions.test.mjs",
     "test:product-import": "tsx --test scripts/catalog-sources/product-import-plan.test.ts",
     "db:prepare-transfer": "node scripts/supabase-transfer.mjs",
     "test:db-transfer": "node --test scripts/supabase-transfer.test.mjs",

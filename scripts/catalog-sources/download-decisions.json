@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "scope": "Controlled model downloads only. Representative-image inheritance never authorizes technical files, and no entry is public until publicationAllowed is explicitly changed after review.",
+  "decisions": [
+    {
+      "id": "2026-09-05-ek42x50-pdf",
+      "model": "EK42x50",
+      "modelId": "cmq7qe9sr00wm1yqajju0cyz6",
+      "format": "PDF",
+      "sourcePath": "缓冲器/PDF/EK42x50.pdf",
+      "sha256": "c3e2cc00c3c9ceea6bd7883249c611ea8d475681b23e854296fc7ae2cc23b3eb",
+      "byteSize": 153960,
+      "reviewStatus": "verified_candidate",
+      "verification": [
+        "exact_filename_match",
+        "pdf_signature_valid",
+        "single_page_render_reviewed",
+        "drawing_title_identifies_EK42x50"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "id": "2026-09-05-ek42x50-dwg",
+      "model": "EK42x50",
+      "modelId": "cmq7qe9sr00wm1yqajju0cyz6",
+      "format": "DWG",
+      "sourcePath": "缓冲器/CAD/EK42x50.dwg",
+      "sha256": "8ae26d14ccef2f6b3c98cd4ade8953150e34b78a3c5c77bedd6a2fc5bffc46a6",
+      "byteSize": 154183,
+      "reviewStatus": "pending_native_drawing_review",
+      "verification": [
+        "exact_filename_match",
+        "autocad_2013_2017_signature"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "id": "2026-09-05-ek42x50-step",
+      "model": "EK42x50",
+      "modelId": "cmq7qe9sr00wm1yqajju0cyz6",
+      "format": "STEP",
+      "sourcePath": "缓冲器/3D/EK42x50.STEP",
+      "sha256": "4027077b5f46409ae1ba01deea012ec13d2f32f1a279dcc832858d68d32325fc",
+      "byteSize": 3230457,
+      "reviewStatus": "rejected_internal_identity_mismatch",
+      "verification": [
+        "step_signature_valid",
+        "internal_FILE_NAME_is_OEMXT_1.5M_X_2.STEP",
+        "internal_PRODUCT_is_OEMXT_1.5M_X_2"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}

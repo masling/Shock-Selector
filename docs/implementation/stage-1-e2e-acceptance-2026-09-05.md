@@ -35,8 +35,15 @@ The customer page then displayed status `Quotation provided`, the public reply a
 
 ## Remaining before production activation
 
-1. Configure the Feishu destination group/custom bot and server-only webhook/signing secret.
-2. Configure application notification SMTP credentials separately from Supabase Auth SMTP; run controlled delivery tests and confirm accepted versus delivered semantics.
+1. Feishu destination group/custom bot and local server-only webhook/signing secret are configured. A single no-customer-data `TEST ONLY` message returned Feishu business success; production worker deployment remains disabled.
+2. Application notification SMTP credentials are stored in an ignored owner-only local file. ZeptoMail customer validation was submitted on 2026-09-05; the Agent remains shut down and processed-email count remains zero while review is pending, so SMTP acceptance/delivery testing is not complete.
 3. Create the private `ekd-model-files` Storage bucket, upload only reviewed files, insert approved metadata and test a 60-second signed download. No files are currently uploaded/approved.
 4. Decide whether the `TEST ONLY` inquiry should be retained as acceptance evidence or removed before production activation.
 5. Configure production environment variables and deploy the account feature branch only after the remaining delivery/download checks; the catalog database connection can remain unchanged during this activation.
+
+## Controlled-download source review update
+
+- `EK42x50.pdf`: exact filename, valid PDF signature and rendered title block identify EK42x50; retained as a verified candidate, not yet approved or uploaded.
+- `EK42x50.dwg`: exact filename and valid AutoCAD 2013-2017 signature; retained pending native drawing review.
+- `EK42x50.STEP`: rejected for download because its internal `FILE_NAME` and `PRODUCT` identify `OEMXT 1.5M X 2`, despite the EK42x50 filename.
+- The adjacent `备注.txt` authorizes representative-image reuse for specified models only; it does not authorize PDF/CAD/STEP inheritance.
