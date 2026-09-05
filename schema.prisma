@@ -365,3 +365,44 @@ model ProductImportCandidate {
   @@unique([batchId, sourceModel])
   @@index([batchId, proposedAction])
 }
+
+// Auth-owned records are accessed with the verified user's Supabase session,
+// not the catalog runtime role. SQL migrations also reference auth.users and
+// enforce ownership with RLS; Prisma does not own the external auth schema.
+model CustomerInquiry {
+  id                String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String           @db.Uuid
+  submissionKey     String           @db.Uuid
+  reference         String           @unique @default(dbgenerated())
+  kind              String
+  status            String           @default("received")
+  locale            String
+  contactName       String
+  email             String
+  company           String           @default("")
+  country           String
+  requestedDelivery String           @default("")
+  message           String
+  originalModel     String           @default("")
+  items             Json             @default("[]")
+  createdAt         DateTime         @default(now()) @db.Timestamptz
+  updatedAt         DateTime         @default(now()) @db.Timestamptz
+  messages          InquiryMessage[]
+
+  @@unique([userId, submissionKey])
+  @@index([userId, createdAt(sort: Desc)])
+}
+
+model InquiryMessage {
+  id            String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  inquiryId     String          @db.Uuid
+  inquiry       CustomerInquiry @relation(fields: [inquiryId], references: [id], onDelete: Restrict)
+  authorId      String          @db.Uuid
+  submissionKey String          @db.Uuid
+  authorRole    String          @default("customer")
+  body          String
+  createdAt     DateTime        @default(now()) @db.Timestamptz
+
+  @@unique([authorId, submissionKey])
+  @@index([inquiryId, createdAt])
+}

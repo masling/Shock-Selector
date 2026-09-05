@@ -12,6 +12,8 @@ import { getSiteUiCopy } from "@/lib/i18n/site-ui-copy";
 import { getLocalizedHref } from "@/lib/i18n/routing";
 import { getLocalizedAlternates } from "@/lib/seo";
 import { getInquiryInitialMessage, type InquirySearchParams } from "@/lib/contact/inquiry-context";
+import { isInquiryPortalEnabled } from "@/lib/inquiry/inquiry-service";
+import { getInquiryPortalCopy } from "@/lib/i18n/inquiry-portal-copy";
 
 type ContactPageProps = { params: Promise<{ locale: string }>; searchParams?: Promise<InquirySearchParams> };
 
@@ -29,6 +31,12 @@ export default async function ContactPage({ params, searchParams }: ContactPageP
   const copy = getSiteCopy(locale);
   const ui = getSiteUiCopy(locale);
   const initialMessage = getInquiryInitialMessage(query, locale);
+  const portalCopy = getInquiryPortalCopy(locale);
+  const portalQuery = new URLSearchParams();
+  for (const key of ["request", "models"] as const) {
+    const value = Array.isArray(query[key]) ? query[key][0] : query[key];
+    if (value) portalQuery.set(key, value.slice(0, 1000));
+  }
   return (
     <Container className="py-10 md:py-12">
       <SectionHeading title={copy.contact.eyebrow} description={ui.contactIntro} />
@@ -45,6 +53,10 @@ export default async function ContactPage({ params, searchParams }: ContactPageP
           </div>
           <p className="mt-6 text-sm leading-7 text-steel">{copy.contact.description}</p>
           <Link href={getLocalizedHref(locale, "/inquiry")} className="text-link mt-5 min-h-11">{ui.inquiries}<ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
+          {isInquiryPortalEnabled() && <div className="mt-3 flex flex-col items-start gap-2">
+            <Link href={`/${locale}/account/inquiries/new?${portalQuery}`} className="text-link min-h-11">{portalCopy.newInquiry}<ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
+            <Link href={`/${locale}/account/inquiries`} className="text-link min-h-11">{portalCopy.title}</Link>
+          </div>}
         </aside>
         <section className="min-w-0 rounded-xl border border-line bg-white p-5 sm:p-8">
           <h2 className="mb-6 text-2xl font-semibold">{ui.emailDraft}</h2>
