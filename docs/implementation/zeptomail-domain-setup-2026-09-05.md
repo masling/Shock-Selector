@@ -17,6 +17,16 @@ After refresh, the account's Subscription page showed **1 credit / 10,000 emails
 
 ## Next integration boundary
 
-Supabase Auth SMTP settings for the Frankfurt project are open but still disabled. Permission has been requested to save this ZeptoMail account's SMTP credentials there for EKD verification emails. No credential was printed to chat, entered into Supabase, or committed to the repository. No test email was sent yet.
+User authorized saving ZeptoMail SMTP credentials into the Frankfurt project's Auth settings. Automated form filling did not reliably persist the values and was stopped without saving. User subsequently reported completing the email settings manually. No credential was printed to chat or committed. Actual SMTP delivery remains unverified; do not overwrite the user's configuration based on the earlier disabled-state observation.
+
+## Google-first login and local readiness
+
+User chose Google as the primary login method, with email OTP as backup. User created Google Cloud project `ekd-vibroabsorber` and reported saving the Google provider and URL Configuration in Supabase. Browser operation is now manual at the user's request.
+
+Program-side read-only check (`scripts/auth-config-check.mjs`) verified: Auth settings HTTP 200, Google enabled, email enabled, Google authorization HTTP 302 to accounts.google.com, and OAuth provider callback matching the correct Supabase project. This did not sign in, create a user, or send email.
+
+The ignored owner-only `.env.supabase.local` now includes the project publishable key, Google enabled flag and inquiry portal flag. No Client Secret or service-role key was added to the browser configuration. Only the local preview was restarted.
+
+Local `/en/sign-in` returned 200 with the Google button visible; unauthenticated `/api/inquiries` returned 401 with private/no-store caching. Seven Auth regression tests and TypeScript checking passed. Actual browser login and inquiry submission still require the user's manual end-to-end test.
 
 Domain verification alone does not prove account review/free sending eligibility or successful email delivery. Confirm those separately during SMTP acceptance. No change to the live website's database connection is included.

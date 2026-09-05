@@ -17,6 +17,9 @@ type SignInCopy = {
   verifyingCode: string;
   codeSent: string;
   google: string;
+  googleSigningIn: string;
+  emailInstead: string;
+  googleUnavailable: string;
   unavailableTitle: string;
   unavailableDescription: string;
   emailFallback: string;
@@ -46,6 +49,8 @@ export function SignInForm({
   const [token, setToken] = useState("");
   const [isSendingCode, setIsSendingCode] = useState(false);
   const [isVerifyingCode, setIsVerifyingCode] = useState(false);
+  const [isGoogleBusy, setIsGoogleBusy] = useState(false);
+  const [isEmailOpen, setIsEmailOpen] = useState(!googleEnabled);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const authClient = useMemo(() => createBrowserAuthClient(), []);
@@ -113,10 +118,11 @@ export function SignInForm({
   }
 
   async function handleGoogleSignIn() {
-    if (!authClient) {
+    if (!authClient || isGoogleBusy) {
       return;
     }
 
+    setIsGoogleBusy(true);
     setError(null);
     try {
       const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`;
@@ -127,9 +133,11 @@ export function SignInForm({
 
       if (googleError) {
         setError(copy.error);
+        setIsGoogleBusy(false);
       }
     } catch {
       setError(copy.error);
+      setIsGoogleBusy(false);
     }
   }
 
@@ -154,6 +162,23 @@ export function SignInForm({
     <div className="rounded-xl border border-line bg-white p-6">
       <p className="text-sm leading-7 text-steel">{copy.requirement}</p>
 
+      {googleEnabled ? (
+        <Button
+          type="button"
+          variant="accent"
+          className="mt-6 w-full"
+          onClick={handleGoogleSignIn}
+          disabled={isGoogleBusy || isSendingCode || isVerifyingCode}
+          aria-busy={isGoogleBusy}
+        >
+          {isGoogleBusy ? copy.googleSigningIn : copy.google}
+        </Button>
+      ) : (
+        <p className="mt-6 rounded-lg border border-line bg-sand p-4 text-sm leading-6 text-steel">
+          {copy.googleUnavailable}
+        </p>
+      )}
+
       {message ? (
         <div className="mt-5 rounded-lg bg-accent-soft p-4 text-sm text-accent-dark" role="status">
           {message}
@@ -166,54 +191,54 @@ export function SignInForm({
         </div>
       ) : null}
 
-      <form className="mt-6 space-y-4" onSubmit={handleSendCode}>
-        <label className="block space-y-2 text-sm text-steel">
-          <span>{copy.emailLabel}</span>
-          <input
-            className="field"
-            type="email"
-            autoComplete="email"
-            required
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            placeholder={copy.emailPlaceholder}
-          />
-        </label>
-        <Button type="submit" variant="accent" disabled={isSendingCode || !email}>
-          {isSendingCode ? copy.sendingCode : copy.sendCode}
-        </Button>
-      </form>
+      <details
+        className="mt-6 border-t border-line pt-5"
+        open={isEmailOpen}
+        onToggle={(event) => setIsEmailOpen(event.currentTarget.open)}
+      >
+        <summary className="cursor-pointer select-none text-sm font-semibold text-ink marker:text-steel">
+          {copy.emailInstead}
+        </summary>
 
-      <form className="mt-6 space-y-4 border-t border-line pt-6" onSubmit={handleVerifyCode}>
-        <label className="block space-y-2 text-sm text-steel">
-          <span>{copy.codeLabel}</span>
-          <input
-            className="field"
-            type="text"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            required
-            value={token}
-            onChange={(event) => setToken(event.target.value)}
-            placeholder={copy.codePlaceholder}
-          />
-        </label>
-        <Button type="submit" disabled={isVerifyingCode || !email || !token.trim()}>
-          {isVerifyingCode ? copy.verifyingCode : copy.verifyCode}
-        </Button>
-      </form>
+        <form className="mt-5 space-y-4" onSubmit={handleSendCode}>
+          <label className="block space-y-2 text-sm text-steel">
+            <span>{copy.emailLabel}</span>
+            <input
+              className="field"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder={copy.emailPlaceholder}
+              disabled={isGoogleBusy}
+            />
+          </label>
+          <Button type="submit" variant={googleEnabled ? "secondary" : "accent"} disabled={isGoogleBusy || isSendingCode || !email}>
+            {isSendingCode ? copy.sendingCode : copy.sendCode}
+          </Button>
+        </form>
 
-      {googleEnabled ? (
-        <div className="mt-6 border-t border-line pt-6">
-          <button
-            type="button"
-            className={buttonVariants({ variant: "secondary" })}
-            onClick={handleGoogleSignIn}
-          >
-            {copy.google}
-          </button>
-        </div>
-      ) : null}
+        <form className="mt-6 space-y-4 border-t border-line pt-6" onSubmit={handleVerifyCode}>
+          <label className="block space-y-2 text-sm text-steel">
+            <span>{copy.codeLabel}</span>
+            <input
+              className="field"
+              type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              required
+              value={token}
+              onChange={(event) => setToken(event.target.value)}
+              placeholder={copy.codePlaceholder}
+              disabled={isGoogleBusy}
+            />
+          </label>
+          <Button type="submit" disabled={isGoogleBusy || isVerifyingCode || !email || !token.trim()}>
+            {isVerifyingCode ? copy.verifyingCode : copy.verifyCode}
+          </Button>
+        </form>
+      </details>
     </div>
   );
 }
