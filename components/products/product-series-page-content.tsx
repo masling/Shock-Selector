@@ -11,6 +11,8 @@ import { PipeCatalogMedia } from "@/components/products/pipe-catalog-media";
 import Link from "next/link";
 import { getCatalogUiCopy } from "@/lib/i18n/catalog-ui-copy";
 import { directoryQuoteHref } from "@/lib/catalog/directory-search";
+import { listModelDownloadsForModels, type ModelDownload } from "@/lib/downloads/download-service";
+import { ModelDownloadButton } from "@/components/products/model-download-button";
 
 type ProductSeriesPageContentProps = {
   familySlug: string;
@@ -44,6 +46,9 @@ export async function ProductSeriesPageContent({
   const visibleSpecKeys = series.specDefinitions.slice(0, 8);
   const copy = getProductCenterCopy(locale);
   const ui = getCatalogUiCopy(locale);
+  let downloadsByModel = new Map<string, ModelDownload[]>();
+  try { downloadsByModel = await listModelDownloadsForModels(models.items.map((model) => model.id)); }
+  catch { /* Product specifications remain available if private downloads are temporarily unavailable. */ }
 
   return (
     <Container className="py-10 md:py-12">
@@ -86,6 +91,7 @@ export async function ProductSeriesPageContent({
                   <th key={spec.id} className="px-4 py-3 font-medium">{getCatalogSpecLabel(spec, locale)}{spec.unit ? ` (${spec.unit})` : ""}</th>
                 ))}
                 <th className="px-4 py-3 font-medium">{ui.quote}</th>
+                {downloadsByModel.size > 0 ? <th className="px-4 py-3 font-medium">{ui.documents}</th> : null}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -104,6 +110,12 @@ export async function ProductSeriesPageContent({
                       return <td key={spec.id} className="px-4 py-3 text-steel">{value?.rawValue ?? "—"}</td>;
                     })}
                     <td className="px-4 py-3"><Link className="text-link min-h-11 whitespace-nowrap" href={directoryQuoteHref(locale, model.model)}>{ui.quote}</Link></td>
+                    {downloadsByModel.size > 0 ? <td className="px-4 py-3">
+                      <div className="flex min-w-32 flex-wrap gap-2">
+                        {(downloadsByModel.get(model.id) ?? []).map((download) => <ModelDownloadButton key={download.id} id={download.id} format={download.format} locale={locale} preparing={ui.preparingDownload} failure={ui.downloadError} />)}
+                        {!downloadsByModel.has(model.id) ? <span className="text-steel">—</span> : null}
+                      </div>
+                    </td> : null}
                   </tr>
                 );
               })}

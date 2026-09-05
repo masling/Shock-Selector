@@ -17,6 +17,7 @@ const en = {
   deliveryUnavailable: "Prepare your requirements below, then open an email draft to send them to our team. Nothing is sent until you send the email.",
   preview: "Local preview: representative images are awaiting publication review.",
   pipeNote: "Choose a connection series to review its dimensions and mounting requirements.",
+  documents: "Model documents", preparingDownload: "Preparing…", downloadError: "Document unavailable. Try again.",
 };
 
 type CatalogUiCopy = { [Key in keyof typeof en]: string };
@@ -39,6 +40,7 @@ const copy: Record<Locale, CatalogUiCopy> = {
     deliveryUnavailable: "填写下方需求后，点击邮件按钮打开草稿并发送给我们。打开草稿不会自动发送邮件。",
     preview: "本地预览：代表产品图片尚待发布审核。",
     pipeNote: "选择连接件系列，查看尺寸与安装要求。",
+    documents: "型号资料", preparingDownload: "准备中…", downloadError: "资料暂时无法下载，请重试。",
   },
   de: {
     heading: "Stoßdämpfer & Schwingungsisolierung",
@@ -57,6 +59,7 @@ const copy: Record<Locale, CatalogUiCopy> = {
     deliveryUnavailable: "Tragen Sie Ihre Anforderungen ein und öffnen Sie anschließend einen E-Mail-Entwurf für unser Team. Erst wenn Sie die E-Mail senden, wird Ihre Anfrage übermittelt.",
     preview: "Lokale Vorschau: Beispielbilder warten auf die Freigabe zur Veröffentlichung.",
     pipeNote: "Wählen Sie eine Verbindungsserie, um Abmessungen und Montageanforderungen zu prüfen.",
+    documents: "Modelldokumente", preparingDownload: "Wird vorbereitet…", downloadError: "Dokument vorübergehend nicht verfügbar.",
   },
   fr: {
     heading: "Amortisseurs et isolation vibratoire",
@@ -75,6 +78,7 @@ const copy: Record<Locale, CatalogUiCopy> = {
     deliveryUnavailable: "Renseignez vos besoins ci-dessous, puis ouvrez un brouillon d'e-mail pour notre équipe. Rien n'est envoyé avant l'envoi de votre e-mail.",
     preview: "Aperçu local : les images représentatives sont en attente de validation pour publication.",
     pipeNote: "Choisissez une série de raccords pour consulter les dimensions et les exigences de montage.",
+    documents: "Documents du modèle", preparingDownload: "Préparation…", downloadError: "Document temporairement indisponible.",
   },
   it: {
     heading: "Ammortizzatori e isolamento delle vibrazioni",
@@ -93,6 +97,7 @@ const copy: Record<Locale, CatalogUiCopy> = {
     deliveryUnavailable: "Inserisci i requisiti qui sotto, poi apri una bozza e-mail per il nostro team. La richiesta viene trasmessa solo quando invii l'e-mail.",
     preview: "Anteprima locale: immagini rappresentative in attesa di approvazione per la pubblicazione.",
     pipeNote: "Scegli una serie di raccordi per consultarne dimensioni e requisiti di montaggio.",
+    documents: "Documenti modello", preparingDownload: "Preparazione…", downloadError: "Documento temporaneamente non disponibile.",
   },
 };
 

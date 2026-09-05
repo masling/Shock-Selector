@@ -3,15 +3,26 @@ import { isVerifiedEmailUser } from "@/lib/auth/identity";
 import { z } from "zod";
 
 export function controlledDownloadsEnabled() { return process.env.CONTROLLED_DOWNLOADS_ENABLED === "true" && isAuthConfigured(); }
+export type ModelDownload = { id: string; modelId: string; title: string; filename: string; format: string; byteSize: number };
+
 export async function listModelDownloads(modelId: string) {
-  if (!controlledDownloadsEnabled()) return [];
+  const grouped = await listModelDownloadsForModels([modelId]);
+  return grouped.get(modelId) ?? [];
+}
+
+export async function listModelDownloadsForModels(modelIds: string[]) {
+  const grouped = new Map<string, ModelDownload[]>();
+  if (!controlledDownloadsEnabled()) return grouped;
+  const uniqueIds = Array.from(new Set(modelIds)).slice(0, 100);
+  if (!uniqueIds.length) return grouped;
   const client = await createAuthClient();
-  if (!client) return [];
+  if (!client) return grouped;
   const auth = await client.auth.getUser();
-  if (auth.error || !isVerifiedEmailUser(auth.data.user)) return [];
-  const { data, error } = await client.from("CatalogDownload").select("id,modelId,title,filename,format,byteSize").eq("modelId", modelId).order("createdAt");
+  if (auth.error || !isVerifiedEmailUser(auth.data.user)) return grouped;
+  const { data, error } = await client.from("CatalogDownload").select("id,modelId,title,filename,format,byteSize").in("modelId", uniqueIds).order("createdAt");
   if (error) throw new Error("Downloads unavailable");
-  return data ?? [];
+  for (const item of (data ?? []) as ModelDownload[]) grouped.set(item.modelId, [...(grouped.get(item.modelId) ?? []), item]);
+  return grouped;
 }
 
 export async function createModelDownload(id: string) {
