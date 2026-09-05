@@ -27,6 +27,8 @@
     "test:supabase-env": "node --test scripts/with-supabase.test.mjs",
     "notifications:check": "node scripts/with-notifications.mjs config",
     "notifications:feishu-test": "node scripts/with-notifications.mjs feishu-test",
+    "notifications:email-check": "node scripts/with-notifications.mjs email-config",
+    "notifications:email-test": "node scripts/with-notifications.mjs email-test",
     "test:notifications-env": "node --test scripts/with-notifications.test.mjs",
     "catalog:prepare-review-queue": "node scripts/prepare-review-queue.mjs",
     "test:review-queue": "node --test scripts/prepare-review-queue.test.mjs",
