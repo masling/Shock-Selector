@@ -21,6 +21,7 @@ export function SiteFooter({ locale, copy }: SiteFooterProps) {
           <Link href={getLocalizedHref(locale, "/")} className="inline-flex min-h-11 items-center">
             <Image src={brand.logo} alt={`${brand.name} ${brand.company}`} width={1158} height={217} className="h-auto w-[214px]" />
           </Link>
+          <p className="text-sm font-semibold text-ink">{brand.appName}</p>
           <p className="max-w-md text-sm leading-7 text-steel">{copy.summary}</p>
           <a href={`mailto:${brand.email}`} className="block text-sm text-accent hover:underline">{brand.email}</a>
           <a href={brand.whatsapp.href} className="block text-sm text-accent hover:underline">WhatsApp · {brand.whatsapp.displayNumber}</a>

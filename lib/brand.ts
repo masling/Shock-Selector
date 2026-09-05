@@ -1,6 +1,7 @@
 // Confirmed website identity. Do not infer a registered English company name.
 export const brand = {
   name: "EKD",
+  appName: "EKD VibroAbsorber",
   company: "力科丹普",
   logo: "/brand/ekd-likedanpu-horizontal.png",
   email: "service@vibroabsorber.com",
