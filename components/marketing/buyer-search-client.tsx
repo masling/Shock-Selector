@@ -109,13 +109,13 @@ export function BuyerSearchClient({ locale, copy, threadSizeOptions }: BuyerSear
 
   return (
     <div className="space-y-8">
-      <div className="rounded-[2rem] border border-line bg-white/80 p-8">
+      <div className="rounded-xl border border-line bg-white p-8">
         <div className="mb-6 flex items-center gap-3">
-          <div className="rounded-2xl border border-line bg-[#e9ede4] p-3">
+          <div className="rounded-lg border border-line bg-mist p-3">
             <SlidersHorizontal className="h-5 w-5 text-accent-dark" />
           </div>
           <div>
-            <h2 className="font-display text-2xl font-semibold">{copy.panelTitle}</h2>
+            <h2 className="font-sans text-2xl font-semibold">{copy.panelTitle}</h2>
             <p className="text-sm text-steel">{copy.panelDescription}</p>
           </div>
         </div>
@@ -124,7 +124,7 @@ export function BuyerSearchClient({ locale, copy, threadSizeOptions }: BuyerSear
           <label className="space-y-2 text-sm text-steel">
             <span>Model</span>
             <input
-              className="w-full rounded-2xl border border-line bg-sand px-4 py-3 text-ink outline-none"
+              className="w-full rounded-lg border border-line bg-sand px-4 py-3 text-ink"
               value={filters.modelQuery}
               onChange={(event) => updateFilter("modelQuery", event.target.value)}
               placeholder="EK, WR6, HGGN"
@@ -133,7 +133,7 @@ export function BuyerSearchClient({ locale, copy, threadSizeOptions }: BuyerSear
           <label className="space-y-2 text-sm text-steel">
             <span>Series</span>
             <input
-              className="w-full rounded-2xl border border-line bg-sand px-4 py-3 text-ink outline-none"
+              className="w-full rounded-lg border border-line bg-sand px-4 py-3 text-ink"
               value={filters.seriesCode}
               onChange={(event) => updateFilter("seriesCode", event.target.value)}
               placeholder="EK, EN, WR"
@@ -142,7 +142,7 @@ export function BuyerSearchClient({ locale, copy, threadSizeOptions }: BuyerSear
           <label className="space-y-2 text-sm text-steel">
             <span>{copy.fields.threadSize}</span>
             <select
-              className="w-full rounded-2xl border border-line bg-sand px-4 py-3 text-ink outline-none"
+              className="w-full rounded-lg border border-line bg-sand px-4 py-3 text-ink"
               value={filters.threadSize}
               onChange={(event) => updateFilter("threadSize", event.target.value)}
             >
@@ -153,7 +153,7 @@ export function BuyerSearchClient({ locale, copy, threadSizeOptions }: BuyerSear
           <label className="space-y-2 text-sm text-steel">
             <span>Selector range</span>
             <select
-              className="w-full rounded-2xl border border-line bg-sand px-4 py-3 text-ink outline-none"
+              className="w-full rounded-lg border border-line bg-sand px-4 py-3 text-ink"
               value={filters.selectorOnly}
               onChange={(event) => updateFilter("selectorOnly", event.target.value)}
             >
@@ -188,7 +188,7 @@ export function BuyerSearchClient({ locale, copy, threadSizeOptions }: BuyerSear
         {error ? <p className="mt-4 text-sm text-red-700">{error}</p> : null}
       </div>
 
-      <div className="rounded-[2rem] border border-line bg-white/80 p-8">
+      <div className="rounded-xl border border-line bg-white p-8">
         {!result ? (
           <p className="text-sm leading-7 text-steel">{copy.emptyState}</p>
         ) : result.items.length === 0 ? (
@@ -197,7 +197,7 @@ export function BuyerSearchClient({ locale, copy, threadSizeOptions }: BuyerSear
           <>
             <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
               <div>
-                <h2 className="font-display text-2xl font-semibold">{copy.resultsTitle}</h2>
+                <h2 className="font-sans text-2xl font-semibold">{copy.resultsTitle}</h2>
                 <p className="mt-2 text-sm text-steel">
                   {result.total} {copy.resultsSummary}
                 </p>
@@ -226,7 +226,7 @@ export function BuyerSearchClient({ locale, copy, threadSizeOptions }: BuyerSear
                     const isAdded = inquiryModels.includes(item.model);
 
                     return (
-                      <tr key={item.id} className="rounded-2xl bg-[#eef1ea] text-ink">
+                      <tr key={item.id} className="rounded-lg bg-mist text-ink">
                         <td className="rounded-l-2xl px-4 py-4 font-medium">
                           <Link
                             href={getModelHref(item)}
@@ -260,7 +260,7 @@ export function BuyerSearchClient({ locale, copy, threadSizeOptions }: BuyerSear
               </table>
             </div>
 
-            <div className="mt-6 flex flex-col gap-3 rounded-[1.5rem] border border-line bg-sand px-5 py-4 text-sm text-steel md:flex-row md:items-center md:justify-between">
+            <div className="mt-6 flex flex-col gap-3 rounded-lg border border-line bg-sand px-5 py-4 text-sm text-steel md:flex-row md:items-center md:justify-between">
               <p>Page {result.page} / {totalPages}</p>
               <div className="flex items-center gap-3">
                 <Button
@@ -296,7 +296,7 @@ function NumberInput({ label, value, onChange, unit }: { label: string; value: s
         {unit ? <span className="text-xs uppercase tracking-[0.12em] text-steel/70">{unit}</span> : null}
       </span>
       <input
-        className="w-full rounded-2xl border border-line bg-sand px-4 py-3 text-ink outline-none"
+        className="w-full rounded-lg border border-line bg-sand px-4 py-3 text-ink"
         inputMode="decimal"
         type="number"
         min="0"

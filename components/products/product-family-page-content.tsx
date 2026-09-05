@@ -7,6 +7,10 @@ import { findCatalogFamilyBySlug } from "@/lib/catalog/catalog-repository";
 import { defaultLocale, type Locale } from "@/lib/i18n/config";
 import { getProductCenterCopy } from "@/lib/i18n/page-copy";
 import { getLocalizedHref } from "@/lib/i18n/routing";
+import { PipeCatalogMedia } from "@/components/products/pipe-catalog-media";
+import { familyVisualModels, productImageUrl } from "@/lib/catalog/product-media";
+import { getCatalogUiCopy } from "@/lib/i18n/catalog-ui-copy";
+import { buttonVariants } from "@/components/ui/button";
 
 type ProductFamilyPageContentProps = {
   familySlug: string;
@@ -23,53 +27,66 @@ export async function ProductFamilyPageContent({
 
   const translation = getCatalogTranslation(family.translations, locale);
   const copy = getProductCenterCopy(locale);
+  const ui = getCatalogUiCopy(locale);
+  const visualModel = familyVisualModels[family.slug];
+  const photo = visualModel ? productImageUrl(visualModel) : null;
 
   return (
-    <Container className="py-16">
+    <Container className="py-10 md:py-12">
       <Breadcrumb items={[{ label: copy.productsBreadcrumb, href: getLocalizedHref(locale, "/products") }, { label: translation?.name ?? family.slug }]} />
 
-      <div className="mt-8 max-w-4xl">
-        <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">{translation?.tag}</p>
-        <h1 className="mt-3 text-4xl font-semibold text-slate-950">{translation?.name}</h1>
-        <p className="mt-5 text-lg leading-8 text-slate-600">{translation?.description}</p>
+      <div className="mt-8 flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
+        <div className="max-w-3xl" lang={translation?.locale === "zh-cn" ? "zh-CN" : translation?.locale}>
+          <p className="text-sm font-medium text-accent">{translation?.tag}</p>
+          <h1 className="mt-3 text-3xl font-semibold leading-tight md:text-[2.65rem] md:leading-[1.2]">{translation?.name}</h1>
+          <p className="mt-4 text-base leading-7 text-steel">{translation?.description}</p>
+          <Link href={getLocalizedHref(locale, "/contact")} className={buttonVariants({variant:"accent", className:"mt-5"})}>{ui.quote}</Link>
+        </div>
+        {photo && family.slug !== "flexible-pipe-connections" && <figure className="shrink-0 sm:w-[250px]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={photo} alt={`${ui.representative}: ${translation?.name}`} width={250} height={180} className="product-image h-40 w-full" />
+          <figcaption className="mt-2 text-center text-xs text-steel">{ui.representative}</figcaption>
+        </figure>}
       </div>
+
+      {family.slug === "flexible-pipe-connections" && <PipeCatalogMedia locale={locale} seriesCodes={family.series.map((series) => series.code)} />}
 
       <div className="mt-10 grid gap-6 lg:grid-cols-3">
         {translation?.workingPrinciple ? (
-          <section className="rounded-3xl border border-slate-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-slate-950">{copy.workingPrinciple}</h2>
-            <p className="mt-3 text-sm leading-6 text-slate-600">{translation.workingPrinciple}</p>
+          <section className="rounded-xl border border-line bg-white p-6">
+            <h2 className="text-lg font-semibold text-ink">{copy.workingPrinciple}</h2>
+            <p className="mt-3 text-sm leading-6 text-steel">{translation.workingPrinciple}</p>
           </section>
         ) : null}
         {translation?.constructionNotes ? (
-          <section className="rounded-3xl border border-slate-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-slate-950">{copy.construction}</h2>
-            <p className="mt-3 text-sm leading-6 text-slate-600">{translation.constructionNotes}</p>
+          <section className="rounded-xl border border-line bg-white p-6">
+            <h2 className="text-lg font-semibold text-ink">{copy.construction}</h2>
+            <p className="mt-3 text-sm leading-6 text-steel">{translation.constructionNotes}</p>
           </section>
         ) : null}
         {translation?.applicationNotes ? (
-          <section className="rounded-3xl border border-slate-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-slate-950">{copy.applications}</h2>
-            <p className="mt-3 text-sm leading-6 text-slate-600">{translation.applicationNotes}</p>
+          <section className="rounded-xl border border-line bg-white p-6">
+            <h2 className="text-lg font-semibold text-ink">{copy.applications}</h2>
+            <p className="mt-3 text-sm leading-6 text-steel">{translation.applicationNotes}</p>
           </section>
         ) : null}
       </div>
 
       <section className="mt-14">
-        <h2 className="text-2xl font-semibold text-slate-950">{copy.seriesInFamily}</h2>
+        <h2 className="text-2xl font-semibold text-ink">{copy.seriesInFamily}</h2>
         <div className="mt-6 grid gap-5 md:grid-cols-2">
           {family.series.map((series) => (
             <Link
               key={series.id}
               href={getLocalizedHref(locale, `/products/${family.slug}/${series.slug}`)}
-              className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+              className="rounded-xl border border-line bg-white p-6 transition hover:border-accent"
             >
               <div className="flex items-center justify-between gap-4">
-                <h3 className="text-xl font-semibold text-slate-950">{series.name}</h3>
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">{series.code}</span>
+                <h3 className="text-xl font-semibold text-ink">{series.name}</h3>
+                <span className="rounded-full bg-mist px-3 py-1 text-xs font-medium text-steel">{series.code}</span>
               </div>
-              <p className="mt-4 text-sm leading-6 text-slate-600">{series.overview}</p>
-              <p className="mt-4 text-sm font-medium text-emerald-700">
+              <p className="mt-4 text-sm leading-6 text-steel">{series.overview}</p>
+              <p className="mt-4 text-sm font-medium text-accent">
                 {series.selectorEligible ? copy.availableForSelector : copy.catalogInquiryProduct}
               </p>
             </Link>

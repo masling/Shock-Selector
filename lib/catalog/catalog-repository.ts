@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { catalogTranslationLocales } from "@/lib/catalog/catalog-i18n";
 import type { CatalogModelSearchInput } from "@/lib/catalog/catalog-schemas";
 import type { Locale } from "@/lib/i18n/config";
+import { publishedFamilyWhere, publishedModelWhere, publishedSeriesWhere } from "./catalog-visibility";
 
 const absorberSpecFilterKeys = {
   minStrokeMm: "strokeMm",
@@ -46,12 +47,8 @@ function buildWhere(input: CatalogModelSearchInput): Prisma.ProductModelWhereInp
   }
 
   return {
-    isActive: true,
-    catalogStatus: { in: ["PUBLISHED", "NEEDS_REVIEW"] },
+    ...publishedModelWhere(input),
     ...(input.selectorOnly ? { selectorEligible: true, selectorStatus: input.includeIncomplete ? { in: ["READY", "INCOMPLETE"] } : "READY" } : {}),
-    ...(input.familySlug ? { series: { family: { slug: input.familySlug } } } : {}),
-    ...(input.seriesSlug ? { series: { slug: input.seriesSlug } } : {}),
-    ...(input.seriesCode ? { series: { code: input.seriesCode.toUpperCase() } } : {}),
     ...(input.modelQuery ? { model: { contains: input.modelQuery, mode: "insensitive" } } : {}),
     ...(filters.length ? { AND: filters } : {}),
   };
@@ -75,7 +72,7 @@ function buildOrderBy(input: CatalogModelSearchInput): Prisma.ProductModelOrderB
 
 export async function findCatalogFamilies(locale: string) {
   return prisma.productFamily.findMany({
-    where: { isActive: true, catalogStatus: "PUBLISHED" },
+    where: publishedFamilyWhere(),
     orderBy: { sortOrder: "asc" },
     include: {
       translations: { where: { locale: { in: catalogTranslationLocales(locale as Locale) } } },
@@ -86,17 +83,17 @@ export async function findCatalogFamilies(locale: string) {
 
 export async function findCatalogFamilyBySlug(slug: string, locale: string) {
   return prisma.productFamily.findUnique({
-    where: { slug },
+    where: { slug, isActive: true, catalogStatus: "PUBLISHED" },
     include: {
       translations: { where: { locale: { in: catalogTranslationLocales(locale as Locale) } } },
-      series: { where: { catalogStatus: { in: ["PUBLISHED", "NEEDS_REVIEW"] } }, orderBy: { sortOrder: "asc" } },
+      series: { where: publishedSeriesWhere(), orderBy: { sortOrder: "asc" } },
     },
   });
 }
 
 export async function findCatalogSeriesBySlug(familySlug: string, seriesSlug: string) {
   return prisma.productSeries.findFirst({
-    where: { slug: seriesSlug, family: { slug: familySlug } },
+    where: publishedSeriesWhere({ seriesSlug, familySlug }),
     include: {
       family: { include: { translations: true } },
       sourceReferences: true,
@@ -131,16 +128,13 @@ export async function searchCatalogModels(input: CatalogModelSearchInput) {
 
 export async function getCatalogModelCount() {
   return prisma.productModel.count({
-    where: {
-      isActive: true,
-      catalogStatus: { in: ["PUBLISHED", "NEEDS_REVIEW"] },
-    },
+    where: publishedModelWhere(),
   });
 }
 
 export async function listCatalogThreadSizes() {
   const values = await prisma.productSpecValue.findMany({
-    where: { specDefinition: { key: "threadSize" }, valueText: { not: null } },
+    where: { model: publishedModelWhere(), specDefinition: { key: "threadSize" }, valueText: { not: null } },
     select: { valueText: true },
     distinct: ["valueText"],
     orderBy: { valueText: "asc" },

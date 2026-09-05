@@ -607,9 +607,7 @@ export const downloads = [
 ];
 
 export const companyHighlights = [
-  "30+ employees with a core team carrying 15+ years of industry experience",
   "Application experience across standard industrial and demanding heavy-duty environments",
-  "Quality and compliance references include ISO9001, ROHS and CE",
   "Engineering support for sizing review and application recommendations",
 ];
 

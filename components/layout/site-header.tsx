@@ -1,7 +1,8 @@
-import { headers } from "next/headers";
-import Image from "next/image";
+"use client";
+
+import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import Image from "next/image";
 import { Container } from "@/components/ui/container";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { MobileNav } from "@/components/layout/mobile-nav";
@@ -9,6 +10,9 @@ import { locales, type Locale } from "@/lib/i18n/config";
 import { getLocalizedHref } from "@/lib/i18n/routing";
 import type { SiteCopy } from "@/lib/i18n/site-copy";
 import { cn } from "@/lib/utils/cn";
+import { brand } from "@/lib/brand";
+import { getCatalogUiCopy } from "@/lib/i18n/catalog-ui-copy";
+import { buttonVariants } from "@/components/ui/button";
 
 type SiteHeaderProps = {
   locale: Locale;
@@ -39,34 +43,30 @@ function isActiveNavigationItem(currentPathname: string, itemHref: string) {
   return currentPath === targetPath || currentPath.startsWith(`${targetPath}/`);
 }
 
-export async function SiteHeader({ locale, copy, localeNames, mobileLabels }: SiteHeaderProps) {
-  const headerStore = await headers();
-  const currentPathname = headerStore.get("x-pathname") ?? `/${locale}`;
+export function SiteHeader({ locale, copy, localeNames, mobileLabels }: SiteHeaderProps) {
+  const currentPathname = usePathname() ?? `/${locale}`;
+  const quoteLabel = getCatalogUiCopy(locale).quote;
+  const order = ["/products", "/applications", "/selector/engineer", "/knowledge-center", "/downloads", "/about", "/contact"];
+  const items = [...copy.items].sort((a, b) => order.indexOf(a.href) - order.indexOf(b.href)).map((item) =>
+    item.href === "/contact" ? { ...item, label: quoteLabel } : item,
+  );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-line/80 bg-sand/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-sand/88">
-      <Container className="py-4">
+    <header className="sticky top-0 z-40 border-b border-line bg-white">
+      <Container className="max-w-[1440px] py-3">
         <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
           <div className="flex items-center justify-between w-full xl:w-auto">
             <Link
               href={getLocalizedHref(locale, "/")}
-              className="-ml-1 flex shrink-0 items-center text-ink xl:-ml-2"
+              className="flex min-h-11 shrink-0 items-center"
+              aria-label={`${brand.name} ${brand.company}`}
             >
-              <div className="flex h-20 items-center rounded-2xl bg-accent px-5 shadow-sm ring-1 ring-black/5">
-                <Image
-                  src="/brand/ekd-logo.png"
-                  alt="EKD"
-                  width={260}
-                  height={35}
-                  className="h-auto w-[228px] object-contain xl:w-[248px]"
-                  priority
-                />
-              </div>
+              <Image src={brand.logo} alt={`${brand.name} ${brand.company}`} width={1158} height={217} priority className="h-auto w-[190px] sm:w-[214px]" />
             </Link>
 
             <MobileNav
               locale={locale}
-              items={copy.items}
+              items={items}
               localeNames={localeNames}
               currentPathname={currentPathname}
               labels={mobileLabels ?? { open: "Open menu", close: "Close menu" }}
@@ -75,19 +75,20 @@ export async function SiteHeader({ locale, copy, localeNames, mobileLabels }: Si
 
           <div className="hidden w-full flex-col gap-3 lg:flex xl:w-auto xl:flex-1">
             <div className="flex flex-wrap items-center justify-start gap-2 xl:justify-end">
-              <nav className="flex flex-wrap items-center gap-2">
-                {copy.items.map((item) => {
+              <nav className="flex flex-wrap items-center gap-1">
+                {items.map((item) => {
                   const isActive = isActiveNavigationItem(currentPathname, item.href);
 
                   return (
                     <Link
                       key={item.href}
                       href={getLocalizedHref(locale, item.href)}
+                      aria-current={isActive ? "page" : undefined}
                       className={cn(
                         "whitespace-nowrap",
-                        isActive
-                          ? cn(buttonVariants({ variant: "accent", size: "sm" }), "shadow-sm")
-                          : "rounded-full px-4 py-2 text-sm text-ink hover:bg-white hover:text-accent-dark",
+                        item.href === "/contact" ? cn(buttonVariants({ variant: "accent", size: "sm" }), "text-sm") : isActive
+                          ? "inline-flex min-h-11 items-center rounded-md bg-accent-soft px-3 py-2 text-sm font-semibold text-accent-dark"
+                          : "inline-flex min-h-11 items-center rounded-md px-3 py-2 text-sm text-ink hover:bg-mist hover:text-accent-dark",
                       )}
                     >
                       {item.label}

@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { buildInquiryMailto } from "@/lib/contact/inquiry-mailto";
+import { getCatalogUiCopy } from "@/lib/i18n/catalog-ui-copy";
 import type { Locale } from "@/lib/i18n/config";
 import { ContactFormSchema, type ContactFormData } from "@/lib/contact/schemas";
 import type { SiteCopy } from "@/lib/i18n/site-copy";
@@ -11,9 +13,11 @@ type ContactFormClientProps = {
   locale: Locale;
   copy: SiteCopy["contact"]["form"];
   initialMessage?: string;
+  deliveryAvailable?: boolean;
 };
 
-export function ContactFormClient({ locale, copy, initialMessage = "" }: ContactFormClientProps) {
+export function ContactFormClient({ locale, copy, initialMessage = "", deliveryAvailable = true }: ContactFormClientProps) {
+  const deliveryCopy = getCatalogUiCopy(locale);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -41,7 +45,7 @@ export function ContactFormClient({ locale, copy, initialMessage = "" }: Contact
 
     setFormData((current) => ({
       ...current,
-      message: current.message ? `${current.message}\n\n${inquiryMessage}` : inquiryMessage,
+      message: current.message.includes(inquiryMessage) ? current.message : current.message ? `${current.message}\n\n${inquiryMessage}` : inquiryMessage,
     }));
   }, [locale]);
 
@@ -57,6 +61,7 @@ export function ContactFormClient({ locale, copy, initialMessage = "" }: Contact
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
+    if (!deliveryAvailable) return;
     setErrors({});
     setSubmitResult(null);
 
@@ -108,6 +113,11 @@ export function ContactFormClient({ locale, copy, initialMessage = "" }: Contact
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      {!deliveryAvailable && (
+        <div role="status" className="border-b border-line pb-4 text-sm leading-7 text-steel">
+          <p>{deliveryCopy.deliveryUnavailable}</p>
+        </div>
+      )}
       {submitResult === "success" && (
         <div className="rounded-xl bg-accent-soft p-4 text-sm text-accent-dark">
           <p className="font-medium">{copy.successTitle}</p>
@@ -135,7 +145,7 @@ export function ContactFormClient({ locale, copy, initialMessage = "" }: Contact
             value={formData.name}
             onChange={(e) => handleChange("name", e.target.value)}
             placeholder={copy.namePlaceholder}
-            className="w-full rounded-2xl border border-line bg-sand px-4 py-3 text-ink outline-none focus:border-accent/40"
+            className="w-full rounded-lg border border-line bg-sand px-4 py-3 text-ink focus:border-accent/40"
           />
           {errors.name && <span className="text-xs text-red-600">{errors.name}</span>}
         </label>
@@ -148,7 +158,7 @@ export function ContactFormClient({ locale, copy, initialMessage = "" }: Contact
             value={formData.email}
             onChange={(e) => handleChange("email", e.target.value)}
             placeholder={copy.emailPlaceholder}
-            className="w-full rounded-2xl border border-line bg-sand px-4 py-3 text-ink outline-none focus:border-accent/40"
+            className="w-full rounded-lg border border-line bg-sand px-4 py-3 text-ink focus:border-accent/40"
           />
           {errors.email && <span className="text-xs text-red-600">{errors.email}</span>}
         </label>
@@ -161,7 +171,7 @@ export function ContactFormClient({ locale, copy, initialMessage = "" }: Contact
             value={formData.company}
             onChange={(e) => handleChange("company", e.target.value)}
             placeholder={copy.companyPlaceholder}
-            className="w-full rounded-2xl border border-line bg-sand px-4 py-3 text-ink outline-none focus:border-accent/40"
+            className="w-full rounded-lg border border-line bg-sand px-4 py-3 text-ink focus:border-accent/40"
           />
         </label>
 
@@ -173,7 +183,7 @@ export function ContactFormClient({ locale, copy, initialMessage = "" }: Contact
             value={formData.phone}
             onChange={(e) => handleChange("phone", e.target.value)}
             placeholder={copy.phonePlaceholder}
-            className="w-full rounded-2xl border border-line bg-sand px-4 py-3 text-ink outline-none focus:border-accent/40"
+            className="w-full rounded-lg border border-line bg-sand px-4 py-3 text-ink focus:border-accent/40"
           />
         </label>
       </div>
@@ -186,14 +196,14 @@ export function ContactFormClient({ locale, copy, initialMessage = "" }: Contact
           onChange={(e) => handleChange("message", e.target.value)}
           placeholder={copy.placeholder}
           rows={5}
-          className="w-full rounded-2xl border border-line bg-sand px-4 py-3 text-ink outline-none focus:border-accent/40"
+          className="w-full rounded-lg border border-line bg-sand px-4 py-3 text-ink focus:border-accent/40"
         />
         {errors.message && <span className="text-xs text-red-600">{errors.message}</span>}
       </label>
 
-      <Button type="submit" variant="accent" disabled={isSubmitting}>
+      {deliveryAvailable ? <Button type="submit" variant="accent" disabled={isSubmitting}>
         {isSubmitting ? copy.submitting : copy.submit}
-      </Button>
+      </Button> : <a className={buttonVariants({ variant: "accent" })} href={buildInquiryMailto(formData)}>{deliveryCopy.email}</a>}
     </form>
   );
 }

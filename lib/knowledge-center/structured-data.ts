@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/i18n/config";
+import { brand } from "@/lib/brand";
 import { getIntentLabel, getKnowledgeCenterCopy } from "@/lib/i18n/page-copy";
 import {
   getKnowledgeArticlePath,
@@ -11,7 +12,8 @@ type JsonLdEntity = Record<string, unknown>;
 
 const publisher = {
   "@type": "Organization",
-  name: "Jiangsu EKD Machinery Technical Co., Ltd.",
+  name: brand.company,
+  brand: { "@type": "Brand", name: brand.name },
   url: getAbsoluteUrl("/about"),
 };
 

@@ -9,6 +9,7 @@ import {
   type Locale,
 } from "@/lib/i18n/config";
 import { getSiteCopy } from "@/lib/i18n/site-copy";
+import { brand } from "@/lib/brand";
 
 type LocaleLayoutProps = {
   children: ReactNode;
@@ -34,7 +35,7 @@ export async function generateMetadata({
   return {
     title: {
       default: copy.metadata.defaultTitle,
-      template: "%s | EKD Vibroabsorber",
+      template: `%s | ${brand.name}`,
     },
     description: copy.metadata.defaultDescription,
   };
@@ -61,7 +62,7 @@ export default async function LocaleLayout({
         localeNames={copy.localeNames}
         mobileLabels={{ open: copy.navigation.mobileMenuOpen, close: copy.navigation.mobileMenuClose }}
       />
-      <main>{children}</main>
+      <main id="main-content">{children}</main>
       <SiteFooter locale={locale} copy={copy.footer} />
     </>
   );

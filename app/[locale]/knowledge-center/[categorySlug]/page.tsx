@@ -115,7 +115,7 @@ export default async function KnowledgeCategoryPage({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       ) : null}
-      <Container className="py-16">
+      <Container className="py-10 md:py-12">
         <SectionHeading
           eyebrow={copy.heroEyebrow}
           title={categoryCopy.title}
@@ -127,7 +127,7 @@ export default async function KnowledgeCategoryPage({
             <Link
               key={article.slug}
               href={getLocalizedHref(locale, getKnowledgeArticlePath(article))}
-              className="group rounded-[2rem] border border-line bg-white/80 p-7 transition hover:-translate-y-1 hover:shadow-panel"
+              className="group rounded-xl border border-line bg-white p-7 transition hover:border-accent"
             >
               <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
                 <div>
@@ -137,7 +137,7 @@ export default async function KnowledgeCategoryPage({
                       {getIntentLabel(locale, article.intent)}
                     </span>
                   </div>
-                  <h2 className="mt-4 font-display text-3xl font-semibold text-ink">
+                  <h2 className="mt-4 font-sans text-3xl font-semibold text-ink">
                     {article.title}
                   </h2>
                   <p className="mt-3 max-w-3xl text-sm leading-7 text-steel">
@@ -150,7 +150,7 @@ export default async function KnowledgeCategoryPage({
                 {article.questions.slice(0, 3).map((question) => (
                   <div
                     key={question}
-                    className="flex gap-2 rounded-[1rem] border border-line bg-sand/70 p-3 text-sm leading-6 text-steel"
+                    className="flex gap-2 rounded-md border border-line bg-sand/70 p-3 text-sm leading-6 text-steel"
                   >
                     <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-accent-dark" />
                     {question}

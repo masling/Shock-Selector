@@ -12,9 +12,7 @@ html {
 
 body {
   @apply bg-sand text-ink antialiased;
-  background-image:
-    radial-gradient(circle at top left, rgba(29, 143, 98, 0.08), transparent 24%),
-    linear-gradient(180deg, #f7f6ef 0%, #f2f0e7 100%);
+  font-size: 16px;
 }
 
 a {
@@ -35,5 +33,36 @@ a {
   inset: 0 auto auto 0;
   width: 100%;
   height: 1px;
-  background: linear-gradient(90deg, rgba(81, 97, 106, 0.3), rgba(81, 97, 106, 0));
+  background: #d7e1dc;
+}
+
+@layer base {
+  h1, h2, h3 { text-wrap: balance; letter-spacing: -0.025em; }
+  p { text-wrap: pretty; }
+  button, input, select, textarea { font: inherit; }
+  input::placeholder, textarea::placeholder { color: #617269; opacity: 1; }
+  :focus-visible { outline: 2px solid #176b4a; outline-offset: 3px; }
+  img { max-width: 100%; }
+}
+
+@layer components {
+  .page-title { @apply font-display text-4xl font-semibold leading-tight md:text-5xl; }
+  .section-title { @apply font-display text-3xl font-semibold leading-tight md:text-4xl; }
+  .field { @apply min-h-11 w-full rounded-md border border-line bg-white px-3 py-2.5 text-sm text-ink; }
+  .field-label { @apply mb-2 block text-sm font-medium text-ink; }
+  .text-link { @apply inline-flex items-center gap-2 text-sm font-semibold text-accent hover:text-accent-dark; }
+  .surface { @apply rounded-xl border border-line bg-white; }
+  .product-image { mix-blend-mode: multiply; object-fit: contain; }
+}
+
+.mobile-dialog { position: fixed; inset: 0; margin: 0 0 0 auto; width: min(100%, 25rem); max-width: 100vw; height: 100dvh; max-height: 100dvh; border: 0; padding: 0; background: #fff; color: #182c26; }
+.mobile-dialog::backdrop { background: rgb(12 35 25 / 55%); }
+html:has(.mobile-dialog[open]) { overflow: hidden; }
+.scroll-table { overflow-x: auto; overscroll-behavior-x: contain; }
+.scroll-table table { font-variant-numeric: tabular-nums; }
+.skip-link { position: fixed; top: 0.5rem; left: 0.5rem; z-index: 60; transform: translateY(-180%); background: white; padding: 0.75rem 1rem; color: #104d37; }
+.skip-link:focus { transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }

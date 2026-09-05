@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
+import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "Contact EKD for Shock Absorber Selection Support",
@@ -13,10 +14,7 @@ const directChannels = [
 ];
 
 const socialChannels = [
-  { label: "WhatsApp", value: "Contact us by WhatsApp" },
-  { label: "LinkedIn", value: "Contact us on LinkedIn" },
-  { label: "X", value: "Contact us on X" },
-  { label: "YouTube", value: "Contact us on YouTube" },
+  { label: "WhatsApp", value: brand.whatsapp.displayNumber, href: brand.whatsapp.href },
 ];
 
 export default function ContactPage() {
@@ -39,7 +37,7 @@ export default function ContactPage() {
               Online contact channels
             </div>
             <p className="mt-3 text-sm leading-7 text-steel">
-              You can also contact us through the following messaging and social media channels.
+              You can also contact us on WhatsApp about your products or application.
             </p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {socialChannels.map((channel) => (

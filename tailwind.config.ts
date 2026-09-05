@@ -9,15 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#11191b",
-        steel: "#51616a",
-        mist: "#eef1ea",
-        sand: "#f5f3eb",
-        line: "#d4dacd",
+        ink: "#182c26",
+        steel: "#4c6058",
+        mist: "#edf3ef",
+        sand: "#f7f9f8",
+        line: "#d7e1dc",
         accent: {
-          DEFAULT: "#1d8f62",
-          dark: "#116345",
-          soft: "#dcefe6",
+          DEFAULT: "#176b4a",
+          dark: "#104d37",
+          soft: "#e0f0e7",
         },
       },
       fontFamily: {
@@ -25,7 +25,7 @@ const config: Config = {
         display: ["Space Grotesk", "Avenir Next Condensed", "sans-serif"],
       },
       boxShadow: {
-        panel: "0 24px 60px rgba(17, 25, 27, 0.14)",
+        panel: "0 2px 8px rgba(17, 25, 27, 0.10)",
       },
       backgroundImage: {
         grid: "linear-gradient(rgba(81,97,106,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(81,97,106,0.15) 1px, transparent 1px)",

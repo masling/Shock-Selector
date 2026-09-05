@@ -54,7 +54,7 @@ export default async function SolutionsPage({ params }: SolutionsPageProps) {
   const copy = getSiteCopy(locale);
 
   return (
-    <Container className="py-16">
+    <Container className="py-10 md:py-12">
       <SectionHeading
         eyebrow={copy.solutions.eyebrow}
         title={copy.solutions.title}
@@ -63,8 +63,8 @@ export default async function SolutionsPage({ params }: SolutionsPageProps) {
 
       <div className="mt-12 grid gap-5 lg:grid-cols-2">
         {copy.solutions.items.map((solution, solutionIndex) => (
-          <div key={solution.title} className="rounded-[2rem] border border-line bg-white/80 p-7">
-            <h2 className="font-display text-2xl font-semibold">{solution.title}</h2>
+          <div key={solution.title} className="rounded-xl border border-line bg-white p-7">
+            <h2 className="font-sans text-2xl font-semibold">{solution.title}</h2>
             <p className="mt-4 text-sm leading-7 text-steel">{solution.description}</p>
             <ul className="mt-6 space-y-3 text-sm text-ink">
               {solution.items.map((item, itemIndex) => (

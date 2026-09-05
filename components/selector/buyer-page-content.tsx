@@ -14,11 +14,11 @@ export async function BuyerQuickFilterPageContent({ locale = defaultLocale }: Bu
   const threadSizes = await listCatalogThreadSizes();
 
   return (
-    <Container className="py-16">
+    <Container className="py-10 md:py-12">
       <SectionHeading
         eyebrow={copy.buyer.eyebrow}
         title={copy.buyer.title}
-        description="Search shock absorber and vibration isolation products by model, series and key technical values."
+        description={copy.buyer.description}
       />
 
       <div className="mt-12">

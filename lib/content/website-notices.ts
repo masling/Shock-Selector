@@ -1,0 +1,35 @@
+export const websiteNotices = {
+  privacy: {
+    title: "Privacy notice",
+    description: "How this website uses information when you browse, calculate or contact EKD.",
+    sections: [
+      { title: "Who to contact", text: "This website presents products and application support from 力科丹普 under the EKD brand. For questions about your information, or to request access, correction or deletion, contact service@vibroabsorber.com. We may need to verify your identity before responding." },
+      { title: "Information you provide", text: "When you contact us, we use your name, email, company, contact details, selected products and application information to respond, prepare a quotation and follow up on your request. Processing is for steps you request before a possible contract, or for our legitimate business interest in responding to business enquiries. Do not include unnecessary personal information or confidential third-party material." },
+      { title: "Browsing and calculations", text: "Hosting and security services may process IP addresses, browser details, requested pages and timestamps to deliver and protect the website. Submitted sizing inputs, calculated results and matched model identifiers may be stored for technical troubleshooting and service improvement. These calculation records do not request your name or email." },
+      { title: "Browser storage and optional analytics", text: "The ekd-locale cookie remembers your language. Inquiry-list items, quantities and notes are stored in your browser until you remove them or clear browser storage; saving a list does not submit an inquiry. The analytics preference is also stored locally. Google Analytics is loaded only after you allow optional analytics using the controls below. You can change your choice here. Declining analytics does not prevent product browsing or sizing." },
+      { title: "Service providers and external links", text: "Hosting, database and email providers process information needed to operate this website and handle your requests. Some processing may take place outside your country. We use access controls and encrypted connections for the website's service connections. Contact us for information about the providers involved in a specific request. Choosing a WhatsApp link opens Meta's service; choosing an email link opens your email application. Your use of those services is governed by their own privacy terms. We do not automatically send messages when you view this page." },
+      { title: "Retention and your choices", text: "We retain business correspondence as needed to handle the inquiry, maintain the commercial relationship and meet applicable record-keeping obligations. We review information when it is no longer needed. Contact us to discuss a specific record, object to processing based on legitimate interests, or request restriction or deletion where applicable. You may also contact your relevant data-protection authority. Withdrawing analytics consent affects future analytics collection and does not invalidate earlier processing." },
+    ],
+  },
+  terms: {
+    title: "Website terms",
+    description: "Using the EKD product catalog, documents and inquiry tools.",
+    sections: [
+      { title: "Product information", text: "The website helps you research products and prepare enquiries. Images may represent a series rather than every model or configuration. Check the selected model's current specifications and written quotation before ordering. A missing parameter or document is not a statement that the product meets a requirement." },
+      { title: "Quotations and orders", text: "A shortlist, calculation or enquiry is not an accepted order. Price, delivery, shipping, configuration, warranty and other commercial conditions are agreed in the written quotation or contract. No payment or automatic order acceptance takes place through the current inquiry tools." },
+      { title: "Technical selection", text: "Sizing output is a preliminary engineering aid based on the entered conditions and available catalog values. It does not replace checking installation constraints, duty cycle, environmental conditions or system safety. Replacement suitability must be confirmed; a similar name, dimension or appearance does not establish equivalence." },
+      { title: "Documents and third-party services", text: "Use supplied documents for product evaluation and integration within their stated scope. Respect applicable ownership and usage rights. Third-party links and services are subject to their own terms. Contact service@vibroabsorber.com if a document is unclear or you need permission for another use." },
+      { title: "Site use", text: "Use the website lawfully and do not interfere with its availability, attempt unauthorised access or submit material you have no right to share. These website notes do not alter terms expressly agreed in a contract or rights that cannot be excluded under applicable law." },
+    ],
+  },
+  "selection-guidance": {
+    title: "Selection guidance",
+    description: "Use calculation results together with model specifications and application review.",
+    sections: [
+      { title: "Start with the operating conditions", text: "Confirm moving mass, impact velocity, available stroke, drive force and cycles per hour. Use consistent units and distinguish measured values from estimates. The five motion entry points route you into the relevant existing calculation variant." },
+      { title: "Check more than one rating", text: "Review energy per cycle and per hour, forces, stroke, mounting geometry and operating environment. A match in the catalog means the product meets the implemented filter conditions; it is not final approval for the complete machine or safety function." },
+      { title: "Installation and replacement", text: "Confirm alignment, available space, mounting requirements and the exact model drawing before installation. When replacing another brand, provide the original model and operating conditions for review. Do not infer interchangeability from thread size or overall length alone." },
+      { title: "Vibration isolation and special projects", text: "The current calculator is for supported shock-absorber motion cases. Vibration-isolation applications and custom systems require engineering review of load, direction, frequency, displacement and installation constraints. Contact our team if the application is outside the listed cases or no product matches." },
+    ],
+  },
+} as const;

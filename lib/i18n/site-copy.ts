@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/i18n/config";
+import { brand } from "@/lib/brand";
 
 type FooterGroup = {
   title: string;
@@ -336,7 +337,7 @@ const englishCopy: SiteCopy = {
           { label: "Contact us", href: "/contact" },
           { label: "Sales support", href: "/contact" },
           { label: "Technical support", href: "/contact" },
-          { label: "WhatsApp / X / LinkedIn", href: "/contact" },
+          { label: "WhatsApp", href: brand.whatsapp.href },
         ],
       },
     ],
@@ -449,9 +450,7 @@ const englishCopy: SiteCopy = {
       description:
         "Product coverage, application support and selection guidance are available for standard automation and severe-duty impact control.",
       items: [
-        "30+ employees with a core team carrying 15+ years of industry experience",
         "Application experience across standard industrial and demanding heavy-duty environments",
-        "Quality and compliance references include ISO9001, ROHS and CE",
         "Engineering support for sizing review and application recommendations",
       ],
     },
@@ -569,13 +568,11 @@ const englishCopy: SiteCopy = {
       "EKD focuses on industrial shock absorption, vibration control and application guidance for machine builders and industrial operators.",
     profileTitle: "Company profile",
     paragraphs: [
-      "Jiangsu EKD Machinery Technical Co., Ltd. focuses on vibration control, noise reduction and industrial shock absorption products. The current EKD material set emphasizes both civil-industrial applications and demanding environments, backed by a team with long industry experience and a practical engineering support mindset.",
+      `${brand.company} provides industrial shock absorption and vibration isolation products under the ${brand.name} brand. The website brings product information, model comparison and sizing guidance together for engineers and purchasing teams.`,
       "The team supports model selection, application review and product recommendations for both automation equipment and heavy-duty impact-control applications.",
     ],
     highlights: [
-      "30+ employees with a core team carrying 15+ years of industry experience",
       "Application experience across standard industrial and demanding heavy-duty environments",
-      "Quality and compliance references include ISO9001, ROHS and CE",
       "Engineering support for sizing review and application recommendations",
     ],
   },
@@ -591,12 +588,9 @@ const englishCopy: SiteCopy = {
     ],
     socialTitle: "Online contact channels",
     socialDescription:
-      "You can also contact us through the following messaging and social media channels.",
+      "You can also contact us on WhatsApp about your products or application.",
     socialChannels: [
-      { label: "WhatsApp", value: "Contact us by WhatsApp" },
-      { label: "LinkedIn", value: "Contact us on LinkedIn" },
-      { label: "X", value: "Contact us on X" },
-      { label: "YouTube", value: "Contact us on YouTube" },
+      { label: "WhatsApp", value: brand.whatsapp.displayNumber, href: brand.whatsapp.href },
     ],
     form: {
       name: "Name",
@@ -766,7 +760,7 @@ const chineseCopy: SiteCopy = {
           { label: "联系我们", href: "/contact" },
           { label: "销售支持", href: "/contact" },
           { label: "技术支持", href: "/contact" },
-          { label: "WhatsApp / X / LinkedIn", href: "/contact" },
+          { label: "WhatsApp", href: brand.whatsapp.href },
         ],
       },
     ],
@@ -873,9 +867,7 @@ const chineseCopy: SiteCopy = {
       description:
         "EKD 面向标准自动化设备和高冲击重载场景，提供产品覆盖、应用判断与选型支持。",
       items: [
-        "30+ 团队成员，核心团队具备 15+ 年行业经验",
         "覆盖常规工业环境与高负载严苛工况的应用经验",
-        "质量与合规参考包括 ISO9001、ROHS、CE",
         "支持选型复核与应用方案建议",
       ],
     },
@@ -991,13 +983,11 @@ const chineseCopy: SiteCopy = {
       "EKD 聚焦工业缓冲、隔振与应用支持，面向设备制造商与工业用户提供产品与选型服务。",
     profileTitle: "公司简介",
     paragraphs: [
-      "江苏亿凯达机械技术有限公司专注于振动控制、降噪和工业缓冲类产品。现有资料体现出其同时覆盖常规工业应用与严苛工况环境，并具备较强的工程支持导向。",
+      `${brand.company}以 ${brand.name} 品牌提供工业缓冲与隔振产品。网站面向工程师与采购人员，提供产品资料、型号对比与选型指引。`,
       "团队可为自动化设备和高冲击重载场景提供型号推荐、应用判断与选型支持。",
     ],
     highlights: [
-      "30+ 团队成员，核心团队具备 15+ 年行业经验",
       "覆盖常规工业与严苛重载环境的应用经验",
-      "质量与合规参考包括 ISO9001、ROHS、CE",
       "支持选型复核与应用建议",
     ],
   },
@@ -1013,12 +1003,9 @@ const chineseCopy: SiteCopy = {
     ],
     socialTitle: "在线联系渠道",
     socialDescription:
-      "你也可以通过以下即时通讯和社交媒体渠道联系我们。",
+      "你也可以通过 WhatsApp 与我们沟通产品或应用需求。",
     socialChannels: [
-      { label: "WhatsApp", value: "通过 WhatsApp 联系我们" },
-      { label: "LinkedIn", value: "通过 LinkedIn 联系我们" },
-      { label: "X", value: "通过 X 联系我们" },
-      { label: "YouTube", value: "通过 YouTube 联系我们" },
+      { label: "WhatsApp", value: brand.whatsapp.displayNumber, href: brand.whatsapp.href },
     ],
     form: {
       name: "姓名",
@@ -1172,7 +1159,7 @@ const germanCopy: SiteCopy = {
           { label: "Kontaktieren Sie uns", href: "/contact" },
           { label: "Vertrieb", href: "/contact" },
           { label: "Technischer Support", href: "/contact" },
-          { label: "WhatsApp / X / LinkedIn", href: "/contact" },
+          { label: "WhatsApp", href: brand.whatsapp.href },
         ],
       },
     ],
@@ -1286,9 +1273,7 @@ const germanCopy: SiteCopy = {
       description:
         "EKD kombiniert Produktbreite, Anwendungsunterstützung und Auswahlhilfe für Standardautomation und schwere Stoßbelastung.",
       items: [
-        "30+ Mitarbeiter, Kernteam mit mehr als 15 Jahren Branchenerfahrung",
         "Anwendungserfahrung in Standardindustrie und anspruchsvollen Schwerlastumgebungen",
-        "Qualitäts- und Compliance-Referenzen: ISO9001, ROHS und CE",
         "Technische Unterstützung für Auslegung und Anwendungsempfehlungen",
       ],
     },
@@ -1408,13 +1393,11 @@ const germanCopy: SiteCopy = {
       "EKD konzentriert sich auf industrielle Stoßdämpfung, Schwingungskontrolle und Anwendungsunterstützung für Maschinenbauer und industrielle Betreiber.",
     profileTitle: "Unternehmensprofil",
     paragraphs: [
-      "Jiangsu EKD Machinery Technical Co., Ltd. konzentriert sich auf Schwingungskontrolle, Geräuschminderung und industrielle Stoßdämpfungsprodukte. Die heutige Materialbasis zeigt sowohl Standardindustrie als auch anspruchsvolle Einsatzumgebungen, gestützt durch ein erfahrenes Team und praxisorientierte Technikunterstützung.",
+      `${brand.company} bietet unter der Marke ${brand.name} Produkte zur industriellen Stoßdämpfung und Schwingungsisolierung an. Die Website bündelt Produktinformationen, Modellvergleiche und Auslegungshinweise für Ingenieure und Einkaufsteams.`,
       "Das Team unterstützt bei Modellauswahl, Anwendungsbewertung und Produktempfehlungen für Automation ebenso wie für schwere Stoßbelastungen.",
     ],
     highlights: [
-      "30+ Mitarbeiter, Kernteam mit mehr als 15 Jahren Branchenerfahrung",
       "Anwendungserfahrung in Standardindustrie und anspruchsvollen Schwerlastumgebungen",
-      "Qualitäts- und Compliance-Referenzen: ISO9001, ROHS und CE",
       "Unterstützung bei Auslegungsprüfung und Anwendungsempfehlungen",
     ],
   },
@@ -1431,12 +1414,9 @@ const germanCopy: SiteCopy = {
     ],
     socialTitle: "Kontaktkanäle für internationale Anfragen",
     socialDescription:
-      "Internationale Kunden erwarten häufig auch Social- und Messaging-Kanäle. Offizielle Links können ergänzt werden, sobald sie bestätigt sind.",
+      "Kontaktieren Sie uns auch über WhatsApp zu Ihren Produkten oder Ihrer Anwendung.",
     socialChannels: [
-      { label: "WhatsApp", value: "Kontaktieren Sie uns per WhatsApp" },
-      { label: "LinkedIn", value: "Kontaktieren Sie uns auf LinkedIn" },
-      { label: "X", value: "Kontaktieren Sie uns auf X" },
-      { label: "YouTube", value: "Kontaktieren Sie uns auf YouTube" },
+      { label: "WhatsApp", value: brand.whatsapp.displayNumber, href: brand.whatsapp.href },
     ],
     form: {
       ...englishCopy.contact.form,
@@ -1607,7 +1587,7 @@ const frenchCopy: SiteCopy = {
           { label: "Nous contacter", href: "/contact" },
           { label: "Support commercial", href: "/contact" },
           { label: "Support technique", href: "/contact" },
-          { label: "WhatsApp / X / LinkedIn", href: "/contact" },
+          { label: "WhatsApp", href: brand.whatsapp.href },
         ],
       },
     ],
@@ -1721,9 +1701,7 @@ const frenchCopy: SiteCopy = {
       description:
         "EKD combine largeur de gamme, support d'application et aide à la sélection pour l'automatisation standard et les chocs sévères.",
       items: [
-        "30+ collaborateurs, équipe centrale avec plus de 15 ans d'expérience",
         "Expérience d'application dans l'industrie standard et les environnements lourds exigeants",
-        "Références qualité et conformité : ISO9001, ROHS et CE",
         "Support technique pour revue de dimensionnement et recommandations d'application",
       ],
     },
@@ -1784,6 +1762,10 @@ const frenchCopy: SiteCopy = {
     description:
       "EKD se concentre sur l'amortissement industriel, le contrôle vibratoire et l'assistance applicative pour constructeurs de machines et opérateurs industriels.",
     profileTitle: "Profil de l'entreprise",
+    paragraphs: [
+      `${brand.company} propose des produits d'amortissement industriel et d'isolation vibratoire sous la marque ${brand.name}. Le site réunit informations produits, comparaisons de modèles et conseils de dimensionnement pour les ingénieurs et les équipes achats.`,
+      "L'équipe accompagne la sélection de modèles et l'examen des applications pour les équipements automatisés et les applications soumises à des chocs importants.",
+    ],
   },
   contact: {
     ...englishCopy.contact,
@@ -1797,12 +1779,9 @@ const frenchCopy: SiteCopy = {
     ],
     socialTitle: "Canaux de contact internationaux",
     socialDescription:
-      "Les acheteurs internationaux utilisent souvent aussi les réseaux sociaux et la messagerie. Les liens officiels pourront être ajoutés après confirmation.",
+      "Vous pouvez également nous contacter sur WhatsApp au sujet de vos produits ou de votre application.",
     socialChannels: [
-      { label: "WhatsApp", value: "Contactez-nous via WhatsApp" },
-      { label: "LinkedIn", value: "Contactez-nous sur LinkedIn" },
-      { label: "X", value: "Contactez-nous sur X" },
-      { label: "YouTube", value: "Contactez-nous sur YouTube" },
+      { label: "WhatsApp", value: brand.whatsapp.displayNumber, href: brand.whatsapp.href },
     ],
   },
   downloads: {
@@ -1893,7 +1872,7 @@ const italianCopy: SiteCopy = {
           { label: "Contattaci", href: "/contact" },
           { label: "Supporto commerciale", href: "/contact" },
           { label: "Supporto tecnico", href: "/contact" },
-          { label: "WhatsApp / X / LinkedIn", href: "/contact" },
+          { label: "WhatsApp", href: brand.whatsapp.href },
         ],
       },
     ],
@@ -1928,6 +1907,10 @@ const italianCopy: SiteCopy = {
     description:
       "EKD si concentra su ammortizzazione industriale, controllo delle vibrazioni e supporto applicativo per costruttori di macchine e operatori industriali.",
     profileTitle: "Profilo aziendale",
+    paragraphs: [
+      `${brand.company} offre prodotti per l'ammortizzazione industriale e l'isolamento delle vibrazioni con il marchio ${brand.name}. Il sito riunisce informazioni sui prodotti, confronti tra modelli e indicazioni di dimensionamento per ingegneri e uffici acquisti.`,
+      "Il team supporta la selezione dei modelli e la valutazione delle applicazioni per apparecchiature automatizzate e applicazioni soggette a urti elevati.",
+    ],
   },
   contact: {
     ...englishCopy.contact,
@@ -1941,12 +1924,9 @@ const italianCopy: SiteCopy = {
     ],
     socialTitle: "Canali di contatto internazionali",
     socialDescription:
-      "I clienti internazionali spesso si aspettano anche canali social e di messaggistica. I link ufficiali possono essere aggiunti dopo la conferma.",
+      "Puoi contattarci anche su WhatsApp per i tuoi prodotti o la tua applicazione.",
     socialChannels: [
-      { label: "WhatsApp", value: "Contattaci via WhatsApp" },
-      { label: "LinkedIn", value: "Contattaci su LinkedIn" },
-      { label: "X", value: "Contattaci su X" },
-      { label: "YouTube", value: "Contattaci su YouTube" },
+      { label: "WhatsApp", value: brand.whatsapp.displayNumber, href: brand.whatsapp.href },
     ],
   },
   downloads: {

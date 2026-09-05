@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HomePage } from "@/components/marketing/home-page";
 import { isLocale, type Locale } from "@/lib/i18n/config";
-import { getSiteCopy } from "@/lib/i18n/site-copy";
 import { getLocalizedAlternates } from "@/lib/seo";
+import { getHomePageCopy } from "@/lib/i18n/home-page-copy";
 
 type LocaleHomePageProps = {
   params: Promise<{ locale: string }>;
@@ -20,11 +20,11 @@ export async function generateMetadata({
     return {};
   }
 
-  const copy = getSiteCopy(localeParam);
+  const copy = getHomePageCopy(localeParam);
 
   return {
-    title: copy.metadata.homeTitle,
-    description: copy.metadata.defaultDescription,
+    title: copy.title.replace(/\n/g, " "),
+    description: copy.description,
     alternates: getLocalizedAlternates(localeParam, ""),
   };
 }

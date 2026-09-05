@@ -13,6 +13,9 @@ export const staticSeoPaths = [
   "/downloads",
   "/about",
   "/contact",
+  "/privacy",
+  "/terms",
+  "/selection-guidance",
   "/selector/buyer",
   "/selector/engineer",
 ] as const;

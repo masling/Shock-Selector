@@ -15,7 +15,7 @@ export default async function InquiryPage({ params }: InquiryPageProps) {
   }
 
   return (
-    <Container className="py-16">
+    <Container className="py-10 md:py-12">
       <InquiryPageClient locale={localeParam as Locale} />
     </Container>
   );

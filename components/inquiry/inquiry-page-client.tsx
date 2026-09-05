@@ -5,6 +5,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { getModelAnchorId } from "@/lib/catalog/model-anchor";
 import type { Locale } from "@/lib/i18n/config";
+import { getSiteUiCopy } from "@/lib/i18n/site-ui-copy";
 import { getLocalizedHref } from "@/lib/i18n/routing";
 import {
   readInquiryItems,
@@ -117,11 +118,11 @@ export function InquiryPageClient({ locale }: InquiryPageClientProps) {
 
   return (
     <div className="space-y-8">
-      <div className="rounded-[2rem] border border-line bg-white/80 p-8">
+      <div className="rounded-xl border border-line bg-white p-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="text-sm uppercase tracking-[0.18em] text-accent-dark">Inquiry</p>
-            <h1 className="mt-3 font-display text-4xl font-semibold text-ink">{copy.title}</h1>
+            <h1 className="mt-3 font-sans text-4xl font-semibold text-ink">{copy.title}</h1>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-steel">{copy.description}</p>
           </div>
           <Link href={getLocalizedHref(locale, "/selector/engineer")} className="text-sm font-medium text-accent-dark">
@@ -131,9 +132,9 @@ export function InquiryPageClient({ locale }: InquiryPageClientProps) {
       </div>
 
       {items.length ? (
-        <div className="rounded-[2rem] border border-line bg-white/80 p-6">
-          <div className="mb-5 rounded-[1.25rem] border border-line bg-sand p-4 text-sm leading-7 text-steel">
-            {copy.loginNotice}
+        <div className="rounded-xl border border-line bg-white p-6">
+          <div className="mb-5 rounded-lg border border-line bg-sand p-4 text-sm leading-7 text-steel">
+            {getSiteUiCopy(locale).localDraft}
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full border-separate border-spacing-y-3 text-left text-sm">
@@ -150,7 +151,7 @@ export function InquiryPageClient({ locale }: InquiryPageClientProps) {
               <tbody>
                 {items.map((item) => (
                   <Fragment key={item.model}>
-                    <tr className="bg-[#eef1ea] text-ink">
+                    <tr className="bg-mist text-ink">
                       <td className="rounded-l-2xl px-4 py-4 font-medium">
                         <Link
                           href={getLocalizedHref(locale, `/products/${item.familySlug}/${item.seriesSlug}?model=${encodeURIComponent(item.model)}#${getModelAnchorId(item.model)}`)}
@@ -167,7 +168,7 @@ export function InquiryPageClient({ locale }: InquiryPageClientProps) {
                           min={1}
                           value={item.quantity}
                           onChange={(event) => handleUpdate(item, Number(event.target.value), item.note)}
-                          className="w-20 rounded-xl border border-line bg-white px-3 py-2 text-ink outline-none"
+                          className="w-20 rounded-xl border border-line bg-white px-3 py-2 text-ink"
                         />
                       </td>
                       <td className="px-4 py-4">
@@ -175,7 +176,7 @@ export function InquiryPageClient({ locale }: InquiryPageClientProps) {
                           type="text"
                           value={item.note}
                           onChange={(event) => handleUpdate(item, item.quantity, event.target.value)}
-                          className="w-56 rounded-xl border border-line bg-white px-3 py-2 text-ink outline-none"
+                          className="w-56 rounded-xl border border-line bg-white px-3 py-2 text-ink"
                         />
                       </td>
                       <td className="rounded-r-2xl px-4 py-4 text-right">
@@ -189,7 +190,7 @@ export function InquiryPageClient({ locale }: InquiryPageClientProps) {
                       </td>
                     </tr>
                     <tr>
-                      <td colSpan={6} className="rounded-2xl border border-line bg-sand p-4">
+                      <td colSpan={6} className="rounded-lg border border-line bg-sand p-4">
                         <div className="grid gap-4 lg:grid-cols-3">
                           {item.variantKey ? (
                             <section>
@@ -224,7 +225,7 @@ export function InquiryPageClient({ locale }: InquiryPageClientProps) {
           </div>
         </div>
       ) : (
-        <div className="rounded-[2rem] border border-dashed border-line bg-[#e9ede4] p-8 text-sm leading-7 text-steel">
+        <div className="rounded-xl border border-dashed border-line bg-mist p-8 text-sm leading-7 text-steel">
           {copy.empty}
         </div>
       )}

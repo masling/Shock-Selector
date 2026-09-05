@@ -90,9 +90,10 @@ export async function POST(request: Request) {
         );
       }
     } else {
-      console.log("Contact form submission (no email service configured):", {
-        name, email, company, phone, message,
-      });
+      return NextResponse.json(
+        { success: false, message: "Online inquiry delivery is unavailable. Please email service@vibroabsorber.com." },
+        { status: 503 },
+      );
     }
 
     return NextResponse.json({

@@ -376,13 +376,13 @@ export function EngineerSizingClient({ locale, copy }: EngineerSizingClientProps
 
   return (
     <div className="space-y-8">
-      <div className="rounded-[2rem] border border-line bg-white/80 p-8">
+      <div className="rounded-xl border border-line bg-white p-8">
         <div className="mb-6 flex items-center gap-3">
-          <div className="rounded-2xl border border-line bg-[#e9ede4] p-3">
+          <div className="rounded-lg border border-line bg-mist p-3">
             <Settings2 className="h-5 w-5 text-accent-dark" />
           </div>
           <div>
-            <h2 className="font-display text-2xl font-semibold">{copy.selectMotionCaseTitle}</h2>
+            <h2 className="font-sans text-2xl font-semibold">{copy.selectMotionCaseTitle}</h2>
             <p className="text-sm text-steel">{copy.selectMotionCaseDescription}</p>
           </div>
         </div>
@@ -399,9 +399,9 @@ export function EngineerSizingClient({ locale, copy }: EngineerSizingClientProps
                 disabled={!isAvailable}
                 onClick={() => handleEntrySelect(entry.key)}
                 className={[
-                  "rounded-[1.5rem] border p-5 text-left transition",
+                  "rounded-lg border p-5 text-left transition",
                   isActive
-                    ? "border-accent bg-[#eef1ea]"
+                    ? "border-accent bg-mist"
                     : "border-line bg-sand hover:border-accent/40",
                   !isAvailable ? "cursor-not-allowed opacity-60" : "",
                 ].join(" ")}
@@ -428,15 +428,15 @@ export function EngineerSizingClient({ locale, copy }: EngineerSizingClientProps
 
       {selectedEntryKey ? (
         <div className="grid gap-8 xl:grid-cols-[0.9fr_1.1fr]">
-          <div className="rounded-[2rem] border border-line bg-[#e9ede4] p-8">
+          <div className="rounded-xl border border-line bg-mist p-8">
             <div className="flex items-center gap-3">
               <FlaskConical className="h-5 w-5 text-accent-dark" />
-              <h2 className="font-display text-2xl font-semibold">{wizardCopy.guideTitle}</h2>
+              <h2 className="font-sans text-2xl font-semibold">{wizardCopy.guideTitle}</h2>
             </div>
 
             <div className="mt-6 space-y-6">
               {questionSteps.map((step) => (
-                <div key={step.question.key} className="rounded-[1.5rem] border border-line bg-white/70 p-5">
+                <div key={step.question.key} className="rounded-lg border border-line bg-white p-5">
                   <div className="text-sm font-medium text-ink">{step.question.label}</div>
                   <p className="mt-2 text-xs leading-5 text-steel">{step.question.helperText}</p>
                   <div className="mt-4 flex flex-wrap gap-3">
@@ -451,7 +451,7 @@ export function EngineerSizingClient({ locale, copy }: EngineerSizingClientProps
                           className={[
                             "rounded-full border px-4 py-2 text-sm transition",
                             isSelected
-                              ? "border-accent bg-[#eef1ea] text-ink"
+                              ? "border-accent bg-mist text-ink"
                               : "border-line bg-sand text-steel hover:border-accent/40 hover:text-ink",
                           ].join(" ")}
                         >
@@ -463,7 +463,7 @@ export function EngineerSizingClient({ locale, copy }: EngineerSizingClientProps
                 </div>
               ))}
 
-              <div className="rounded-[1.5rem] border border-line bg-white/70 p-5">
+              <div className="rounded-lg border border-line bg-white p-5">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="text-sm font-medium text-ink">{wizardCopy.matchingRoutesTitle}</h3>
                   {selectedVariant && !selectedVariant.isImplemented ? (
@@ -477,9 +477,9 @@ export function EngineerSizingClient({ locale, copy }: EngineerSizingClientProps
                       <div
                         key={variant.key}
                         className={[
-                          "flex items-center justify-between rounded-[1.25rem] border px-4 py-4",
+                          "flex items-center justify-between rounded-lg border px-4 py-4",
                           selectedVariant?.key === variant.key
-                            ? "border-accent bg-[#eef1ea]"
+                            ? "border-accent bg-mist"
                             : "border-line bg-sand",
                         ].join(" ")}
                       >
@@ -504,11 +504,11 @@ export function EngineerSizingClient({ locale, copy }: EngineerSizingClientProps
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-line bg-white/80 p-8">
+          <div className="rounded-xl border border-line bg-white p-8">
             <div className="flex items-center gap-3">
               <Calculator className="h-5 w-5 text-accent-dark" />
               <div>
-                <h2 className="font-display text-2xl font-semibold">{copy.inputTitle}</h2>
+                <h2 className="font-sans text-2xl font-semibold">{copy.inputTitle}</h2>
                 <p className="text-sm text-steel">{copy.inputDescription}</p>
               </div>
             </div>
@@ -526,7 +526,7 @@ export function EngineerSizingClient({ locale, copy }: EngineerSizingClientProps
                         type="number"
                         value={formValues[field.key] ?? ""}
                         onChange={(event) => handleFieldChange(field.key, event.target.value)}
-                        className="w-full rounded-2xl border border-line bg-sand px-4 py-3 text-ink outline-none"
+                        className="w-full rounded-lg border border-line bg-sand px-4 py-3 text-ink"
                       />
                     </label>
                   ))}
@@ -555,7 +555,7 @@ export function EngineerSizingClient({ locale, copy }: EngineerSizingClientProps
           </div>
         </div>
       ) : (
-        <div className="rounded-[2rem] border border-dashed border-line bg-[#e9ede4] p-8 text-sm leading-7 text-steel">
+        <div className="rounded-xl border border-dashed border-line bg-mist p-8 text-sm leading-7 text-steel">
           {copy.beginPrompt}
         </div>
       )}
@@ -563,7 +563,7 @@ export function EngineerSizingClient({ locale, copy }: EngineerSizingClientProps
       <EngineerCalculationResult locale={locale} copy={copy} result={result} />
 
       {availableEntries.length > 0 ? (
-        <div className="rounded-[2rem] border border-line bg-white/80 p-8 text-sm leading-7 text-steel">
+        <div className="rounded-xl border border-line bg-white p-8 text-sm leading-7 text-steel">
           {copy.tip}
         </div>
       ) : null}
@@ -698,8 +698,8 @@ function EngineerCalculationResult({
 
   return (
     <div className="space-y-8">
-      <div className="rounded-[2rem] border border-line bg-white/80 p-8">
-        <h2 className="font-display text-2xl font-semibold">{copy.result.title}</h2>
+      <div className="rounded-xl border border-line bg-white p-8">
+        <h2 className="font-sans text-2xl font-semibold">{copy.result.title}</h2>
         {summaryMetricCards.length ? (
           <div className="mt-6">
             <div className="mb-3 text-xs uppercase tracking-[0.14em] text-steel">
@@ -707,7 +707,7 @@ function EngineerCalculationResult({
             </div>
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
               {summaryMetricCards.map((metric) => (
-                <div key={metric.key} className="rounded-[1.5rem] border border-line bg-[#eef1ea] p-5">
+                <div key={metric.key} className="rounded-lg border border-line bg-mist p-5">
                   <div className="text-xs uppercase tracking-[0.14em] text-steel">{getDetailLabel(metric.key)}</div>
                   <div className="mt-3 text-sm font-medium text-ink">
                     {String(metric.value)} {metric.unit}
@@ -716,7 +716,7 @@ function EngineerCalculationResult({
               ))}
             </div>
             <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-2">
-              <div className="rounded-[1.5rem] border border-line bg-white p-5">
+              <div className="rounded-lg border border-line bg-white p-5">
                 <div className="text-xs uppercase tracking-[0.14em] text-steel">
                   {copy.result.labels.requiredStroke}
                 </div>
@@ -724,7 +724,7 @@ function EngineerCalculationResult({
                   {String(calculationResult.calculation.requiredStrokeMm ?? "—")} mm
                 </div>
               </div>
-              <div className="rounded-[1.5rem] border border-line bg-white p-5">
+              <div className="rounded-lg border border-line bg-white p-5">
                 <div className="text-xs uppercase tracking-[0.14em] text-steel">
                   {copy.result.labels.suggestedFamily}
                 </div>
@@ -754,7 +754,7 @@ function EngineerCalculationResult({
                 ),
               ],
             ].map(([label, value]) => (
-              <div key={label} className="rounded-[1.5rem] border border-line bg-[#eef1ea] p-5">
+              <div key={label} className="rounded-lg border border-line bg-mist p-5">
                 <div className="text-xs uppercase tracking-[0.14em] text-steel">{label}</div>
                 <div className="mt-3 text-sm font-medium text-ink">{String(value ?? "—")}</div>
               </div>
@@ -764,7 +764,7 @@ function EngineerCalculationResult({
 
         <div className="mt-8 grid gap-8 xl:grid-cols-[0.95fr_1.05fr]">
           <div>
-            <h3 className="font-display text-xl font-semibold">{copy.result.whyFitsTitle}</h3>
+            <h3 className="font-sans text-xl font-semibold">{copy.result.whyFitsTitle}</h3>
             <ul className="mt-4 space-y-3 text-sm leading-7 text-steel">
               {result.explanations.map((line) => (
                 <li key={line}>• {line}</li>
@@ -773,7 +773,7 @@ function EngineerCalculationResult({
           </div>
 
           <div>
-            <h3 className="font-display text-xl font-semibold">{copy.result.criteriaTitle}</h3>
+            <h3 className="font-sans text-xl font-semibold">{copy.result.criteriaTitle}</h3>
             <div className="mt-4">
               <ReadableFilter filter={calculationResult.filter as Record<string, number | string>} locale={locale} />
             </div>
@@ -781,8 +781,8 @@ function EngineerCalculationResult({
         </div>
 
         {calculationResult.calculation.detailMetrics?.length ? (
-          <div className="mt-8 rounded-[1.5rem] border border-line bg-sand p-5">
-            <h3 className="font-display text-xl font-semibold">
+          <div className="mt-8 rounded-lg border border-line bg-sand p-5">
+            <h3 className="font-sans text-xl font-semibold">
               {locale === "zh-cn" ? "公式结果明细" : "Calculation breakdown"}
             </h3>
             <div className="mt-4 overflow-x-auto">
@@ -809,10 +809,10 @@ function EngineerCalculationResult({
         ) : null}
       </div>
 
-      <div className="rounded-[2rem] border border-line bg-white/80 p-8">
+      <div className="rounded-xl border border-line bg-white p-8">
         <div className="mb-6 flex items-center justify-between gap-4">
           <div>
-            <h2 className="font-display text-2xl font-semibold">{copy.result.matchesTitle}</h2>
+            <h2 className="font-sans text-2xl font-semibold">{copy.result.matchesTitle}</h2>
             <p className="mt-2 text-sm text-steel">
               {result.matches.total} {copy.result.matchesSummary}
             </p>
@@ -844,7 +844,7 @@ function EngineerCalculationResult({
                   const isAdded = inquiryModels.includes(item.model);
 
                   return (
-                    <tr key={item.id} className="rounded-2xl bg-[#eef1ea] text-ink">
+                    <tr key={item.id} className="rounded-lg bg-mist text-ink">
                       <td className="rounded-l-2xl px-4 py-4 font-medium">
                         <Link
                           href={getModelHref(item)}

@@ -36,7 +36,7 @@ export default async function DownloadsPage({ params }: DownloadsPageProps) {
   const copy = getSiteCopy(localeParam);
 
   return (
-    <Container className="py-16">
+    <Container className="py-10 md:py-12">
       <SectionHeading
         eyebrow={copy.downloads.eyebrow}
         title={copy.downloads.title}
@@ -46,10 +46,10 @@ export default async function DownloadsPage({ params }: DownloadsPageProps) {
         {copy.downloads.items.map((item) => (
           <div
             key={item.title}
-            className="flex flex-col gap-4 rounded-[2rem] border border-line bg-white/80 p-7 md:flex-row md:items-center md:justify-between"
+            className="flex flex-col gap-4 rounded-xl border border-line bg-white p-7 md:flex-row md:items-center md:justify-between"
           >
             <div>
-              <h2 className="font-display text-2xl font-semibold">{item.title}</h2>
+              <h2 className="font-sans text-2xl font-semibold">{item.title}</h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-steel">
                 {item.description}
               </p>

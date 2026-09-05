@@ -86,46 +86,17 @@ export default async function KnowledgeCenterPage({
           __html: JSON.stringify(knowledgeCenterJsonLd(locale)),
         }}
       />
-      <Container className="py-16">
-        <section className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
-          <div>
-            <SectionHeading
-              eyebrow={copy.heroEyebrow}
-              title={copy.heroTitle}
-              description={copy.heroDescription}
-            />
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href={getLocalizedHref(locale, "/knowledge-center/calculations")}
-                className={buttonVariants({ variant: "accent" })}
-              >
-                {copy.browseCalculations}
-              </Link>
-              <Link
-                href={getLocalizedHref(locale, "/selector/engineer")}
-                className={buttonVariants({ variant: "secondary" })}
-              >
-                {copy.openSizingTool}
-              </Link>
-            </div>
-          </div>
-
-          <div className="rounded-[2rem] border border-line bg-white/80 p-6 shadow-sm">
-            <Badge>{copy.priorityBadge}</Badge>
-            <h2 className="mt-5 font-display text-3xl font-semibold text-ink">
-              {copy.priorityTitle}
-            </h2>
-            <p className="mt-4 text-sm leading-7 text-steel">
-              {copy.priorityDescription}
-            </p>
-          </div>
-        </section>
+      <Container className="py-10 md:py-12">
+        <SectionHeading title={copy.navLabel} description={copy.heroDescription} />
+        <div className="mt-5 flex flex-wrap gap-3">
+          <Link href={getLocalizedHref(locale, "/selector/engineer")} className={buttonVariants({ variant: "accent" })}>{copy.openSizingTool}</Link>
+          <Link href={getLocalizedHref(locale, "/knowledge-center/calculations")} className={buttonVariants({ variant: "secondary" })}>{copy.browseCalculations}</Link>
+        </div>
 
         <section className="mt-16">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <Badge>{copy.sectionsBadge}</Badge>
-              <h2 className="mt-4 font-display text-3xl font-semibold text-ink">
+              <h2 className="mt-4 font-sans text-3xl font-semibold text-ink">
                 {copy.sectionsTitle}
               </h2>
             </div>
@@ -141,10 +112,10 @@ export default async function KnowledgeCenterPage({
                 <Link
                   key={category.slug}
                   href={getLocalizedHref(locale, href)}
-                  className="group rounded-[2rem] border border-line bg-white/80 p-6 transition hover:-translate-y-1 hover:shadow-panel"
+                  className="group border-t border-line py-6 transition hover:border-accent"
                 >
                   <Icon className="h-6 w-6 text-accent-dark" />
-                  <h3 className="mt-5 font-display text-2xl font-semibold text-ink">
+                  <h3 className="mt-5 font-sans text-2xl font-semibold text-ink">
                     {categoryCopy.title}
                   </h3>
                   <p className="mt-3 text-sm leading-7 text-steel">
@@ -160,11 +131,10 @@ export default async function KnowledgeCenterPage({
           </div>
         </section>
 
-        <section className="mt-16 rounded-[2rem] border border-line bg-[#eef1ea] p-7">
+        <section className="mt-12 border-t border-line pt-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <Badge>{copy.featuredBadge}</Badge>
-              <h2 className="mt-4 font-display text-3xl font-semibold text-ink">
+              <h2 className="mt-4 font-sans text-3xl font-semibold text-ink">
                 {copy.featuredTitle}
               </h2>
             </div>
@@ -180,9 +150,9 @@ export default async function KnowledgeCenterPage({
               <Link
                 key={article.slug}
                 href={getLocalizedHref(locale, getKnowledgeArticlePath(article))}
-                className="rounded-[1.5rem] border border-line bg-white/80 p-5 transition hover:bg-white"
+                className="border-t border-line py-5 transition hover:text-accent"
               >
-                <h3 className="font-display text-xl font-semibold text-ink">
+                <h3 className="font-sans text-xl font-semibold text-ink">
                   {article.shortTitle}
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-steel">{article.description}</p>

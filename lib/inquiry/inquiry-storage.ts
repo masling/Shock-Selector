@@ -19,12 +19,9 @@ export type InquiryItem = {
 };
 
 export function readInquiryItems() {
-  const storedItems = window.localStorage.getItem(inquiryStorageKey);
-  if (!storedItems) {
-    return [];
-  }
-
   try {
+    const storedItems = window.localStorage.getItem(inquiryStorageKey);
+    if (!storedItems) return [];
     const parsedItems = JSON.parse(storedItems);
     if (!Array.isArray(parsedItems)) {
       return [];
@@ -32,7 +29,6 @@ export function readInquiryItems() {
 
     return parsedItems.filter(isInquiryItem);
   } catch {
-    window.localStorage.removeItem(inquiryStorageKey);
     return [];
   }
 }

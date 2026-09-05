@@ -35,7 +35,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
   const copy = getSiteCopy(localeParam);
 
   return (
-    <Container className="py-16">
+    <Container className="py-10 md:py-12">
       <SectionHeading
         eyebrow={copy.about.eyebrow}
         title={copy.about.title}
@@ -43,8 +43,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
       />
 
       <div className="mt-12 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-[2rem] border border-line bg-white/80 p-8">
-          <h2 className="font-display text-2xl font-semibold">{copy.about.profileTitle}</h2>
+        <div className="rounded-xl border border-line bg-white p-8">
+          <h2 className="font-sans text-2xl font-semibold">{copy.about.profileTitle}</h2>
           {copy.about.paragraphs.map((paragraph) => (
             <p key={paragraph} className="mt-5 text-sm leading-8 text-steel">
               {paragraph}
@@ -56,7 +56,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
           {copy.about.highlights.map((item) => (
             <div
               key={item}
-              className="rounded-[1.75rem] border border-line bg-[#e9ede4] p-6 text-sm leading-7 text-steel"
+              className="rounded-xl border border-line bg-mist p-6 text-sm leading-7 text-steel"
             >
               {item}
             </div>

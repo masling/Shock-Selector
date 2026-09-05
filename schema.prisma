@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -330,4 +331,37 @@ model SelectionLog {
   @@index([viewMode, createdAt])
   @@index([familyKey])
   @@index([scenarioKey])
+}
+
+// Isolated review queue. These records never participate in public catalog
+// queries or selection until a separately approved promotion is implemented.
+model ProductImportBatch {
+  id                   String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  sourceSha256         String                   @unique
+  sourceProductsSha256 String
+  state                String                   @default("IMPORTING")
+  sourceRowCount       Int
+  summaryJson          Json
+  sourceMetaJson       Json
+  createdAt            DateTime                 @default(now())
+  completedAt          DateTime?
+  candidates           ProductImportCandidate[]
+}
+
+model ProductImportCandidate {
+  id               String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  batchId          String             @db.Uuid
+  batch            ProductImportBatch @relation(fields: [batchId], references: [id], onDelete: Restrict)
+  sourceModel      String
+  sourceKind       String
+  proposedAction   String
+  catalogStatus    CatalogStatus      @default(DRAFT)
+  selectorEligible Boolean            @default(false)
+  rowSha256        String
+  candidateData    Json
+  sourceData       Json
+  createdAt        DateTime           @default(now())
+
+  @@unique([batchId, sourceModel])
+  @@index([batchId, proposedAction])
 }

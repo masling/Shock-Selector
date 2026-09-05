@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useId, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
+import { brand } from "@/lib/brand";
 import { locales, type Locale } from "@/lib/i18n/config";
 import { getLocalizedHref } from "@/lib/i18n/routing";
 import type { SiteCopy } from "@/lib/i18n/site-copy";
@@ -19,102 +20,116 @@ type MobileNavProps = {
 };
 
 function normalizePathname(pathname: string) {
-  const withoutQuery = pathname.split("?")[0]?.split("#")[0] ?? pathname;
-  const segments = withoutQuery.split("/").filter(Boolean);
-
-  if (segments.length > 0 && locales.includes(segments[0] as Locale)) {
-    segments.shift();
-  }
-
-  return segments.length === 0 ? "/" : `/${segments.join("/")}`;
-}
-
-function isActiveNavigationItem(currentPathname: string, itemHref: string) {
-  const currentPath = normalizePathname(currentPathname);
-  const targetPath = itemHref === "/" ? "/" : itemHref.replace(/\/+$/, "") || "/";
-
-  if (targetPath === "/") {
-    return currentPath === "/";
-  }
-
-  return currentPath === targetPath || currentPath.startsWith(`${targetPath}/`);
+  const segments = pathname.split(/[?#]/)[0].split("/").filter(Boolean);
+  if (locales.includes(segments[0] as Locale)) segments.shift();
+  return "/" + segments.join("/");
 }
 
 export function MobileNav({ locale, items, localeNames, currentPathname, labels }: MobileNavProps) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  const dialogId = useId();
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
+  const currentPath = normalizePathname(currentPathname);
 
-  const handleNavClick = (href: string) => {
-    setIsOpen(false);
-    router.push(href);
-  };
+  useEffect(() => {
+    dialog.current?.close();
+  }, [currentPathname, locale]);
+
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const closeOnDesktop = () => { if (desktop.matches) dialog.current?.close(); };
+    desktop.addEventListener("change", closeOnDesktop);
+    return () => desktop.removeEventListener("change", closeOnDesktop);
+  }, []);
 
   return (
     <div className="lg:hidden">
       <button
         type="button"
-        onClick={() => setIsOpen(true)}
-        className="rounded-full p-2 text-ink hover:bg-white/80 transition-colors"
+        className="flex h-11 w-11 items-center justify-center rounded-md text-ink hover:bg-mist"
         aria-label={labels.open}
+        aria-haspopup="dialog"
+        aria-controls={dialogId}
+        aria-expanded={isOpen}
+        onClick={() => {
+          if (dialog.current && !dialog.current.open) {
+            dialog.current.showModal();
+            setIsOpen(true);
+          }
+        }}
       >
-        <Menu className="h-6 w-6" />
+        <Menu className="h-6 w-6" aria-hidden="true" />
       </button>
 
-      {isOpen && (
-        <div className="fixed inset-0 z-50">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-ink/80 backdrop-blur-sm"
-            onClick={() => setIsOpen(false)}
-          />
+      <dialog
+        ref={dialog}
+        id={dialogId}
+        className="mobile-dialog"
+        aria-label={labels.open}
+        onClose={() => setIsOpen(false)}
+        onKeyDown={(event) => {
+          if (event.key !== "Tab") return;
+          const controls = Array.from(event.currentTarget.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), select:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex="0"]',
+          )).filter((element) => element.getClientRects().length > 0);
+          const first = controls[0];
+          const last = controls[controls.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last?.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first?.focus();
+          }
+        }}
+        onClick={(event) => {
+          if (event.target !== event.currentTarget) return;
+          const bounds = event.currentTarget.getBoundingClientRect();
+          if (event.clientX < bounds.left || event.clientX > bounds.right ||
+              event.clientY < bounds.top || event.clientY > bounds.bottom) {
+            event.currentTarget.close();
+          }
+        }}
+      >
+        <div className="flex min-h-full flex-col p-6">
+          <div className="flex items-center justify-between gap-4">
+            <Image src={brand.logo} alt={`${brand.name} ${brand.company}`} width={1158} height={217} className="h-auto w-[180px]" />
+            <button
+              type="button"
+              autoFocus
+              onClick={() => dialog.current?.close()}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md hover:bg-mist"
+              aria-label={labels.close}
+            >
+              <X className="h-6 w-6" aria-hidden="true" />
+            </button>
+          </div>
 
-          {/* Panel */}
-          <div className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-sand shadow-2xl transition-transform duration-300">
-            <div className="flex h-full flex-col p-6">
-              {/* Close button */}
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="rounded-full p-2 text-steel hover:text-ink transition-colors"
-                  aria-label={labels.close}
+          <nav className="my-8 flex flex-col gap-2">
+            {items.map((item) => {
+              const target = item.href.replace(/\/+$/, "") || "/";
+              const active = currentPath === target || (target !== "/" && currentPath.startsWith(target + "/"));
+              return (
+                <Link
+                  key={item.href}
+                  href={getLocalizedHref(locale, item.href)}
+                  aria-current={active ? "page" : undefined}
+                  onClick={() => dialog.current?.close()}
+                  className={cn(
+                    "flex min-h-12 items-center rounded-md px-4 py-3 text-base",
+                    item.href === "/contact" ? "bg-accent font-semibold text-white hover:bg-accent-dark" : active ? "bg-accent-soft font-semibold text-accent-dark" : "text-ink hover:bg-mist",
+                  )}
                 >
-                  <X className="h-6 w-6" />
-                </button>
-              </div>
-
-              {/* Navigation items */}
-              <nav className="mt-8 flex flex-col gap-1">
-                {items.map((item) => {
-                  const isActive = isActiveNavigationItem(currentPathname, item.href);
-                  const href = getLocalizedHref(locale, item.href);
-
-                  return (
-                    <button
-                      key={item.href}
-                      type="button"
-                      onClick={() => handleNavClick(href)}
-                      className={cn(
-                        "w-full rounded-xl px-4 py-3 text-left text-base font-medium transition-colors",
-                        isActive
-                          ? "bg-accent text-white"
-                          : "text-ink hover:bg-mist",
-                      )}
-                    >
-                      {item.label}
-                    </button>
-                  );
-                })}
-              </nav>
-
-              {/* Language switcher */}
-              <div className="mt-auto pt-6">
-                <LocaleSwitcher locale={locale} localeNames={localeNames} compact />
-              </div>
-            </div>
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+          <div className="mt-auto border-t border-line pt-6">
+            <LocaleSwitcher locale={locale} localeNames={localeNames} compact />
           </div>
         </div>
-      )}
+      </dialog>
     </div>
   );
 }

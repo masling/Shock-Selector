@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "scope": "Representative-image mapping only; not product dimensions, technical equivalence or public-release approval.",
+  "decisions": [
+    {
+      "id": "2026-09-04-ekl42x25-image",
+      "model": "EKL42X25",
+      "sourceImageModel": "EK42X25",
+      "imagePath": "缓冲器/JPG/EK42x25/EK42x25.jpg",
+      "imageSha256": "864ab6d1228f6af0f0134c3f6562887f2b3f21e46493a84bffe2df0b6d1300a6",
+      "confirmedBy": "user",
+      "confirmedOn": "2026-09-04",
+      "reason": "用户确认：EKL42X25按25规格采用EK42X25代表图。仅适用于本型号的图片映射。"
+    },
+    {
+      "id": "2026-09-04-ek64x50-image",
+      "model": "EK64X50",
+      "sourceImageModel": "EK42X50",
+      "imagePath": "缓冲器/JPG/EK42x50/EK42x50.jpg",
+      "imageSha256": "cab704d7759629ccea4f86bd45501a0b294984b38174ea441b405da79e0c43ed",
+      "confirmedBy": "user",
+      "confirmedOn": "2026-09-04",
+      "reason": "用户确认：本次争议中的50规格型号采用EK42X50代表图，不表示42与64型号尺寸相同。"
+    },
+    {
+      "id": "2026-09-04-ekl64x50-image",
+      "model": "EKL64X50",
+      "sourceImageModel": "EK42X50",
+      "imagePath": "缓冲器/JPG/EK42x50/EK42x50.jpg",
+      "imageSha256": "cab704d7759629ccea4f86bd45501a0b294984b38174ea441b405da79e0c43ed",
+      "confirmedBy": "user",
+      "confirmedOn": "2026-09-04",
+      "reason": "用户确认：本次争议中的50规格型号采用EK42X50代表图，不表示42与64型号尺寸相同。"
+    }
+  ]
+}

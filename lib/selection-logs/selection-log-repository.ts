@@ -6,9 +6,11 @@ function toJsonValue(value: unknown): Prisma.InputJsonValue {
   return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
 }
 
-export async function createEngineerSelectionLog(result: CalculateResponse) {
-  return prisma.selectionLog.create({
-    data: {
+export async function createEngineerSelectionLog(result: CalculateResponse, db: Pick<Prisma.TransactionClient, "selectionLog"> = prisma) {
+  // createMany avoids RETURNING, so the runtime needs INSERT only, not access
+  // to historical logs. The application does not consume a returned log row.
+  return db.selectionLog.createMany({
+    data: [{
       viewMode: "ENGINEER",
       familyKey: result.familyKey,
       scenarioKey: result.variantKey,
@@ -18,6 +20,6 @@ export async function createEngineerSelectionLog(result: CalculateResponse) {
       filterJson: toJsonValue(result.filter),
       matchedProductCount: result.matches.total,
       selectedProductIds: toJsonValue(result.matches.items.map((item) => item.id)),
-    },
+    }],
   });
 }
