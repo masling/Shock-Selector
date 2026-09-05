@@ -4,6 +4,19 @@ import { InquiryConflictError, matchesSubmittedInquiry } from "./idempotency";
 
 const fields = "id,reference,kind,status,locale,contactName,email,company,country,requestedDelivery,message,originalModel,items,createdAt,updatedAt";
 const messageFields = "id,inquiryId,authorRole,body,createdAt";
+const publishedQuoteFields = "id,inquiryId,currency,validity,deliveryTerm,paymentTerm,notes,lines,publishedAt";
+
+export type PublishedInquiryQuote = {
+  id: string;
+  inquiryId: string;
+  currency: string;
+  validity: string;
+  deliveryTerm: string;
+  paymentTerm: string;
+  notes: string;
+  lines: Array<{ model: string; quantity: number; unitPrice?: string; leadTime?: string; note?: string }>;
+  publishedAt: string;
+};
 
 // Always use a per-request, user-session client. Never substitute a service key.
 export function inquiryRepository(client: SupabaseClient) {
@@ -19,7 +32,13 @@ export function inquiryRepository(client: SupabaseClient) {
       if (!data) return null;
       const messages = await client.from("InquiryMessage").select(messageFields).eq("inquiryId", id).order("createdAt", { ascending: false }).limit(100);
       if (messages.error) throw new Error("Messages unavailable");
-      return { inquiry: data as InquiryRecord, messages: (messages.data ?? []).reverse() as InquiryMessageRecord[] };
+      const publishedQuote = await client.from("PublishedInquiryQuote").select(publishedQuoteFields).eq("inquiryId", id).maybeSingle();
+      if (publishedQuote.error && publishedQuote.error.code !== "PGRST116") throw new Error("Published quote unavailable");
+      return {
+        inquiry: data as InquiryRecord,
+        messages: (messages.data ?? []).reverse() as InquiryMessageRecord[],
+        publishedQuote: (publishedQuote.data ?? null) as PublishedInquiryQuote | null,
+      };
     },
     async create(userId: string, email: string, input: CreateInquiryInput) {
       const { data, error } = await client.from("CustomerInquiry").insert({ ...input, userId, email }).select(fields).single();

@@ -12,11 +12,11 @@ function isBypassedPath(pathname: string) {
 }
 
 function isPersonalizedPath(pathname: string) {
-  return /^\/(?:en|zh-cn|de|fr|it)\/(?:account|sign-in)(?:\/|$)/.test(pathname);
+  return /^\/(?:en|zh-cn|de|fr|it)\/(?:account|staff|sign-in)(?:\/|$)/.test(pathname);
 }
 
 function isAuthRefreshPath(pathname: string) {
-  return /^\/(?:en|zh-cn|de|fr|it)\/(?:account|sign-in|inquiry)(?:\/|$)/.test(pathname);
+  return /^\/(?:en|zh-cn|de|fr|it)\/(?:account|staff|sign-in|inquiry)(?:\/|$)/.test(pathname);
 }
 
 function setPrivateNoStore(response: NextResponse) {

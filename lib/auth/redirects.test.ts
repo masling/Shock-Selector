@@ -11,6 +11,8 @@ test("auth redirect allows only localized inquiry paths", () => {
   assert.equal(getSafeAuthRedirect("/en/account/inquiries", "de"), "/en/account/inquiries");
   assert.equal(getSafeAuthRedirect("/zh-cn/account/inquiries/inq_123", "en"), "/zh-cn/account/inquiries/inq_123");
   assert.equal(getSafeAuthRedirect("/it/inquiry", "en"), "/it/inquiry");
+  assert.equal(getSafeAuthRedirect("/de/staff/inquiries", "en"), "/de/staff/inquiries");
+  assert.equal(getSafeAuthRedirect("/fr/staff/inquiries/11111111-1111-4111-8111-111111111111", "en"), "/fr/staff/inquiries/11111111-1111-4111-8111-111111111111");
 });
 
 test("auth redirect rejects external, encoded, loop, and malformed paths", () => {

@@ -51,12 +51,16 @@ export function getSafeAuthRedirect(value: RedirectInput, fallbackLocale: Locale
 
   const accountRoot = `/${locale}/account/inquiries`;
   const inquiryPath = `/${locale}/inquiry`;
+  const staffRoot = `/${locale}/staff/inquiries`;
   const isAccountInquiryPath =
     parsedUrl.pathname === accountRoot ||
     parsedUrl.pathname.startsWith(`${accountRoot}/`);
   const isInquiryDraftPath = parsedUrl.pathname === inquiryPath;
+  const isStaffInquiryPath =
+    parsedUrl.pathname === staffRoot ||
+    parsedUrl.pathname.startsWith(`${staffRoot}/`);
 
-  if (!isAccountInquiryPath && !isInquiryDraftPath) {
+  if (!isAccountInquiryPath && !isInquiryDraftPath && !isStaffInquiryPath) {
     return fallback;
   }
 

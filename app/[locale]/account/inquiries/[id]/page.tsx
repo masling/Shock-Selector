@@ -9,6 +9,7 @@ import { isLocale, type Locale } from "@/lib/i18n/config";
 import { getInquiryPortalCopy } from "@/lib/i18n/inquiry-portal-copy";
 import { getLocalizedHref } from "@/lib/i18n/routing";
 import { getInquirySession, isInquiryPortalEnabled } from "@/lib/inquiry/inquiry-service";
+import type { PublishedInquiryQuote } from "@/lib/inquiry/inquiry-repository";
 import type { InquiryMessageRecord, InquiryRecord } from "@/lib/inquiry/schemas";
 
 type InquiryDetailPageProps = {
@@ -96,7 +97,7 @@ function InquirySummary({ inquiry, locale, copy }: { inquiry: InquiryRecord; loc
         {inquiry.requestedDelivery ? (
           <div>
             <dt className="text-steel">{copy.delivery}</dt>
-          <dd className="mt-1 break-words text-ink [overflow-wrap:anywhere]">{inquiry.requestedDelivery}</dd>
+            <dd className="mt-1 break-words text-ink [overflow-wrap:anywhere]">{inquiry.requestedDelivery}</dd>
           </div>
         ) : null}
       </dl>
@@ -157,6 +158,66 @@ function ProductRows({ inquiry, copy }: { inquiry: InquiryRecord; copy: ReturnTy
           </tbody>
         </table>
       </div>
+    </section>
+  );
+}
+
+function PublishedQuote({ quote, locale }: { quote: PublishedInquiryQuote | null; locale: Locale }) {
+  if (!quote) return null;
+
+  return (
+    <section className="surface p-5">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <h2 className="text-lg font-semibold text-ink">Published quote</h2>
+        <time className="text-xs text-steel" dateTime={quote.publishedAt}>
+          {new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(quote.publishedAt))}
+        </time>
+      </div>
+      <dl className="mt-4 grid gap-3 text-sm md:grid-cols-2">
+        <div>
+          <dt className="text-steel">Currency</dt>
+          <dd className="mt-1 font-semibold text-ink">{quote.currency}</dd>
+        </div>
+        <div>
+          <dt className="text-steel">Validity</dt>
+          <dd className="mt-1 break-words text-ink [overflow-wrap:anywhere]">{quote.validity || "—"}</dd>
+        </div>
+        <div>
+          <dt className="text-steel">Delivery / freight term</dt>
+          <dd className="mt-1 break-words text-ink [overflow-wrap:anywhere]">{quote.deliveryTerm || "—"}</dd>
+        </div>
+        <div>
+          <dt className="text-steel">Payment term</dt>
+          <dd className="mt-1 break-words text-ink [overflow-wrap:anywhere]">{quote.paymentTerm || "—"}</dd>
+        </div>
+      </dl>
+      <div className="scroll-table mt-4">
+        <table className="min-w-full border-separate border-spacing-y-2 text-left text-sm">
+          <thead className="text-xs text-steel">
+            <tr>
+              <th className="pb-2 pr-4 font-medium">Model</th>
+              <th className="pb-2 pr-4 font-medium">Qty</th>
+              <th className="pb-2 pr-4 font-medium">Unit price</th>
+              <th className="pb-2 pr-4 font-medium">Lead time</th>
+              <th className="pb-2 font-medium">Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            {quote.lines.map((line, index) => (
+              <tr key={`${line.model}-${index}`} className="bg-sand">
+                <td className="rounded-l-lg break-words px-3 py-3 font-semibold text-ink [overflow-wrap:anywhere]">{line.model}</td>
+                <td className="px-3 py-3 text-ink">{line.quantity}</td>
+                <td className="break-words px-3 py-3 text-ink [overflow-wrap:anywhere]">{line.unitPrice || "—"}</td>
+                <td className="break-words px-3 py-3 text-steel [overflow-wrap:anywhere]">{line.leadTime || "—"}</td>
+                <td className="rounded-r-lg break-words px-3 py-3 text-steel [overflow-wrap:anywhere]">{line.note || "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {quote.notes ? (
+        <p className="mt-4 whitespace-pre-wrap break-words rounded-lg bg-sand p-4 text-sm leading-7 text-steel [overflow-wrap:anywhere]">{quote.notes}</p>
+      ) : null}
     </section>
   );
 }
@@ -256,6 +317,7 @@ export default async function InquiryDetailPage({ params }: InquiryDetailPagePro
         <div className="space-y-6">
           <InquirySummary inquiry={detail.inquiry} locale={locale} copy={copy} />
           <ProductRows inquiry={detail.inquiry} copy={copy} />
+          <PublishedQuote quote={detail.publishedQuote} locale={locale} />
           <MessageList messages={detail.messages} locale={locale} copy={copy} />
         </div>
         <InquiryMessageForm inquiryId={detail.inquiry.id} locale={locale} copy={copy} disabled={detail.inquiry.status === "closed"} />
