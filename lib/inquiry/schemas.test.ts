@@ -17,6 +17,15 @@ test("cross-origin submissions are rejected and body limit is enforced while rea
   const request = (origin: string, body = "{}") => new Request("https://www.vibroabsorber.com/api/inquiries", { method: "POST", headers: { origin, "content-type": "application/json" }, body });
   assert.equal(sameOriginMutation(request("https://evil.example")), false);
   assert.equal(sameOriginMutation(request("https://www.vibroabsorber.com")), true);
+  assert.equal(sameOriginMutation(new Request("https://www.vibroabsorber.com/api/inquiries", {
+    method: "POST", headers: { "sec-fetch-site": "same-origin", "content-type": "application/json" }, body: "{}",
+  })), true);
+  assert.equal(sameOriginMutation(new Request("https://www.vibroabsorber.com/api/inquiries", {
+    method: "POST", headers: { origin: "https://www.vibroabsorber.com", "sec-fetch-site": "cross-site", "content-type": "application/json" }, body: "{}",
+  })), false);
+  assert.equal(sameOriginMutation(new Request("https://www.vibroabsorber.com/api/inquiries", {
+    method: "POST", headers: { "content-type": "application/json" }, body: "{}",
+  })), false);
   assert.deepEqual(await boundedJson(request("https://www.vibroabsorber.com")), {});
   await assert.rejects(boundedJson(request("https://www.vibroabsorber.com", "x".repeat(20)), 10));
 });

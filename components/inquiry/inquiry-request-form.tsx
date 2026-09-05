@@ -39,7 +39,9 @@ type DraftState = {
 type DraftTextField = "contactName" | "company" | "country" | "requestedDelivery" | "originalModel" | "message";
 type SaveState = { status: "idle" | "saving" | "saved" | "failed"; inquiry?: InquiryRecord };
 
-const draftStorageKey = "ekd-customer-inquiry-draft:v1";
+const draftStorageKey = "ekd-customer-inquiry-draft:v2";
+const legacyDraftStorageKey = "ekd-customer-inquiry-draft:v1";
+const draftLifetimeMs = 7 * 24 * 60 * 60 * 1000;
 const inquiryKindSchema = z.enum(["standard", "replacement", "project"]);
 const draftText = (maxLength: number) =>
   z.preprocess((value) => typeof value === "string" ? value : "", z.string().trim().max(maxLength));
@@ -100,12 +102,44 @@ function toDraftItems(models: string[], savedItems: DraftItem[], cartItems: Inqu
 
 function readDraft(): Partial<DraftState> | null {
   try {
-    const rawDraft = window.sessionStorage.getItem(draftStorageKey);
-    if (!rawDraft) return null;
-    const parsedDraft = storedDraftSchema.safeParse(JSON.parse(rawDraft));
-    return parsedDraft.success ? parsedDraft.data : null;
+    const rawDraft = window.localStorage.getItem(draftStorageKey);
+    if (rawDraft) {
+      const envelope = JSON.parse(rawDraft) as { expiresAt?: unknown; draft?: unknown };
+      if (typeof envelope.expiresAt !== "number" || envelope.expiresAt <= Date.now()) {
+        window.localStorage.removeItem(draftStorageKey);
+      } else {
+        const parsedDraft = storedDraftSchema.safeParse(envelope.draft);
+        if (parsedDraft.success) return parsedDraft.data;
+      }
+    }
+    const legacyDraft = window.sessionStorage.getItem(legacyDraftStorageKey);
+    if (!legacyDraft) return null;
+    const parsedDraft = storedDraftSchema.safeParse(JSON.parse(legacyDraft));
+    if (parsedDraft.success) {
+      writeDraft(parsedDraft.data as DraftState);
+      window.sessionStorage.removeItem(legacyDraftStorageKey);
+      return parsedDraft.data;
+    }
+    return null;
   } catch {
     return null;
+  }
+}
+
+function writeDraft(draft: DraftState) {
+  try {
+    window.localStorage.setItem(draftStorageKey, JSON.stringify({ expiresAt: Date.now() + draftLifetimeMs, draft }));
+  } catch {
+    // Draft persistence is best-effort only.
+  }
+}
+
+function clearStoredDraft() {
+  try {
+    window.localStorage.removeItem(draftStorageKey);
+    window.sessionStorage.removeItem(legacyDraftStorageKey);
+  } catch {
+    // Nothing else to clear.
   }
 }
 
@@ -203,9 +237,9 @@ export function InquiryRequestForm({
 
     try {
       if (hasDraftContent(draft)) {
-        window.sessionStorage.setItem(draftStorageKey, JSON.stringify(draft));
+        writeDraft(draft);
       } else {
-        window.sessionStorage.removeItem(draftStorageKey);
+        clearStoredDraft();
       }
     } catch {
       // Draft persistence is best-effort only.
@@ -247,7 +281,7 @@ export function InquiryRequestForm({
 
   function persistAndSignIn() {
     try {
-      window.sessionStorage.setItem(draftStorageKey, JSON.stringify(draft));
+      writeDraft(draft);
     } catch {
       // Continue to sign-in even if storage is unavailable.
     }
@@ -261,7 +295,7 @@ export function InquiryRequestForm({
     setError(null);
     setSaveState({ status: "idle" });
     try {
-      window.sessionStorage.removeItem(draftStorageKey);
+      clearStoredDraft();
     } catch {
       // Nothing else to clear.
     }
@@ -312,8 +346,10 @@ export function InquiryRequestForm({
       }
 
       if (!response.ok) {
-        const result = await response.json().catch(() => ({})) as { diagnostic?: string };
-        setError(`${copy.failure}${result.diagnostic ? ` (${result.diagnostic})` : ""}`);
+        const result = await response.json().catch(() => ({})) as { error?: string; diagnostic?: string; fields?: string[] };
+        const localCode = result.diagnostic ?? result.error;
+        const localFields = result.fields?.length ? `: ${result.fields.join(", ")}` : "";
+        setError(`${copy.failure}${localCode ? ` (${localCode}${localFields})` : ""}`);
         setSaveState({ status: "failed" });
         return;
       }
@@ -322,7 +358,7 @@ export function InquiryRequestForm({
       setSaveState({ status: "saved", inquiry: result.inquiry });
       setDraft(emptyDraft(initialKind));
       try {
-        window.sessionStorage.removeItem(draftStorageKey);
+        clearStoredDraft();
         window.localStorage.removeItem(inquiryStorageKey);
         writeInquiryItems([]);
       } catch {

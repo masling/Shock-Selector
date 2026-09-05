@@ -1,7 +1,12 @@
 export function sameOriginMutation(request: Request) {
   const origin = request.headers.get("origin");
   const site = request.headers.get("sec-fetch-site");
-  if (!origin || (site && site !== "same-origin" && site !== "none")) return false;
+  // Sec-Fetch-Site is a browser-controlled forbidden header. A same-origin
+  // value is authoritative even in runtimes that omit Origin for same-origin
+  // fetches. Other browser-classified sites still fail closed.
+  if (site === "same-origin") return true;
+  if (site && site !== "none") return false;
+  if (!origin) return false;
   try { return new URL(origin).origin === new URL(request.url).origin; } catch { return false; }
 }
 
