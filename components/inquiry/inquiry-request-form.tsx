@@ -312,7 +312,8 @@ export function InquiryRequestForm({
       }
 
       if (!response.ok) {
-        setError(copy.failure);
+        const result = await response.json().catch(() => ({})) as { diagnostic?: string };
+        setError(`${copy.failure}${result.diagnostic ? ` (${result.diagnostic})` : ""}`);
         setSaveState({ status: "failed" });
         return;
       }

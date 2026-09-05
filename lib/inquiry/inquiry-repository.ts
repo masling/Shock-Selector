@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { CreateInquiryInput, InquiryRecord, InquiryMessageRecord } from "./schemas";
-import { InquiryConflictError, matchesSubmittedInquiry } from "./idempotency";
+import { InquiryConflictError, InquiryPersistenceError, matchesSubmittedInquiry } from "./idempotency";
 
 const fields = "id,reference,kind,status,locale,contactName,email,company,country,requestedDelivery,message,originalModel,items,createdAt,updatedAt";
 const messageFields = "id,inquiryId,authorRole,body,createdAt";
@@ -50,7 +50,7 @@ export function inquiryRepository(client: SupabaseClient) {
           return { inquiry: existing.data as InquiryRecord, created: false };
         }
       }
-      throw new Error("Inquiry could not be saved");
+      throw new InquiryPersistenceError(error.code || "unknown_database_error");
     },
     async message(userId: string, inquiryId: string, input: { submissionKey: string; body: string }) {
       const { data, error } = await client.from("InquiryMessage").insert({ ...input, inquiryId, authorId: userId }).select(messageFields).single();
@@ -62,7 +62,7 @@ export function inquiryRepository(client: SupabaseClient) {
           return existing.data as InquiryMessageRecord;
         }
       }
-      throw new Error("Message could not be saved");
+      throw new InquiryPersistenceError(error.code || "unknown_database_error");
     },
   };
 }
