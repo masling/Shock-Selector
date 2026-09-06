@@ -1,9 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { brand } from "@/lib/brand";
 import type { TransactionalEmail, DeliveryResult } from "./smtp";
-import { sendTransactionalEmail } from "./smtp";
+import { sendTransactionalEmail, smtpConfig } from "./smtp";
 import { customerNotification } from "./templates";
-import { sendFeishuText } from "./feishu";
+import { getFeishuConfig, sendFeishuText } from "./feishu";
 import {
   createNotificationRepository,
   type ChannelDeliveryResult,
@@ -51,12 +51,16 @@ function boundedInteger(value: string | undefined, fallback: number, min: number
 export function getNotificationWorkerConfig(env: Record<string, string | undefined> = process.env): NotificationWorkerConfig {
   if (env.NOTIFICATION_WORKER_ENABLED !== "true") return { enabled: false, reason: "worker_disabled" };
   if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.SUPABASE_SECRET_KEY) return { enabled: false, reason: "supabase_secret_missing" };
+  const staffEmails = splitEmails(env.NOTIFICATION_STAFF_EMAILS);
+  if (!smtpConfig(env) || !getFeishuConfig(env) || staffEmails.length === 0) {
+    return { enabled: false, reason: "provider_configuration_incomplete" };
+  }
   return {
     enabled: true,
     batchSize: boundedInteger(env.NOTIFICATION_WORKER_BATCH_SIZE, 10, 1, 25),
     leaseSeconds: boundedInteger(env.NOTIFICATION_WORKER_LEASE_SECONDS, 300, 60, 900),
     workerId: env.NOTIFICATION_WORKER_ID?.slice(0, 120) || `worker-${randomUUID()}`,
-    staffEmails: splitEmails(env.NOTIFICATION_STAFF_EMAILS),
+    staffEmails,
   };
 }
 

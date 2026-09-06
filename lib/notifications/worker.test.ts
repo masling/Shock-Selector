@@ -32,6 +32,14 @@ const enabledEnv = {
   NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co",
   SUPABASE_SECRET_KEY: "sb_secret_test",
   NOTIFICATION_STAFF_EMAILS: "staff@example.invalid",
+  TRANSACTIONAL_EMAIL_ENABLED: "true",
+  SMTP_HOST: "smtp.zeptomail.com",
+  SMTP_PORT: "587",
+  SMTP_USERNAME: "emailapikey",
+  SMTP_PASSWORD: "test-only-password",
+  FEISHU_WEBHOOK_ENABLED: "true",
+  FEISHU_WEBHOOK_URL: "https://open.feishu.cn/open-apis/bot/v2/hook/test-only",
+  FEISHU_WEBHOOK_SIGNING_SECRET: "test-only-secret",
 };
 
 test("worker stays disabled unless explicitly enabled with server-only Supabase secret", () => {
@@ -40,6 +48,11 @@ test("worker stays disabled unless explicitly enabled with server-only Supabase 
     enabled: false,
     reason: "supabase_secret_missing",
   });
+  assert.deepEqual(getNotificationWorkerConfig({
+    NOTIFICATION_WORKER_ENABLED: "true",
+    NEXT_PUBLIC_SUPABASE_URL: "https://example.supabase.co",
+    SUPABASE_SECRET_KEY: "sb_secret_test",
+  }), { enabled: false, reason: "provider_configuration_incomplete" });
 });
 
 test("worker uses one shared staff mailbox for first-stage channel tracking", () => {

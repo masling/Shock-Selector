@@ -4,7 +4,7 @@ Notification delivery processor implementation and non-production database verif
 
 ## Boundary
 
-- Worker stays disabled unless `NOTIFICATION_WORKER_ENABLED=true`, `NEXT_PUBLIC_SUPABASE_URL`, and server-only `SUPABASE_SECRET_KEY` are present.
+- Worker stays disabled unless `NOTIFICATION_WORKER_ENABLED=true`, the Supabase server credentials, complete ZeptoMail SMTP configuration, one staff mailbox, and a valid signed Feishu webhook are all present. This prevents a partially configured deployment from stranding jobs as deferred.
 - `SUPABASE_SECRET_KEY` must never be exposed through `NEXT_PUBLIC_*` or browser code.
 - `/api/internal/notifications` requires `Authorization: Bearer <CRON_SECRET>` and compares bearer tokens with a timing-safe digest. No schedule is enabled here.
 - SMTP/Feishu provider calls are adapter boundaries and were tested with fakes only.
