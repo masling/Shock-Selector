@@ -568,7 +568,7 @@ const englishCopy: SiteCopy = {
       "EKD focuses on industrial shock absorption, vibration control and application guidance for machine builders and industrial operators.",
     profileTitle: "Company profile",
     paragraphs: [
-      `${brand.company} provides industrial shock absorption and vibration isolation products under the ${brand.name} brand. The website brings product information, model comparison and sizing guidance together for engineers and purchasing teams.`,
+      `${brand.companyEnglish} provides industrial shock absorption and vibration isolation products under the ${brand.name} brand. The website brings product information, model comparison and sizing guidance together for engineers and purchasing teams.`,
       "The team supports model selection, application review and product recommendations for both automation equipment and heavy-duty impact-control applications.",
     ],
     highlights: [
@@ -983,7 +983,7 @@ const chineseCopy: SiteCopy = {
       "EKD 聚焦工业缓冲、隔振与应用支持，面向设备制造商与工业用户提供产品与选型服务。",
     profileTitle: "公司简介",
     paragraphs: [
-      `${brand.company}以 ${brand.name} 品牌提供工业缓冲与隔振产品。网站面向工程师与采购人员，提供产品资料、型号对比与选型指引。`,
+      `${brand.legalCompanyZh}以 ${brand.name} 品牌提供工业缓冲与隔振产品。网站面向工程师与采购人员，提供产品资料、型号对比与选型指引。`,
       "团队可为自动化设备和高冲击重载场景提供型号推荐、应用判断与选型支持。",
     ],
     highlights: [
@@ -1393,7 +1393,7 @@ const germanCopy: SiteCopy = {
       "EKD konzentriert sich auf industrielle Stoßdämpfung, Schwingungskontrolle und Anwendungsunterstützung für Maschinenbauer und industrielle Betreiber.",
     profileTitle: "Unternehmensprofil",
     paragraphs: [
-      `${brand.company} bietet unter der Marke ${brand.name} Produkte zur industriellen Stoßdämpfung und Schwingungsisolierung an. Die Website bündelt Produktinformationen, Modellvergleiche und Auslegungshinweise für Ingenieure und Einkaufsteams.`,
+      `${brand.companyEnglish} bietet unter der Marke ${brand.name} Produkte zur industriellen Stoßdämpfung und Schwingungsisolierung an. Die Website bündelt Produktinformationen, Modellvergleiche und Auslegungshinweise für Ingenieure und Einkaufsteams.`,
       "Das Team unterstützt bei Modellauswahl, Anwendungsbewertung und Produktempfehlungen für Automation ebenso wie für schwere Stoßbelastungen.",
     ],
     highlights: [
@@ -1763,7 +1763,7 @@ const frenchCopy: SiteCopy = {
       "EKD se concentre sur l'amortissement industriel, le contrôle vibratoire et l'assistance applicative pour constructeurs de machines et opérateurs industriels.",
     profileTitle: "Profil de l'entreprise",
     paragraphs: [
-      `${brand.company} propose des produits d'amortissement industriel et d'isolation vibratoire sous la marque ${brand.name}. Le site réunit informations produits, comparaisons de modèles et conseils de dimensionnement pour les ingénieurs et les équipes achats.`,
+      `${brand.companyEnglish} propose des produits d'amortissement industriel et d'isolation vibratoire sous la marque ${brand.name}. Le site réunit informations produits, comparaisons de modèles et conseils de dimensionnement pour les ingénieurs et les équipes achats.`,
       "L'équipe accompagne la sélection de modèles et l'examen des applications pour les équipements automatisés et les applications soumises à des chocs importants.",
     ],
   },
@@ -1908,7 +1908,7 @@ const italianCopy: SiteCopy = {
       "EKD si concentra su ammortizzazione industriale, controllo delle vibrazioni e supporto applicativo per costruttori di macchine e operatori industriali.",
     profileTitle: "Profilo aziendale",
     paragraphs: [
-      `${brand.company} offre prodotti per l'ammortizzazione industriale e l'isolamento delle vibrazioni con il marchio ${brand.name}. Il sito riunisce informazioni sui prodotti, confronti tra modelli e indicazioni di dimensionamento per ingegneri e uffici acquisti.`,
+      `${brand.companyEnglish} offre prodotti per l'ammortizzazione industriale e l'isolamento delle vibrazioni con il marchio ${brand.name}. Il sito riunisce informazioni sui prodotti, confronti tra modelli e indicazioni di dimensionamento per ingegneri e uffici acquisti.`,
       "Il team supporta la selezione dei modelli e la valutazione delle applicazioni per apparecchiature automatizzate e applicazioni soggette a urti elevati.",
     ],
   },

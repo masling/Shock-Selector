@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ContactFormClient } from "@/components/contact/contact-form-client";
 import { SectionHeading } from "@/components/marketing/section-heading";
 import { Container } from "@/components/ui/container";
-import { brand } from "@/lib/brand";
+import { brand, getBrandCompanyName } from "@/lib/brand";
 import { isLocale } from "@/lib/i18n/config";
 import { getSiteCopy } from "@/lib/i18n/site-copy";
 import { getSiteUiCopy } from "@/lib/i18n/site-ui-copy";
@@ -42,7 +42,7 @@ export default async function ContactPage({ params, searchParams }: ContactPageP
       <SectionHeading title={copy.contact.eyebrow} description={ui.contactIntro} />
       <div className="mt-9 grid items-start gap-8 lg:grid-cols-[minmax(250px,0.6fr)_minmax(0,1fr)] lg:gap-14">
         <aside className="border-t border-line pt-6">
-          <p className="text-xl font-semibold">{brand.name} <span lang="zh-CN">{brand.company}</span></p>
+          <p className="text-xl font-semibold">{brand.name} · {getBrandCompanyName(locale)}</p>
           <div className="mt-5 divide-y divide-line">
             <a href={`mailto:${brand.email}`} className="flex items-center gap-4 py-5 text-accent hover:underline">
               <Mail className="h-5 w-5 shrink-0" aria-hidden="true" /><span className="break-all">{brand.email}</span>

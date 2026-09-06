@@ -2,8 +2,8 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import { BrandMark } from "@/components/layout/brand-mark";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { brand } from "@/lib/brand";
 import { locales, type Locale } from "@/lib/i18n/config";
@@ -93,7 +93,7 @@ export function MobileNav({ locale, items, localeNames, currentPathname, labels 
       >
         <div className="flex min-h-full flex-col p-6">
           <div className="flex items-center justify-between gap-4">
-            <Image src={brand.logo} alt={`${brand.name} ${brand.company}`} width={1158} height={217} className="h-auto w-[180px]" />
+            <BrandMark className="h-10" />
             <button
               type="button"
               autoFocus

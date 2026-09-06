@@ -12,7 +12,7 @@ type JsonLdEntity = Record<string, unknown>;
 
 const publisher = {
   "@type": "Organization",
-  name: brand.company,
+  name: brand.companyEnglish,
   brand: { "@type": "Brand", name: brand.name },
   url: getAbsoluteUrl("/about"),
 };

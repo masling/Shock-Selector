@@ -2,8 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { Container } from "@/components/ui/container";
+import { BrandMark } from "@/components/layout/brand-mark";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { locales, type Locale } from "@/lib/i18n/config";
@@ -59,9 +59,9 @@ export function SiteHeader({ locale, copy, localeNames, mobileLabels }: SiteHead
             <Link
               href={getLocalizedHref(locale, "/")}
               className="flex min-h-11 shrink-0 items-center"
-              aria-label={`${brand.name} ${brand.company}`}
+              aria-label={brand.name}
             >
-              <Image src={brand.logo} alt={`${brand.name} ${brand.company}`} width={1158} height={217} priority className="h-auto w-[190px] sm:w-[214px]" />
+              <BrandMark priority className="h-10 sm:h-11" />
             </Link>
 
             <MobileNav

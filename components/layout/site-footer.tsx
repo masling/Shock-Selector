@@ -1,10 +1,10 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Container } from "@/components/ui/container";
+import { BrandMark } from "@/components/layout/brand-mark";
 import type { Locale } from "@/lib/i18n/config";
 import { getLocalizedHref } from "@/lib/i18n/routing";
 import type { SiteCopy } from "@/lib/i18n/site-copy";
-import { brand } from "@/lib/brand";
+import { brand, getBrandCompanyName } from "@/lib/brand";
 import { getSiteUiCopy } from "@/lib/i18n/site-ui-copy";
 
 type SiteFooterProps = {
@@ -19,7 +19,7 @@ export function SiteFooter({ locale, copy }: SiteFooterProps) {
       <Container className="grid max-w-[1440px] gap-10 py-14 lg:grid-cols-[1.2fr_repeat(3,minmax(0,1fr))]">
         <div className="space-y-4">
           <Link href={getLocalizedHref(locale, "/")} className="inline-flex min-h-11 items-center">
-            <Image src={brand.logo} alt={`${brand.name} ${brand.company}`} width={1158} height={217} className="h-auto w-[214px]" />
+            <BrandMark className="h-12" />
           </Link>
           <p className="text-sm font-semibold text-ink">{brand.appName}</p>
           <p className="max-w-md text-sm leading-7 text-steel">{copy.summary}</p>
@@ -46,7 +46,7 @@ export function SiteFooter({ locale, copy }: SiteFooterProps) {
       </Container>
       <div className="border-t border-line">
         <Container className="flex flex-col justify-between gap-3 py-5 text-xs leading-6 text-steel md:flex-row md:items-center">
-          <p>© {new Date().getFullYear()} <span lang="zh-CN">{brand.company}</span> · {brand.name}. {ui.copyright}</p>
+          <p>© {new Date().getFullYear()} {getBrandCompanyName(locale)} · {brand.name}. {ui.copyright}</p>
           <nav aria-label={ui.terms} className="flex flex-wrap gap-x-5 gap-y-1">
             <Link className="inline-flex min-h-11 items-center hover:text-accent" href={getLocalizedHref(locale, "/privacy")}>{ui.privacy}</Link>
             <Link className="inline-flex min-h-11 items-center hover:text-accent" href={getLocalizedHref(locale, "/terms")}>{ui.terms}</Link>
