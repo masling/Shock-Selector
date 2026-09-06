@@ -41,6 +41,16 @@ function compareSpec(incoming: MappedSpec, existing: ExistingSpec[]) {
   return { key: incoming.key, action: same ? "unchanged" : "update_candidate", incoming, existing };
 }
 
+function chooseCanonicalExisting(models: ExistingModel[], normalizedTarget: string) {
+  return [...models].sort((left, right) => {
+    const score = (item: ExistingModel) => {
+      const compactModel = item.model.replace(/\s+/g, "").toUpperCase();
+      return (compactModel === normalizedTarget ? 0 : 10) + (item.model.includes(" ") ? 1 : 0);
+    };
+    return score(left) - score(right) || left.id.localeCompare(right.id);
+  })[0] ?? null;
+}
+
 export function buildProductImportPlan(inputs: unknown[], snapshot: CatalogSnapshot) {
   const index = new Map<string, ExistingModel[]>();
   for (const existing of snapshot.models) { const key = modelKey(existing.model); index.set(key, [...(index.get(key) ?? []), existing]); }
@@ -60,6 +70,23 @@ export function buildProductImportPlan(inputs: unknown[], snapshot: CatalogSnaps
     const identityReview = exact.length > 1 || possibleGroupMembers.length > 0 || row.entityKind === "source_group" || incomingCounts.get(row.model)! > 1;
     const status = identityReview ? "identity_review" : exact.length === 1 ? "existing_candidate" : "new_candidate";
     const specDiffs = !identityReview && exact.length === 1 ? row.specs.map(spec => compareSpec(spec, exact[0].specs.filter(value => value.key === spec.key))) : [];
+    const groupBaseKey = row.entityKind === "source_group" ? row.model.slice(0, -3) : null;
+    const groupTargets = groupBaseKey ? [groupBaseKey, `${groupBaseKey}B`].map(targetModel => {
+      const matches = index.get(targetModel) ?? [];
+      const canonical = chooseCanonicalExisting(matches, targetModel);
+      return {
+        model: targetModel,
+        canonicalExistingId: canonical?.id ?? null,
+        duplicateExistingIds: matches.filter(item => item.id !== canonical?.id).map(item => item.id),
+        createRequired: canonical === null,
+      };
+    }) : [];
+    const duplicateCanonical = row.entityKind === "source_model" && exact.length > 1 ? chooseCanonicalExisting(exact, row.model) : null;
+    const identityProposal = row.entityKind === "source_group"
+      ? { action: "fan_out_source_group", targets: groupTargets, retireSourceGroupIds: exact.map(item => item.id), requiresReview: true }
+      : duplicateCanonical
+        ? { action: "merge_normalization_duplicates", canonicalExistingId: duplicateCanonical.id, mergeExistingIds: exact.filter(item => item.id !== duplicateCanonical.id).map(item => item.id), requiresReview: true }
+        : null;
     return {
       ...row, status, executionAllowed: false,
       existingMatches: exact.map(model => ({ id: model.id, model: model.model })),
@@ -67,6 +94,7 @@ export function buildProductImportPlan(inputs: unknown[], snapshot: CatalogSnaps
       targetSeriesId: targetSeries.length === 1 ? targetSeries[0].id : null,
       seriesReviewRequired: targetSeries.length !== 1,
       seriesProposal,
+      identityProposal,
       seriesMappingBasis: row.sourceSeriesCode === "EKL" ? "existing_catalog_combines_EK_and_EKL" : targetSeries.length === 1 ? "exact_series_code" : seriesProposal ? "catalog_evidence_new_series_proposal" : "unmapped_source_series_no_alias_assumed",
       specDiffs,
       preserveExistingSpecKeys: exact.length === 1 ? exact[0].specs.filter(spec => !row.specs.some(value => value.key === spec.key)).map(spec => spec.key) : [],
@@ -83,6 +111,7 @@ export function buildProductImportPlan(inputs: unknown[], snapshot: CatalogSnaps
       existingRows: snapshot.models.length, existingNormalizedIdentities: index.size,
       statuses: countBy(candidates, row => row.status), fieldStates: countBy(candidates.flatMap(row => row.specs), spec => spec.state),
       fieldChanges: countBy(candidates.flatMap(row => row.specDiffs), diff => diff.action), issues: countBy(allIssues, issue => issue.code),
+      identityProposals: countBy(candidates.filter(row => row.identityProposal), row => row.identityProposal!.action),
       sourceSeriesRequiringMapping: [...new Set(candidates.filter(row => row.seriesReviewRequired).map(row => row.sourceSeriesCode))].sort(),
       rowsRequiringSeriesMapping: candidates.filter(row => row.seriesReviewRequired).length,
       proposedNewFamilyKeys: [...new Set(candidates.flatMap(row => row.seriesProposal?.familyRequiresCreation ? [row.seriesProposal.familyKey] : []))].sort(),

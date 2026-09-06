@@ -56,6 +56,15 @@ test("B groups do not overwrite existing base and B identities", () => {
   assert.equal(plan.candidates[0].possibleGroupMembers.length, 2);
   assert.equal(plan.candidates[0].specDiffs.length, 0);
   assert.equal(plan.candidates[0].executionAllowed, false);
+  assert.deepEqual(plan.candidates[0].identityProposal, {
+    action: "fan_out_source_group",
+    targets: [
+      { model: "EK10X7", canonicalExistingId: "a", duplicateExistingIds: [], createRequired: false },
+      { model: "EK10X7B", canonicalExistingId: "b", duplicateExistingIds: [], createRequired: false },
+    ],
+    retireSourceGroupIds: [],
+    requiresReview: true,
+  });
 });
 
 test("normalization collisions retain all existing IDs for review", () => {
@@ -63,6 +72,13 @@ test("normalization collisions retain all existing IDs for review", () => {
   assert.equal(plan.duplicateExistingIdentities.length, 1);
   assert.equal(plan.candidates[0].existingMatches.length, 2);
   assert.equal(plan.candidates[0].status, "identity_review");
+  assert.deepEqual(plan.candidates[0].identityProposal, {
+    action: "merge_normalization_duplicates",
+    canonicalExistingId: "b",
+    mergeExistingIds: ["a"],
+    requiresReview: true,
+  });
+  assert.deepEqual(plan.summary.identityProposals, { merge_normalization_duplicates: 1 });
 });
 
 test("field diffs preserve absent fields and models rather than deleting", () => {
