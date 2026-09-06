@@ -10,8 +10,17 @@ test("controlled download decisions fail closed", () => {
   for (const item of registry.decisions) {
     assert.match(item.sha256, /^[a-f0-9]{64}$/);
     assert.equal(Number.isSafeInteger(item.byteSize) && item.byteSize > 0, true);
-    assert.equal(item.publicationAllowed, false);
+    if (item.publicationAllowed) {
+      assert.equal(item.reviewStatus, "approved_private_download");
+      assert.equal(item.verification.some((entry) => entry.startsWith("user_authorized_private_upload_")), true);
+    }
   }
+});
+
+test("pending and rejected assets remain blocked", () => {
+  const blocked = registry.decisions.filter((item) => item.reviewStatus !== "approved_private_download");
+  assert.equal(blocked.length > 0, true);
+  assert.equal(blocked.every((item) => item.publicationAllowed === false), true);
 });
 
 test("EK42x50 STEP mismatch cannot be mistaken for an approved download", () => {

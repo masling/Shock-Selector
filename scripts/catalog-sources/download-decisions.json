@@ -10,14 +10,16 @@
       "sourcePath": "缓冲器/PDF/EK42x50.pdf",
       "sha256": "c3e2cc00c3c9ceea6bd7883249c611ea8d475681b23e854296fc7ae2cc23b3eb",
       "byteSize": 153960,
-      "reviewStatus": "verified_candidate",
+      "reviewStatus": "approved_private_download",
       "verification": [
         "exact_filename_match",
         "pdf_signature_valid",
         "single_page_render_reviewed",
-        "drawing_title_identifies_EK42x50"
+        "drawing_title_identifies_EK42x50",
+        "drawing_title_uses_EKD_brand_only",
+        "user_authorized_private_upload_2026-09-06"
       ],
-      "publicationAllowed": false
+      "publicationAllowed": true
     },
     {
       "id": "2026-09-05-ek42x50-dwg",

@@ -42,7 +42,7 @@ function main() {
   if (command === "config") return;
   const env = { ...process.env };
   for (const key of ["DATABASE_URL", "DIRECT_URL", "SHADOW_DATABASE_URL"]) delete env[key];
-  for (const key of ["DATABASE_URL", "DIRECT_URL", "SUPABASE_PROJECT_REF", "NEXT_PUBLIC_SITE_URL", "NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "NEXT_PUBLIC_GOOGLE_AUTH_ENABLED", "INQUIRY_PORTAL_ENABLED"]) if (values[key] !== undefined) env[key] = values[key];
+  for (const key of ["DATABASE_URL", "DIRECT_URL", "SUPABASE_PROJECT_REF", "NEXT_PUBLIC_SITE_URL", "NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "NEXT_PUBLIC_GOOGLE_AUTH_ENABLED", "INQUIRY_PORTAL_ENABLED", "CONTROLLED_DOWNLOADS_ENABLED"]) if (values[key] !== undefined) env[key] = values[key];
   const childArgs = command === "smoke"
     ? ["--import", "tsx", "scripts/supabase-runtime-smoke.ts"]
     : ["node_modules/next/dist/bin/next", "dev", "--hostname", "127.0.0.1", "--port", args[1] ?? "3025"];
