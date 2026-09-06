@@ -3,13 +3,13 @@ import { createHash } from "node:crypto";
 import { z } from "zod";
 import { brand } from "@/lib/brand";
 
-const messageSchema = z.object({
+export const transactionalEmailSchema = z.object({
   eventKey: z.string().min(1).max(200),
   to: z.email().max(254),
   subject: z.string().min(1).max(200).regex(/^[^\r\n]+$/),
   text: z.string().min(1).max(20000),
 });
-export type TransactionalEmail = z.infer<typeof messageSchema>;
+export type TransactionalEmail = z.infer<typeof transactionalEmailSchema>;
 export type DeliveryResult =
   | { status: "accepted"; providerId: string }
   | { status: "not_configured" | "failed" | "uncertain"; code: string; retryable: boolean };
@@ -32,7 +32,7 @@ export function smtpConfig(env: Record<string, string | undefined> = process.env
 
 type SmtpClient = Pick<ReturnType<typeof nodemailer.createTransport>, "sendMail">;
 export async function sendTransactionalEmail(input: TransactionalEmail, injectedClient?: SmtpClient): Promise<DeliveryResult> {
-  const parsed = messageSchema.safeParse(input);
+  const parsed = transactionalEmailSchema.safeParse(input);
   if (!parsed.success) return { status: "failed", code: "invalid_message", retryable: false };
   const config = smtpConfig();
   if (!config && !injectedClient) return { status: "not_configured", code: "smtp_disabled_or_incomplete", retryable: false };

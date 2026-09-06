@@ -1,14 +1,14 @@
-import smtpModule from "@/lib/notifications/smtp";
+import apiModule from "@/lib/notifications/zeptomail-api";
 
-const { sendTransactionalEmail } = smtpModule as typeof import("@/lib/notifications/smtp");
+const { sendZeptoMailApiEmail } = apiModule as typeof import("@/lib/notifications/zeptomail-api");
 
 const to = process.env.NOTIFICATION_TEST_EMAIL ?? "";
 let timeout: NodeJS.Timeout | undefined;
 const guard = new Promise<{ status: "uncertain"; code: string; retryable: false }>((resolve) => {
-  timeout = setTimeout(() => resolve({ status: "uncertain", code: "smtp_test_timeout", retryable: false }), 30000);
+  timeout = setTimeout(() => resolve({ status: "uncertain", code: "zeptomail_api_test_timeout", retryable: false }), 30000);
 });
 const result = await Promise.race([
-  sendTransactionalEmail({
+  sendZeptoMailApiEmail({
     eventKey: "test-only:email-notification-integration",
     to,
     subject: "TEST ONLY — EKD inquiry email integration",

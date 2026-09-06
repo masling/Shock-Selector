@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { brand } from "@/lib/brand";
 import type { TransactionalEmail, DeliveryResult } from "./smtp";
-import { sendTransactionalEmail, smtpConfig } from "./smtp";
+import { getZeptoMailApiConfig, sendZeptoMailApiEmail } from "./zeptomail-api";
 import { customerNotification } from "./templates";
 import { getFeishuConfig, sendFeishuText } from "./feishu";
 import {
@@ -52,7 +52,7 @@ export function getNotificationWorkerConfig(env: Record<string, string | undefin
   if (env.NOTIFICATION_WORKER_ENABLED !== "true") return { enabled: false, reason: "worker_disabled" };
   if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.SUPABASE_SECRET_KEY) return { enabled: false, reason: "supabase_secret_missing" };
   const staffEmails = splitEmails(env.NOTIFICATION_STAFF_EMAILS);
-  if (!smtpConfig(env) || !getFeishuConfig(env) || staffEmails.length === 0) {
+  if (!getZeptoMailApiConfig(env) || !getFeishuConfig(env) || staffEmails.length === 0) {
     return { enabled: false, reason: "provider_configuration_incomplete" };
   }
   return {
@@ -151,7 +151,7 @@ export async function runNotificationWorker(options: {
 
   for (const job of jobs) {
     try {
-      const results = await processJob(job, config, options.sendEmail ?? sendTransactionalEmail, options.sendFeishu ?? sendFeishuText);
+      const results = await processJob(job, config, options.sendEmail ?? sendZeptoMailApiEmail, options.sendFeishu ?? sendFeishuText);
       await repository.finishJob({ jobId: job.id, leaseToken: job.leaseToken, results });
       finished++;
     } catch {

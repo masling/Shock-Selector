@@ -4,17 +4,17 @@ Notification delivery processor implementation and non-production database verif
 
 ## Boundary
 
-- Worker stays disabled unless `NOTIFICATION_WORKER_ENABLED=true`, the Supabase server credentials, complete ZeptoMail SMTP configuration, one staff mailbox, and a valid signed Feishu webhook are all present. This prevents a partially configured deployment from stranding jobs as deferred.
+- Worker stays disabled unless `NOTIFICATION_WORKER_ENABLED=true`, the Supabase server credentials, complete ZeptoMail HTTPS API configuration, one staff mailbox, and a valid signed Feishu webhook are all present. This prevents a partially configured deployment from stranding jobs as deferred.
 - `SUPABASE_SECRET_KEY` must never be exposed through `NEXT_PUBLIC_*` or browser code.
 - `/api/internal/notifications` requires `Authorization: Bearer <CRON_SECRET>` and compares bearer tokens with a timing-safe digest. No schedule is enabled here.
-- SMTP/Feishu provider calls are adapter boundaries and were tested with fakes only.
+- ZeptoMail HTTPS API and Feishu provider calls are adapter boundaries and are covered by fake-response tests.
 
 ## Delivery semantics
 
 - Database leasing is via service-role-only RPCs using `FOR UPDATE SKIP LOCKED`, lease tokens and expiry.
 - Channel outcomes are stored separately in `inquiry_private."NotificationDelivery"` so an accepted customer email is not retried if Feishu later fails.
 - `accepted` means provider accepted the message; it is not delivery/read confirmation.
-- SMTP uncertain outcomes are terminal for that channel and are not auto-retried.
+- Ambiguous HTTPS outcomes are terminal for that channel and are not auto-retried, because the request may have reached ZeptoMail before the connection failed.
 - Missing provider configuration records `deferred`, not `accepted`.
 - Retries are capped with exponential backoff; transactional outbox rows remain the durable source before any delivery attempt.
 

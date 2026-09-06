@@ -7,17 +7,17 @@
 - Organization display name is **EKD**, following the user's preference for English-facing branding. Do not invent a registered English legal company name.
 - `vibroabsorber.com` added for ZeptoMail. DNS additions and Zepto domain verification were handled separately by the parent task.
 - Existing website records and Zoho Mail MX records must stay unchanged.
-- Ordinary Zoho Mail SMTP is not used for automated mail. ZeptoMail credentials are configured in ignored owner-only local storage. A web-console test was delivered; the local application's SMTP route remains unaccepted because outbound 465/587 connections close before TLS, so no application-sent email is claimed.
+- Ordinary Zoho Mail SMTP is not used for automated mail. A web-console test was delivered. Because local outbound 465/587 connections close before TLS, application notifications were migrated to ZeptoMail's HTTPS API; a Send Mail Token and API acceptance test are still required.
 
 ## Local implementation
 
 - Staff workbench: verified database-backed operator/manager membership, list/detail, claim, public status/reply, separate internal notes, quote draft/approve/publish and activity logs. No user was enrolled as staff.
 - Published quote snapshots are customer-readable only by the inquiry owner. Approval alone does not publish a quote; publication is immutable and idempotent.
 - Quote UI uses labeled fields and repeatable line items, not raw JSON. Staff routes refresh sessions and are private/no-store.
-- ZeptoMail SMTP adapter requires explicit enablement, verified TLS, fixed EKD sender, bounded text-only messages and no attachment file/URL reads. Acceptance, failure and uncertain outcomes are distinct; an ambiguous SMTP result is not blindly retried.
+- ZeptoMail HTTPS API adapter requires explicit enablement, a server-only Agent Send Mail Token, the fixed EKD sender, bounded text-only messages, no tracking pixels/click tracking and no attachments. Only an `EM_104` response is recorded as accepted; provider, server and ambiguous network outcomes remain distinct, and ambiguous requests are not blindly retried.
 - Controlled-download API requires a verified user and uses 60-second signed URLs. Metadata is deny-by-default pending explicit approval; private bucket and approved file uploads are still required. Existing public catalogs are unchanged.
 
-Verification completed locally: production build passed after fixing staff route return typing; 19 focused auth/staff/inquiry/SMTP/download tests passed.
+Verification completed locally: production build passed after fixing staff route return typing; focused auth/staff/inquiry/email/download tests passed.
 
 ## Remote database status
 
@@ -35,7 +35,7 @@ User explicitly authorized the pending remote migrations for the existing Frankf
 ## Remaining acceptance
 
 1. DNS verification, ZeptoMail customer validation and free sending eligibility.
-2. Configure ZeptoMail SMTP in Supabase Auth and the app's ignored/server-only environment; real OTP test with an authorized mailbox.
+2. Keep ZeptoMail SMTP in Supabase Auth, configure the Agent Send Mail Token for the application's HTTPS notification API, then run controlled OTP/API delivery tests with an authorized mailbox.
 3. Confirm initial staff operator/manager identities; no automatic privileged enrollment.
 4. Implement durable notification delivery processing and Feishu configuration; current outbox only queues jobs.
 5. Create private storage bucket and approve/upload exact model attachments after checking the source remarks; run authenticated download tests.

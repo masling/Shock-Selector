@@ -22,21 +22,18 @@ export function validateFeishuEnvironment(values) {
 }
 
 export function validateEmailEnvironment(values) {
-  if (values.TRANSACTIONAL_EMAIL_ENABLED !== "true") throw new Error("Transactional email must be explicitly enabled");
-  if (values.SMTP_HOST !== "smtp.zeptomail.com") throw new Error("Only the approved ZeptoMail SMTP host is allowed");
-  const port = Number(values.SMTP_PORT ?? "587");
-  if (port !== 465 && port !== 587) throw new Error("ZeptoMail SMTP port must be 465 or 587");
-  const username = values.SMTP_USERNAME?.trim();
-  const password = values.SMTP_PASSWORD?.trim();
-  if (!username || !password || /PLACEHOLDER|YOUR-|CHANGE-ME/i.test(`${username}:${password}`)) {
-    throw new Error("ZeptoMail SMTP credentials are missing");
-  }
+  if (values.ZEPTOMAIL_API_ENABLED !== "true") throw new Error("ZeptoMail HTTPS API must be explicitly enabled");
+  const raw = values.ZEPTOMAIL_SEND_TOKEN?.trim() ?? "";
+  const token = raw.replace(/^zoho-enczapikey\s+/i, "");
+  if (token.length < 20 || /\s/.test(token) || /PLACEHOLDER|YOUR-|CHANGE-ME/i.test(token)) throw new Error("ZeptoMail Send Mail Token is missing");
+  const timeoutMs = Number(values.ZEPTOMAIL_API_TIMEOUT_MS ?? "10000");
+  if (!Number.isInteger(timeoutMs) || timeoutMs < 3000 || timeoutMs > 20000) throw new Error("ZeptoMail API timeout must be between 3000 and 20000 milliseconds");
   const testEmail = values.NOTIFICATION_TEST_EMAIL?.trim().toLowerCase();
   if (!testEmail || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(testEmail)) throw new Error("Notification test recipient is missing or invalid");
   return {
-    smtpHost: values.SMTP_HOST,
-    port,
-    tlsMode: port === 465 ? "implicit_tls" : "starttls",
+    apiHost: "api.zeptomail.com",
+    transport: "https",
+    timeoutMs,
     testRecipientDomain: testEmail.slice(testEmail.lastIndexOf("@") + 1),
   };
 }
@@ -68,7 +65,7 @@ function main() {
   const env = { ...process.env };
   const notificationKeys = [
     "FEISHU_WEBHOOK_ENABLED", "FEISHU_WEBHOOK_URL", "FEISHU_WEBHOOK_SIGNING_SECRET", "FEISHU_TIMEOUT_MS",
-    "TRANSACTIONAL_EMAIL_ENABLED", "SMTP_HOST", "SMTP_PORT", "SMTP_USERNAME", "SMTP_PASSWORD", "NOTIFICATION_TEST_EMAIL",
+    "ZEPTOMAIL_API_ENABLED", "ZEPTOMAIL_SEND_TOKEN", "ZEPTOMAIL_API_TIMEOUT_MS", "NOTIFICATION_TEST_EMAIL",
   ];
   for (const key of notificationKeys) delete env[key];
   const keys = command === "feishu-test" ? notificationKeys.slice(0, 4) : notificationKeys.slice(4);
