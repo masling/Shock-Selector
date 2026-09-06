@@ -6,6 +6,21 @@ export type ExistingSpec = { key: string; unit: string | null; valueNumber: stri
 export type ExistingModel = { id: string; model: string; rawModel: string; seriesId: string; seriesCode: string; specs: ExistingSpec[] };
 export type CatalogSnapshot = { branchId: string; branchName: string; database: string; retrievedAt: string; models: ExistingModel[]; series: { id: string; code: string; familyKey: string }[]; specDefinitions: unknown[] };
 
+export const newSeriesFamilyProposals = {
+  HS: { familyKey: "heavy_duty_buffers", familyRequiresCreation: false, evidence: "EKD-Heavy Duty Shock Absorber-HS.pdf" },
+  OVTW: { familyKey: "wire_rope_vibration_isolators", familyRequiresCreation: false, evidence: "Vibration Isolator 2024.pdf, contents pp. 7-37" },
+  OVTC: { familyKey: "wire_rope_vibration_isolators", familyRequiresCreation: false, evidence: "Vibration Isolator 2024.pdf, contents pp. 38-49" },
+  OVTS: { familyKey: "special_vibration_isolators", familyRequiresCreation: false, evidence: "Vibration Isolator 2024.pdf, contents pp. 50-53" },
+  OVTN: { familyKey: "special_vibration_isolators", familyRequiresCreation: false, evidence: "Vibration Isolator 2024.pdf, contents pp. 54-57" },
+  BE: { familyKey: "rubber_vibration_isolators", familyRequiresCreation: true, evidence: "Vibration Isolator 2024.pdf, rubber isolators pp. 64-65" },
+  E: { familyKey: "rubber_vibration_isolators", familyRequiresCreation: true, evidence: "Vibration Isolator 2024.pdf, rubber isolators pp. 66-69" },
+  EA: { familyKey: "rubber_vibration_isolators", familyRequiresCreation: true, evidence: "Vibration Isolator 2024.pdf, rubber isolators pp. 66-69" },
+  "6JX": { familyKey: "rubber_vibration_isolators", familyRequiresCreation: true, evidence: "Vibration Isolator 2024.pdf, rubber isolators pp. 68-69" },
+  SH: { familyKey: "rubber_vibration_isolators", familyRequiresCreation: true, evidence: "Vibration Isolator 2024.pdf, rubber isolators pp. 70-71" },
+  WH: { familyKey: "rubber_vibration_isolators", familyRequiresCreation: true, evidence: "Vibration Isolator 2024.pdf, rubber isolators pp. 72-73" },
+  WHG: { familyKey: "rubber_vibration_isolators", familyRequiresCreation: true, evidence: "Vibration Isolator 2024.pdf, rubber isolators pp. 72-73" },
+} as const;
+
 function equivalentUnit(unit: string | null, key: string) {
   if (unit === null || unit === "") return "";
   const normalized = unit.replace(/\s/g, "");
@@ -41,6 +56,7 @@ export function buildProductImportPlan(inputs: unknown[], snapshot: CatalogSnaps
     const possibleGroupMembers = groupKeys.flatMap(key => index.get(key) ?? []);
     for (const model of [...exact, ...possibleGroupMembers]) referenced.add(model.id);
     const targetSeries = snapshot.series.filter(series => series.code === row.targetSeriesCodeCandidate);
+    const seriesProposal = newSeriesFamilyProposals[row.sourceSeriesCode as keyof typeof newSeriesFamilyProposals] ?? null;
     const identityReview = exact.length > 1 || possibleGroupMembers.length > 0 || row.entityKind === "source_group" || incomingCounts.get(row.model)! > 1;
     const status = identityReview ? "identity_review" : exact.length === 1 ? "existing_candidate" : "new_candidate";
     const specDiffs = !identityReview && exact.length === 1 ? row.specs.map(spec => compareSpec(spec, exact[0].specs.filter(value => value.key === spec.key))) : [];
@@ -50,7 +66,8 @@ export function buildProductImportPlan(inputs: unknown[], snapshot: CatalogSnaps
       possibleGroupMembers: possibleGroupMembers.map(model => ({ id: model.id, model: model.model })),
       targetSeriesId: targetSeries.length === 1 ? targetSeries[0].id : null,
       seriesReviewRequired: targetSeries.length !== 1,
-      seriesMappingBasis: row.sourceSeriesCode === "EKL" ? "existing_catalog_combines_EK_and_EKL" : targetSeries.length === 1 ? "exact_series_code" : "unmapped_source_series_no_alias_assumed",
+      seriesProposal,
+      seriesMappingBasis: row.sourceSeriesCode === "EKL" ? "existing_catalog_combines_EK_and_EKL" : targetSeries.length === 1 ? "exact_series_code" : seriesProposal ? "catalog_evidence_new_series_proposal" : "unmapped_source_series_no_alias_assumed",
       specDiffs,
       preserveExistingSpecKeys: exact.length === 1 ? exact[0].specs.filter(spec => !row.specs.some(value => value.key === spec.key)).map(spec => spec.key) : [],
     };
@@ -68,10 +85,11 @@ export function buildProductImportPlan(inputs: unknown[], snapshot: CatalogSnaps
       fieldChanges: countBy(candidates.flatMap(row => row.specDiffs), diff => diff.action), issues: countBy(allIssues, issue => issue.code),
       sourceSeriesRequiringMapping: [...new Set(candidates.filter(row => row.seriesReviewRequired).map(row => row.sourceSeriesCode))].sort(),
       rowsRequiringSeriesMapping: candidates.filter(row => row.seriesReviewRequired).length,
+      proposedNewFamilyKeys: [...new Set(candidates.flatMap(row => row.seriesProposal?.familyRequiresCreation ? [row.seriesProposal.familyKey] : []))].sort(),
       existingRowsRetainedOutsideIncoming: snapshot.models.filter(model => !referenced.has(model.id)).length,
     },
     duplicateExistingIdentities, candidates, rejectedRows,
     retainExistingModels: snapshot.models.filter(model => !referenced.has(model.id)).map(model => ({ id: model.id, model: model.model, seriesCode: model.seriesCode, action: "retain_no_implicit_delete" })),
-    rules: ["All candidates remain DRAFT; NEEDS_REVIEW is not a privacy boundary in the current repository.", "Do not merge (B) source groups with existing base/B models automatically.", "Do not map new source isolator series to WR/CR/HGGS/HGGN without evidence.", "Axis-specific N/mm fields retain their units and are not copied into legacy N/m fields.", "Missing source fields such as totalLengthMm never erase existing values.", "No production write or automatic selection/publication approval is included."],
+    rules: ["All candidates remain DRAFT; NEEDS_REVIEW is not a privacy boundary in the current repository.", "Do not merge (B) source groups with existing base/B models automatically.", "Catalog evidence proposes families for the 12 new source series, but each series still requires review and explicit creation.", "Do not merge OVTW/OVTC into WR/CR automatically even though they share the same product families.", "Axis-specific N/mm fields retain their units and are not copied into legacy N/m fields.", "Missing source fields such as totalLengthMm never erase existing values.", "No production write or automatic selection/publication approval is included."],
   };
 }

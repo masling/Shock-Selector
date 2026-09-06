@@ -33,6 +33,17 @@ test("axis-specific N/mm values are not folded into the legacy N/m key", () => {
   assert.equal(productFieldDefinitions.length, 26);
 });
 
+test("a source typo is corrected only by an exact evidence-backed rule", () => {
+  const row = mapProductRow({ ...source("OVTW24-70-10", [{ label: "X\n最大允许变形\nmm", cell: "L143", value: "21.+" }]), kind: "isolator" }).row!;
+  assert.equal(row.specs[0].state, "valid");
+  assert.equal(row.specs[0].valueNumber, 21.8);
+  assert.equal(row.specs[0].correction?.originalRawValue, "21.+");
+  assert.match(row.specs[0].correction?.evidence ?? "", /OVTW24 technical data/);
+  assert.equal(row.issues[0].code, "spec_corrected_from_evidence");
+  const unmatched = mapProductRow({ ...source("OVTW24-70-10", [{ label: "X\n最大允许变形\nmm", cell: "L144", value: "21.+" }]), kind: "isolator" }).row!;
+  assert.equal(unmatched.specs[0].state, "invalid");
+});
+
 test("unknown columns and invalid rows are reported without stopping other rows", () => {
   const plan = buildProductImportPlan([{}, source(), source("EK42X25", [{ label: "未知字段", cell: "Z2", value: 42 }])], snapshot());
   assert.equal(plan.summary.rejectedRows, 1); assert.equal(plan.summary.mappedRows, 2);
@@ -74,9 +85,18 @@ test("units cannot be silently changed even when numbers happen to match", () =>
 });
 
 test("EKL uses the existing combined EK series but unknown isolator series are not aliased", () => {
-  const plan = buildProductImportPlan([source("EKL42X50"), { ...source("OVTC12-10"), kind: "isolator" }], snapshot());
+  const plan = buildProductImportPlan([source("EKL42X50"), { ...source("OVTC12-10"), kind: "isolator" }, { ...source("6JX-25"), kind: "isolator" }], snapshot());
   assert.equal(plan.candidates[0].targetSeriesId, "ek");
   assert.equal(plan.candidates[1].targetSeriesId, null);
   assert.equal(plan.candidates[1].seriesReviewRequired, true);
   assert.equal(plan.candidates[1].sourceSeriesCode, "OVTC");
+  assert.deepEqual(plan.candidates[1].seriesProposal, {
+    familyKey: "wire_rope_vibration_isolators",
+    familyRequiresCreation: false,
+    evidence: "Vibration Isolator 2024.pdf, contents pp. 38-49",
+  });
+  assert.equal(plan.candidates[1].seriesMappingBasis, "catalog_evidence_new_series_proposal");
+  assert.equal(plan.candidates[2].seriesProposal?.familyKey, "rubber_vibration_isolators");
+  assert.equal(plan.candidates[2].seriesProposal?.familyRequiresCreation, true);
+  assert.deepEqual(plan.summary.proposedNewFamilyKeys, ["rubber_vibration_isolators"]);
 });

@@ -30,6 +30,13 @@ export type ParsedValue = {
   valueText: string | null;
   valueJson: Record<string, unknown> | null;
 };
+
+const evidenceCorrections: Record<string, { value: unknown; evidence: string }> = {
+  "OVTW24-70-10|maxDeflectionXMm|L143|21.+": {
+    value: 21.8,
+    evidence: "Vibration Isolator 2024.pdf, OVTW24 technical data: Shear/Roll max deflection 21.8 mm; matching Y-axis value is 21.8 mm",
+  },
+};
 export function parseEngineeringValue(value: unknown, dataType: FieldDefinition["dataType"]): ParsedValue {
   const rawValue = value == null ? "" : String(value).trim();
   const result: ParsedValue = { rawValue, state: "missing", valueNumber: null, valueText: null, valueJson: null };
@@ -65,7 +72,7 @@ const rowSchema = z.object({
   specs: z.array(z.object({ label: z.string(), cell: z.string(), value: z.unknown() })),
   sourceSelectorFlag: z.unknown(),
 }).passthrough();
-export type MappedSpec = ParsedValue & { key: string; unit: string | null; dataType: FieldDefinition["dataType"]; sourceHeader: string; sourceCell: string };
+export type MappedSpec = ParsedValue & { key: string; unit: string | null; dataType: FieldDefinition["dataType"]; sourceHeader: string; sourceCell: string; correction?: { originalRawValue: string; evidence: string } };
 export type MappingIssue = { code: string; model: string | null; field?: string; cell?: string; detail?: string };
 export type MappedProduct = {
   model: string; rawModel: string; kind: "absorber" | "isolator"; source: z.infer<typeof rowSchema>["source"];
@@ -87,9 +94,12 @@ export function mapProductRow(input: unknown): { row: MappedProduct | null; issu
   for (const spec of raw.specs) {
     const field = byHeader.get(compact(spec.label));
     if (!field) { unmappedFields.push(spec); issues.push({ code: "unmapped_field", model, cell: spec.cell, detail: spec.label }); continue; }
-    const value = parseEngineeringValue(spec.value, field.dataType);
+    const parsedValue = parseEngineeringValue(spec.value, field.dataType);
+    const correction = evidenceCorrections[`${model}|${field.key}|${spec.cell}|${parsedValue.rawValue}`];
+    const value = correction ? parseEngineeringValue(correction.value, field.dataType) : parsedValue;
     if (specs.some(existing => existing.key === field.key)) { issues.push({ code: "duplicate_mapped_field", model, field: field.key, cell: spec.cell }); continue; }
-    specs.push({ ...value, key: field.key, unit: field.unit, dataType: field.dataType, sourceHeader: spec.label, sourceCell: spec.cell });
+    specs.push({ ...value, key: field.key, unit: field.unit, dataType: field.dataType, sourceHeader: spec.label, sourceCell: spec.cell, ...(correction ? { correction: { originalRawValue: parsedValue.rawValue, evidence: correction.evidence } } : {}) });
+    if (correction) issues.push({ code: "spec_corrected_from_evidence", model, field: field.key, cell: spec.cell, detail: `${parsedValue.rawValue} -> ${value.rawValue}; ${correction.evidence}` });
     if (value.state !== "valid") issues.push({ code: `spec_${value.state}`, model, field: field.key, cell: spec.cell, detail: value.rawValue });
   }
   const supported = raw.kind === "absorber" && ["EK", "EKL", "EN", "ES", "EI", "ED"].includes(sourceSeriesCode);
