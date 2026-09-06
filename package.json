@@ -22,6 +22,7 @@
     "test:download-decisions": "node --test scripts/catalog-sources/download-decisions.test.mjs",
     "test:controlled-download-plan": "node --test scripts/catalog-sources/controlled-download-plan.test.mjs scripts/with-storage.test.mjs",
     "storage:check": "node scripts/with-storage.mjs config",
+    "storage:probe": "node scripts/with-storage.mjs probe",
     "storage:plan": "node scripts/with-storage.mjs plan",
     "storage:apply": "node scripts/with-storage.mjs apply",
     "test:product-import": "tsx --test scripts/catalog-sources/product-import-plan.test.ts",
