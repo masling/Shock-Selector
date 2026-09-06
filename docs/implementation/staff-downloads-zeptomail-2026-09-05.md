@@ -7,7 +7,7 @@
 - Organization display name is **EKD**, following the user's preference for English-facing branding. Do not invent a registered English legal company name.
 - `vibroabsorber.com` added for ZeptoMail. DNS additions and Zepto domain verification were handled separately by the parent task.
 - Existing website records and Zoho Mail MX records must stay unchanged.
-- Ordinary Zoho Mail SMTP is not used for automated mail. ZeptoMail credentials are not yet configured, and no test emails were sent.
+- Ordinary Zoho Mail SMTP is not used for automated mail. ZeptoMail credentials are configured in ignored owner-only local storage. A web-console test was delivered; the local application's SMTP route remains unaccepted because outbound 465/587 connections close before TLS, so no application-sent email is claimed.
 
 ## Local implementation
 
