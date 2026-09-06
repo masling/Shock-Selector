@@ -1,6 +1,7 @@
 import { staffJson, requireStaffSession, staffRouteParamsSchema } from "@/lib/inquiry-staff/api";
 import { quoteDraftSchema } from "@/lib/inquiry-staff/schemas";
 import { boundedJson, sameOriginMutation } from "@/lib/inquiry/request-security";
+import { runNotificationWorkerAfterMutation } from "@/lib/notifications/worker";
 
 export const dynamic = "force-dynamic";
 type Context = { params: Promise<{ id: string }> };
@@ -23,7 +24,11 @@ export async function POST(request: Request, { params }: Context) {
 
   try {
     if (action === "approve") return staffJson({ quote: await session.repository.approveQuote(parsedParams.data.id) });
-    if (action === "publish") return staffJson({ quote: await session.repository.publishQuote(parsedParams.data.id), notificationStatus: "pending" });
+    if (action === "publish") {
+      const quote = await session.repository.publishQuote(parsedParams.data.id);
+      await runNotificationWorkerAfterMutation();
+      return staffJson({ quote, notificationStatus: "pending" });
+    }
 
     const payload = typeof body === "object" && body ? (body as { payload?: unknown }).payload : null;
     const input = quoteDraftSchema.safeParse(payload);

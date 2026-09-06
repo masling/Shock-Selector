@@ -161,3 +161,15 @@ export async function runNotificationWorker(options: {
 
   return { status: errors.length ? "partial" as const : "ok" as const, claimed: jobs.length, finished, failed: errors.length };
 }
+
+export async function runNotificationWorkerAfterMutation() {
+  try {
+    return await runNotificationWorker({
+      env: { ...process.env, NOTIFICATION_WORKER_BATCH_SIZE: "1" },
+    });
+  } catch {
+    // The business mutation is already durable and its outbox row must remain
+    // the source of truth. Notification delivery failure cannot roll it back.
+    return { status: "deferred" as const, claimed: 0, finished: 0, failed: 0 };
+  }
+}

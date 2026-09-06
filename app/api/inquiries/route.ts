@@ -3,6 +3,7 @@ import { createInquirySchema } from "@/lib/inquiry/schemas";
 import { getInquirySession, isInquiryPortalEnabled, validateInquiryModels } from "@/lib/inquiry/inquiry-service";
 import { boundedJson, sameOriginMutation } from "@/lib/inquiry/request-security";
 import { InquiryConflictError, InquiryPersistenceError } from "@/lib/inquiry/idempotency";
+import { runNotificationWorkerAfterMutation } from "@/lib/notifications/worker";
 
 export const dynamic = "force-dynamic";
 const json = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "private, no-store" } });
@@ -36,8 +37,7 @@ export async function POST(request: Request) {
   }
   try {
     const result = await session.repository.create(session.user.id, session.user.email!, input.data);
-    // The database trigger queues notification work atomically. No provider send
-    // happens in this request; do not equate persistence with email delivery.
+    await runNotificationWorkerAfterMutation();
     return json({ ...result, notificationStatus: "pending" }, result.created ? 201 : 200);
   } catch (error) {
     if (error instanceof InquiryConflictError) return json({ error: "submission_conflict" }, 409);

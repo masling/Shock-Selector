@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { POST } from "@/app/api/internal/notifications/route";
+import { GET, POST } from "@/app/api/internal/notifications/route";
 
 test("notification endpoint rejects missing and wrong bearer tokens", async () => {
   const previous = process.env.CRON_SECRET;
@@ -50,5 +50,21 @@ test("notification endpoint accepts correct bearer but remains worker-disabled b
     else process.env.CRON_SECRET = previousCron;
     if (previousWorker === undefined) delete process.env.NOTIFICATION_WORKER_ENABLED;
     else process.env.NOTIFICATION_WORKER_ENABLED = previousWorker;
+  }
+});
+
+test("Vercel cron GET uses the same bearer protection", async () => {
+  const previous = process.env.CRON_SECRET;
+  process.env.CRON_SECRET = "test-only-cron-secret";
+  try {
+    const denied = await GET(new Request("https://www.vibroabsorber.com/api/internal/notifications"));
+    assert.equal(denied.status, 401);
+    const accepted = await GET(new Request("https://www.vibroabsorber.com/api/internal/notifications", {
+      headers: { authorization: "Bearer test-only-cron-secret" },
+    }));
+    assert.equal(accepted.status, 200);
+  } finally {
+    if (previous === undefined) delete process.env.CRON_SECRET;
+    else process.env.CRON_SECRET = previous;
   }
 });

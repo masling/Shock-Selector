@@ -4,6 +4,7 @@ import { getInquirySession, isInquiryPortalEnabled } from "@/lib/inquiry/inquiry
 import { inquiryMessageSchema } from "@/lib/inquiry/schemas";
 import { boundedJson, sameOriginMutation } from "@/lib/inquiry/request-security";
 import { InquiryConflictError, InquiryPersistenceError } from "@/lib/inquiry/idempotency";
+import { runNotificationWorkerAfterMutation } from "@/lib/notifications/worker";
 
 export const dynamic = "force-dynamic";
 type Context = { params: Promise<{ id: string }> };
@@ -37,6 +38,7 @@ export async function POST(request: Request, { params }: Context) {
     if (!detail) return json({ error: "not_found" }, 404);
     if (detail.inquiry.status === "closed") return json({ error: "closed" }, 409);
     const message = await session.repository.message(session.user.id, id, input.data);
+    await runNotificationWorkerAfterMutation();
     return json({ message, notificationStatus: "pending" }, 201);
   } catch (error) {
     if (error instanceof InquiryConflictError) return json({ error: "submission_conflict" }, 409);

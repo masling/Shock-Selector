@@ -1,6 +1,7 @@
 import { staffJson, requireStaffSession, staffRouteParamsSchema } from "@/lib/inquiry-staff/api";
 import { staffMessageSchema } from "@/lib/inquiry-staff/schemas";
 import { boundedJson, sameOriginMutation } from "@/lib/inquiry/request-security";
+import { runNotificationWorkerAfterMutation } from "@/lib/notifications/worker";
 
 export const dynamic = "force-dynamic";
 type Context = { params: Promise<{ id: string }> };
@@ -22,7 +23,9 @@ export async function POST(request: Request, { params }: Context) {
   if (!session) return response;
 
   try {
-    return staffJson({ message: await session.repository.addPublicReply(parsedParams.data.id, input.data), notificationStatus: "pending" }, 201);
+    const message = await session.repository.addPublicReply(parsedParams.data.id, input.data);
+    await runNotificationWorkerAfterMutation();
+    return staffJson({ message, notificationStatus: "pending" }, 201);
   } catch {
     return staffJson({ error: "save_failed" }, 503);
   }

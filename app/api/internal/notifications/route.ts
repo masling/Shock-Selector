@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { runNotificationWorker } from "@/lib/notifications/worker";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 const headers = { "Cache-Control": "private, no-store" };
 
@@ -18,7 +19,7 @@ function authorized(request: Request, env: Record<string, string | undefined> = 
   return timingSafeEqual(safeDigest(token), safeDigest(secret));
 }
 
-export async function POST(request: Request) {
+async function handle(request: Request) {
   if (!process.env.CRON_SECRET) {
     return NextResponse.json({ status: "disabled" }, { status: 503, headers });
   }
@@ -32,3 +33,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "worker_failed" }, { status: 500, headers });
   }
 }
+
+export const GET = handle;
+export const POST = handle;
