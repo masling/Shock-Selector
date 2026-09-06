@@ -29,6 +29,7 @@
     "db:prepare-transfer": "node scripts/supabase-transfer.mjs",
     "test:db-transfer": "node --test scripts/supabase-transfer.test.mjs",
     "supabase:check": "node scripts/with-supabase.mjs smoke",
+    "supabase:catalog-snapshot": "node scripts/with-supabase.mjs catalog-snapshot",
     "supabase:dev": "node scripts/with-supabase.mjs dev",
     "test:supabase-env": "node --test scripts/with-supabase.test.mjs",
     "notifications:check": "node scripts/with-notifications.mjs config",

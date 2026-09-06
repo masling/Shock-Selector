@@ -28,10 +28,10 @@ export function validateRuntimeEnvironment(values) {
 function main() {
   const [command, ...args] = process.argv.slice(2);
   if (command === "--help") {
-    console.log("node scripts/with-supabase.mjs config|smoke|dev [--port <port>]\nLoads only the ignored .env.supabase.local runtime credentials; never changes .env or deployment settings.");
+    console.log("node scripts/with-supabase.mjs config|smoke|catalog-snapshot|dev [--port <port>]\nLoads only the ignored .env.supabase.local runtime credentials; never changes .env or deployment settings.");
     return;
   }
-  if (!["config", "smoke", "dev"].includes(command)) throw new Error("Use config, smoke or dev");
+  if (!["config", "smoke", "catalog-snapshot", "dev"].includes(command)) throw new Error("Use config, smoke, catalog-snapshot or dev");
   if (args.length && (command !== "dev" || args.length !== 2 || args[0] !== "--port" || !/^\d+$/.test(args[1]) || Number(args[1]) < 1024 || Number(args[1]) > 65535)) throw new Error("Invalid arguments");
   const file = path.resolve(".env.supabase.local");
   if (!fs.existsSync(file)) throw new Error("Create the ignored .env.supabase.local file from .env.supabase.example first");
@@ -45,7 +45,9 @@ function main() {
   for (const key of ["DATABASE_URL", "DIRECT_URL", "SUPABASE_PROJECT_REF", "NEXT_PUBLIC_SITE_URL", "NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "NEXT_PUBLIC_GOOGLE_AUTH_ENABLED", "INQUIRY_PORTAL_ENABLED", "CONTROLLED_DOWNLOADS_ENABLED"]) if (values[key] !== undefined) env[key] = values[key];
   const childArgs = command === "smoke"
     ? ["--import", "tsx", "scripts/supabase-runtime-smoke.ts"]
-    : ["node_modules/next/dist/bin/next", "dev", "--hostname", "127.0.0.1", "--port", args[1] ?? "3025"];
+    : command === "catalog-snapshot"
+      ? ["--import", "tsx", "scripts/export-current-catalog-snapshot.ts"]
+      : ["node_modules/next/dist/bin/next", "dev", "--hostname", "127.0.0.1", "--port", args[1] ?? "3025"];
   const child = spawn(process.execPath, childArgs, { stdio: "inherit", env });
   child.on("error", () => { console.error("Could not start the Supabase runtime check"); process.exitCode = 1; });
   child.on("exit", (code, signal) => { process.exitCode = signal ? 1 : code ?? 1; });
