@@ -27,7 +27,7 @@ Notification delivery processor implementation and non-production database verif
 
 ## External setup still missing
 
-1. Configure server-only notification env values and verified provider credentials.
+1. Copy the locally verified server-only Supabase, ZeptoMail API and Feishu credentials into the eventual deployment environment only when production activation is approved.
 2. Add a scheduler or cron trigger only after a separate production activation decision.
 3. Enable leaked-password protection in Supabase Auth if password login is later used; security advisors currently report this as an existing project-level warning.
 
