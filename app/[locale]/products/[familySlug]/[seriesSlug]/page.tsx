@@ -5,6 +5,7 @@ import { findCatalogSeriesBySlug } from "@/lib/catalog/catalog-repository";
 import { isLocale } from "@/lib/i18n/config";
 import { getProductCenterCopy } from "@/lib/i18n/page-copy";
 import { getLocalizedAlternates } from "@/lib/seo";
+import { getSeriesEditorial } from "@/lib/catalog/series-editorial";
 
 type LocaleProductSeriesPageProps = {
   params: Promise<{ locale: string; familySlug: string; seriesSlug: string }>;
@@ -22,10 +23,11 @@ export async function generateMetadata({ params }: LocaleProductSeriesPageProps)
 
   const series = await findCatalogSeriesBySlug(familySlug, seriesSlug);
   const copy = getProductCenterCopy(locale);
+  const editorial = series ? getSeriesEditorial(series.code, locale) : null;
 
   return {
-    title: series ? `${series.name} ${series.code} ${copy.seriesSuffix}` : seriesSlug,
-    description: series?.overview ?? undefined,
+    title: editorial?.name ?? (series ? `${series.name} ${series.code} ${copy.seriesSuffix}` : seriesSlug),
+    description: editorial?.overview ?? series?.overview ?? undefined,
     alternates: getLocalizedAlternates(locale, `/products/${familySlug}/${seriesSlug}`),
   };
 }

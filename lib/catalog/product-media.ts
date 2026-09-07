@@ -30,6 +30,7 @@ export const familyVisualModels: Record<string, string> = {
   "shock-absorbers": "EK42X50",
   "heavy-duty-buffers": "EI100X400",
   "wire-rope-vibration-isolators": "OVTW32-50-10",
-  "special-vibration-isolators": "6JX-100",
+  "special-vibration-isolators": "HGGS_SERIES",
+  "rubber-vibration-isolators": "6JX-100",
   "flexible-pipe-connections": "JYXR_P",
 };

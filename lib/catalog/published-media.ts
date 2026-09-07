@@ -4,6 +4,7 @@ export const publishedMedia: Record<string, string> = {
   EI100X400: "/products/representative-heavy-duty-buffer.jpg",
   "OVTW32-50-10": "/products/representative-wire-rope-isolator.jpg",
   "6JX-100": "/products/representative-special-isolator.jpg",
+  HGGS_SERIES: "/products/catalog/hggs.webp",
   JYXR_P: "/products/jyxr-p-series.png",
   JYXR_H: "/products/jyxr-h-series.png",
   JYXR_P_DRAWING: "/products/jyxr-p-structure.png",

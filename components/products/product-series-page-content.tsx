@@ -13,6 +13,9 @@ import { getCatalogUiCopy } from "@/lib/i18n/catalog-ui-copy";
 import { directoryQuoteHref } from "@/lib/catalog/directory-search";
 import { listModelDownloadsForModels, type ModelDownload } from "@/lib/downloads/download-service";
 import { ModelDownloadButton } from "@/components/products/model-download-button";
+import Image from "next/image";
+import { editorialUi, getSeriesEditorial } from "@/lib/catalog/series-editorial";
+import { SeriesCatalogFigure } from "@/components/products/series-catalog-figure";
 
 type ProductSeriesPageContentProps = {
   familySlug: string;
@@ -30,6 +33,9 @@ export async function ProductSeriesPageContent({
   const series = await findCatalogSeriesBySlug(familySlug, seriesSlug);
 
   if (!series) notFound();
+  const editorial = getSeriesEditorial(series.code, locale);
+  const detailUi = editorialUi(locale);
+  const name = editorial?.name ?? series.name;
 
   const models = await searchCatalogModels({
     locale,
@@ -55,29 +61,40 @@ export async function ProductSeriesPageContent({
       <Breadcrumb items={[
         { label: copy.productsBreadcrumb, href: getLocalizedHref(locale, "/products") },
         { label: familyName, href: getLocalizedHref(locale, `/products/${familySlug}`) },
-        { label: series.name },
+        { label: name },
       ]} />
 
-      <div className="mt-8 max-w-4xl">
+      <div className="mt-8 grid items-center gap-8 md:grid-cols-[minmax(0,1fr)_300px]" lang={editorial?.language}>
+        <div className="max-w-3xl">
         <p className="text-sm font-semibold uppercase tracking-wide text-accent">
           {series.code} {copy.seriesSuffix}
         </p>
-        <h1 className="mt-3 text-4xl font-semibold text-ink">{series.name}</h1>
-        <p className="mt-5 text-lg leading-8 text-steel">{series.overview}</p>
+        <h1 className="mt-3 text-3xl font-semibold leading-tight text-ink md:text-4xl">{name}</h1>
+        <p className="mt-5 text-lg leading-8 text-steel">{editorial?.overview ?? series.overview}</p>
         <p className="mt-4 text-sm font-medium text-steel">
           {series.selectorEligible ? copy.selectorEligibleSeries : copy.catalogInquirySeries}
         </p>
+        <Link href={directoryQuoteHref(locale, series.code)} className="text-link mt-4 min-h-11">{detailUi.quote} →</Link>
+        </div>
+        {editorial?.photo && familySlug !== "flexible-pipe-connections" && <figure>
+          <Image src={editorial.photo.url} alt={name} width={editorial.photo.width} height={editorial.photo.height} sizes="300px" priority className="h-52 w-full object-contain" />
+          <figcaption className="mt-3 text-center text-xs leading-5 text-steel">{detailUi.illustration}</figcaption>
+        </figure>}
       </div>
 
       {familySlug === "flexible-pipe-connections" && <PipeCatalogMedia locale={locale} seriesCodes={[series.code]} />}
 
-      <div className="mt-10 grid gap-6 lg:grid-cols-3">
+      {editorial ? <div className="mt-10 grid gap-8 border-t border-line pt-8 md:grid-cols-2" lang={editorial.language}>
+        <section><h2 className="text-xl font-semibold">{detailUi.principle}</h2><p className="mt-3 text-sm leading-7 text-steel">{editorial.principle}</p></section>
+        <section><h2 className="text-xl font-semibold">{detailUi.applications}</h2><p className="mt-3 text-sm leading-7 text-steel">{editorial.applications}</p></section>
+      </div> : <div className="mt-10 grid gap-6 lg:grid-cols-3">
         {series.workingPrinciple ? <InfoCard title={copy.workingPrinciple} body={series.workingPrinciple} /> : null}
         {series.constructionNotes ? <InfoCard title={copy.construction} body={series.constructionNotes} /> : null}
         {series.applicationNotes ? <InfoCard title={copy.applications} body={series.applicationNotes} /> : null}
-      </div>
+      </div>}
+      <SeriesCatalogFigure code={series.code} locale={locale} />
 
-      <section className="mt-14 overflow-hidden rounded-xl border border-line bg-white">
+      {models.total > 0 ? <section className="mt-14 overflow-hidden rounded-xl border border-line bg-white">
         <div className="border-b border-line p-6">
           <h2 className="text-2xl font-semibold text-ink">{copy.technicalModelTable}</h2>
           <p className="mt-2 text-sm text-steel">{models.total} {copy.catalogModelsImported}</p>
@@ -122,7 +139,12 @@ export async function ProductSeriesPageContent({
             </tbody>
           </table>
         </div>
-      </section>
+      </section> : <section className="mt-12 rounded-lg bg-mist p-6" lang={editorial?.language}>
+        <h2 className="text-xl font-semibold">{detailUi.selection}</h2>
+        <p className="mt-3 max-w-prose text-sm leading-7 text-steel">{detailUi.noModels}</p>
+        <Link href={directoryQuoteHref(locale, series.code)} className="text-link mt-4 min-h-11">{detailUi.quote} →</Link>
+      </section>}
+      {editorial && <p className="mt-6 text-xs leading-6 text-steel" lang={editorial.language}>{detailUi.basis}: {detailUi.catalog} · {detailUi.page} {editorial.source.pages.join(", ")}</p>}
     </Container>
   );
 }

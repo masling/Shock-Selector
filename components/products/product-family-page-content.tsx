@@ -11,6 +11,8 @@ import { PipeCatalogMedia } from "@/components/products/pipe-catalog-media";
 import { familyVisualModels, productImageUrl } from "@/lib/catalog/product-media";
 import { getCatalogUiCopy } from "@/lib/i18n/catalog-ui-copy";
 import { buttonVariants } from "@/components/ui/button";
+import Image from "next/image";
+import { getSeriesEditorial } from "@/lib/catalog/series-editorial";
 
 type ProductFamilyPageContentProps = {
   familySlug: string;
@@ -75,22 +77,25 @@ export async function ProductFamilyPageContent({
       <section className="mt-14">
         <h2 className="text-2xl font-semibold text-ink">{copy.seriesInFamily}</h2>
         <div className="mt-6 grid gap-5 md:grid-cols-2">
-          {family.series.map((series) => (
+          {family.series.map((series) => {
+            const editorial = getSeriesEditorial(series.code, locale);
+            return (
             <Link
               key={series.id}
               href={getLocalizedHref(locale, `/products/${family.slug}/${series.slug}`)}
               className="rounded-xl border border-line bg-white p-6 transition hover:border-accent"
             >
+              {editorial?.photo && <Image src={editorial.photo.url} alt={editorial.name} width={editorial.photo.width} height={editorial.photo.height} sizes="(min-width: 768px) 40vw, 90vw" className="mb-5 h-36 w-full object-contain" />}
               <div className="flex items-center justify-between gap-4">
-                <h3 className="text-xl font-semibold text-ink">{series.name}</h3>
+                <h3 className="text-xl font-semibold text-ink" lang={editorial?.language}>{editorial?.name ?? series.name}</h3>
                 <span className="rounded-full bg-mist px-3 py-1 text-xs font-medium text-steel">{series.code}</span>
               </div>
-              <p className="mt-4 text-sm leading-6 text-steel">{series.overview}</p>
+              <p className="mt-4 text-sm leading-6 text-steel" lang={editorial?.language}>{editorial?.overview ?? series.overview}</p>
               <p className="mt-4 text-sm font-medium text-accent">
                 {series.selectorEligible ? copy.availableForSelector : copy.catalogInquiryProduct}
               </p>
             </Link>
-          ))}
+          );})}
         </div>
       </section>
     </Container>
